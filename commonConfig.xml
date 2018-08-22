@@ -1,0 +1,384 @@
+<html>
+
+<head>
+<title>配置文件</title>
+</head>
+
+<body>
+<cmdModel>
+<!--命令模块相关的配置命令
+name：命令模块集合的名字
+value：格式A/B/C
+       name:命令模块的名字
+       ico:命令模块图标
+       cmdType:命令模块配置弹出框-->
+    <parameter name="闸刀">
+        <content NO="C1" name="集圈网眼刀半位" ico="cmd_knife.png" cmdType="valve"/>
+        <content NO="C1" name="集圈网眼刀全位" ico="cmd_knife.png" cmdType="macro"/>
+        <content NO="C1" name="上针筒成圈刀半位" ico="cmd_knife.png" cmdType="speed"/>
+        <content NO="C1" name="上针筒成圈刀全位" ico="cmd_knife.png" cmdType="elasticStart"/>
+        <content NO="C1" name="向下转移刀半位" ico="cmd_knife.png" cmdType="elasticEnd"/>
+        <content NO="C1" name="向下转移刀全位" ico="cmd_knife.png" cmdType="selection"/>
+        <content NO="C1" name="包口刀半位" ico="cmd_knife.png" cmdType="patternUse"/>
+        <content NO="C1" name="包口刀全位" ico="cmd_knife.png" cmdType="patternContinue"/>
+        <content NO="C1" name="后跟成圈刀半位" ico="cmd_knife.png" cmdType="patternQuit"/>
+        <content NO="C1" name="后跟成圈刀全位" ico="cmd_knife.png" cmdType="patternUse"/>
+        <content NO="C1" name="后跟高脚针拦针刀" ico="cmd_knife.png" cmdType="footPatternQuit"/>
+        <content NO="C1" name="掀针" ico="cmd_knife.png" cmdType="stepCircle"/>
+        <content NO="C1" name="向上转移刀" ico="cmd_knife.png" cmdType="circle"/>
+        <content NO="C1" name="提花针栏针刀" ico="cmd_knife.png" cmdType="circleEnd"/>
+        <content NO="C1" name="挑针杆2" ico="cmd_knife.png" cmdType="chainPause"/>
+        <content NO="C1" name="挑针杆" ico="cmd_knife.png" cmdType="miniCircleEnable"/>
+    </parameter>
+    <parameter name="通用功能">
+        <content NO="C1" name="速度" ico="cmd_speed.png" cmdType="miniCircleDisable"/>
+        <content NO="C1" name="探针1" ico="cmd_probe.png" cmdType="oil"/>
+        <content NO="C1" name="探针2" ico="cmd_probe.png" cmdType="footIncreaseEcrease"/>
+        <content NO="C1" name="栅状齿" ico="cmd_palisade.png" cmdType="turning"/>
+        <content NO="C1" name="牵拉" ico="cmd_pulling.png" cmdType="lowSpeed"/>
+        <content NO="C1" name="吸风闸门控制" ico="cmd_valvecontrol.png" cmdType="upMoto"/>
+        <content NO="C1" name="橡筋马达开始" ico="cmd_moto.png" cmdType="downMoto"/>
+        <content NO="C1" name="橡筋马达结束" ico="cmd_moto.png" cmdType="elasticMoto"/>
+        <content NO="C1" name="宏链接" ico="cmd_macrolink.png" cmdType="zeroing"/>
+        <content NO="C1" name="转向指令" ico="cmd_steering.png" cmdType="chainEnd"/>
+        <content NO="C1" name="低速命令" ico="cmd_low.png" cmdType="0"/>
+        <content NO="C1" name="加油" ico="cmd_oil.png" cmdType="0"/>
+        <content NO="C1" name="步段停机" ico="cmd_pause.png" cmdType="0"/>
+        <content NO="C1" name="链条结束" ico="cmd_chainEnd.png" cmdType="0"/>
+    </parameter>
+    <parameter name="选针器">
+        <content NO="C1" name="LKS选针器" ico="cmd_needleselector.png" cmdType="0"/>
+        <content NO="C1" name="1路选针器(暂不用)" ico="cmd_needleselector.png" cmdType="0"/>
+        <content NO="C1" name="2路选针器(暂不用)" ico="cmd_needleselector.png" cmdType="0"/>
+        <content NO="C1" name="3路选针器(暂不用)" ico="cmd_needleselector.png" cmdType="0"/>
+    </parameter>
+    <parameter name="纱嘴">
+        <content NO="C1" name="1路1号纱嘴辅助" ico="cmd_yarnfeeder.png" cmdType="0"/>
+        <content NO="C1" name="1路1号纱嘴工作" ico="cmd_yarnfeeder.png" cmdType="0"/>
+        <content NO="C1" name="1路1号纱嘴退出工作" ico="cmd_yarnfeeder.png" cmdType="0"/>
+        <content NO="C1" name="1路2号纱嘴辅助" ico="cmd_yarnfeeder.png" cmdType="0"/>
+        <content NO="C1" name="1路2号纱嘴工作" ico="cmd_yarnfeeder.png" cmdType="0"/>
+        <content NO="C1" name="1路2号纱嘴退出工作" ico="cmd_yarnfeeder.png" cmdType="0"/>
+        <content NO="C1" name="1路3号纱嘴辅助" ico="cmd_yarnfeeder.png" cmdType="0"/>
+        <content NO="C1" name="1路3号纱嘴工作" ico="cmd_yarnfeeder.png" cmdType="0"/>
+        <content NO="C1" name="1路3号纱嘴退出工作" ico="cmd_yarnfeeder.png" cmdType="0"/>
+        <content NO="C1" name="1路4号纱嘴辅助" ico="cmd_yarnfeeder.png" cmdType="0"/>
+        <content NO="C1" name="1路4号纱嘴工作" ico="cmd_yarnfeeder.png" cmdType="0"/>
+        <content NO="C1" name="1路4号纱嘴退出工作" ico="cmd_yarnfeeder.png" cmdType="0"/>
+        <content NO="C1" name="1路5号纱嘴辅助" ico="cmd_yarnfeeder.png" cmdType="0"/>
+        <content NO="C1" name="1路5号纱嘴工作" ico="cmd_yarnfeeder.png" cmdType="0"/>
+        <content NO="C1" name="1路5号纱嘴退出工作" ico="cmd_yarnfeeder.png" cmdType="0"/>
+        <content NO="C1" name="1路6号纱嘴辅助H1路6号纱嘴工作" ico="cmd_yarnfeeder.png" cmdType="0"/>
+        <content NO="C1" name="1路6号纱嘴退出工作" ico="cmd_yarnfeeder.png" cmdType="0"/>
+        <content NO="C1" name="1路5号纱嘴微调" ico="cmd_yarnfeeder.png" cmdType="0"/>
+    </parameter>
+    <parameter name="剪刀">
+        <content NO="C1" name="1路1号剪刀" ico="cmd_scissors.png" cmdType="0"/>
+        <content NO="C1" name="1路2号剪刀" ico="cmd_scissors.png" cmdType="0"/>
+        <content NO="C1" name="1路3号剪刀" ico="cmd_scissors.png" cmdType="0"/>
+        <content NO="C1" name="1路4号剪刀" ico="cmd_scissors.png" cmdType="0"/>
+        <content NO="C1" name="1路5号剪刀" ico="cmd_scissors.png" cmdType="0"/>
+        <content NO="C1" name="1路6号剪刀" ico="cmd_scissors.png" cmdType="0"/>
+        <content NO="C1" name="1路1号剪刀辅助" ico="cmd_scissors.png" cmdType="0"/>
+        <content NO="C1" name="1路2号剪刀辅助" ico="cmd_scissors.png" cmdType="0"/>
+        <content NO="C1" name="1路3号剪刀辅助" ico="cmd_scissors.png" cmdType="0"/>
+        <content NO="C1" name="1路4号剪刀辅助" ico="cmd_scissors.png" cmdType="0"/>
+        <content NO="C1" name="1路5号剪刀辅助" ico="cmd_scissors.png" cmdType="0"/>
+        <content NO="C1" name="1路6号剪刀辅助" ico="cmd_scissors.png" cmdType="0"/>
+    </parameter>
+    <parameter name="吹气">
+        <content NO="C1" name="1路进线吹气" ico="cmd_blowing.png" cmdType="0"/>
+        <content NO="C1" name="1路剪刀吹气" ico="cmd_blowing.png" cmdType="0"/>
+        <content NO="C1" name="1路护针吹气" ico="cmd_blowing.png" cmdType="0"/>
+        <content NO="C1" name="1路换线吹气" ico="cmd_blowing.png" cmdType="0"/>
+    </parameter>
+    <parameter name="花型">
+        <content NO="C1" name="花纹调用" ico="cmd_socketStart.png" cmdType="0"/>
+        <content NO="C1" name="花纹继续" ico="cmd_socketContinue.png" cmdType="0"/>
+        <content NO="C1" name="花纹结束" ico="cmd_socketEnd.png" cmdType="0"/>
+        <content NO="C1" name="脚底花纹调用" ico="cmd_socketSoleStart.png" cmdType="0"/>
+        <content NO="C1" name="脚底花纹结束" ico="cmd_socketSoleEnd.png" cmdType="0"/>
+        <content NO="C1" name="脚底花纹宽度" ico="cmd_socketSoleWidth.png" cmdType="0"/>
+    </parameter>
+    <parameter name="圈循环">
+        <content NO="C1" name="循环" ico="cmd_Cycle.png" cmdType="0"/>
+        <content NO="C1" name="循环结束" ico="cmd_CycleEnd.png" cmdType="0"/>
+        <content NO="C1" name="步循环" ico="cmd_stepCycle.png" cmdType="0"/>
+        <content NO="C1" name="最小循环使能" ico="cmd_cycleEnable.png" cmdType="0"/>
+        <content NO="C1" name="最小循环失效" ico="cmd_cycleFailure.png" cmdType="0"/>
+    </parameter>
+    <parameter name="归零">
+        <content NO="C1" name="自动归零" ico="cmd_zeroing.png" cmdType="0"/>
+        <content NO="C1" name="橡筋归零" ico="cmd_zeroing.png" cmdType="0"/>
+        <content NO="C1" name="袜跟袜头归零" ico="cmd_zeroing.png" cmdType="0"/>
+        <content NO="C1" name="禁止归零" ico="cmd_zeroing.png" cmdType="0"/>
+    </parameter>
+</cmdModel>
+<MacroDefine>
+<macro value="[#M-1]1F-1Y IN">
+    <step>
+        <content value="1路1号纱嘴辅助[状态：进---针位：0---模式：普通]" ico="New.ico" />
+        <content value="1路1号纱嘴工作[状态：进---针位：0---模式：普通]" ico="" />
+        <content value="1路1号纱嘴辅助[状态：出---针位：0---模式：普通]" ico="" />
+        <content value="1路1号剪刀[状态：进---针位：0---模式：普通]" ico=""/>
+        <content value="1路1号剪刀[状态：出---针位：0---模式：普通]" ico=""/>
+        <content value="1路进线吹气[状态：进---针位：0---模式：普通]" ico=""/>
+        <content value="1路剪刀吹气[状态：进---针位：0---模式：普通]" ico=""/>
+        <content value="1路换线吹气[状态：进---针位：0---模式：普通]" ico=""/>
+        <content value="1路进线吹气[状态：出---针位：0---模式：普通]" ico=""/>
+        <content value="1路剪刀吹气[状态：出---针位：0---模式：普通]" ico=""/>
+        <content value="1路换线吹气[状态：出---针位：0---模式：普通]" ico=""/>
+    </step>
+    <step>
+        <content value="1路1号纱嘴退出工作[状态：出---针位：0---模式：普通]"/>
+        <content value="1路1号剪刀[状态：进---针位：0---模式：普通]" />
+        <content value="1路1号剪刀[状态：出---针位：0---模式：普通]" />
+    </step>
+</macro>
+<macro value="[#M-2]1F-1Y OUT">
+    <step>
+        <content value="1路1号纱嘴退出工作[状态：出---针位：0---模式：普通]"/>
+        <content value="1路1号剪刀[状态：进---针位：0---模式：普通]" />
+        <content value="1路1号剪刀[状态：出---针位：0---模式：普通]" />
+    </step>
+</macro>
+<macro value="[#M-3]1F-2Y IN">
+    <step>
+        <content value="1路2号纱嘴辅助[状态：进---针位：0---模式：普通]" ico="" />
+        <content value="1路2号纱嘴工作[状态：进---针位：0---模式：普通]" ico="" />
+        <content value="1路2号纱嘴辅助[状态：出---针位：0---模式：普通]" ico="" />
+        <content value="1路2号剪刀[状态：进---针位：0---模式：普通]" ico=""/>
+        <content value="1路2号剪刀[状态：出---针位：0---模式：普通]" ico=""/>
+        <content value="1路进线吹气[状态：进---针位：0---模式：普通]" ico=""/>
+        <content value="1路剪刀吹气[状态：进---针位：0---模式：普通]" ico=""/>
+        <content value="1路换线吹气[状态：进---针位：0---模式：普通]" ico=""/>
+        <content value="1路进线吹气[状态：出---针位：0---模式：普通]" ico=""/>
+        <content value="1路剪刀吹气[状态：出---针位：0---模式：普通]" ico=""/>
+        <content value="1路换线吹气[状态：出---针位：0---模式：普通]" ico=""/>
+    </step>
+</macro>
+<macro value="[#M-4]1F-2Y OUT">
+    <step>
+        <content value="1路2号纱嘴退出工作[状态：出---针位：0---模式：普通]"/>
+        <content value="1路2号剪刀[状态：进---针位：0---模式：普通]" />
+        <content value="1路2号剪刀[状态：出---针位：0---模式：普通]" />
+    </step>
+</macro>
+<macro value="[#M-5]1F-3Y IN">
+    <step>
+        <content value="1路3号纱嘴辅助[状态：进---针位：0---模式：普通]" ico="" />
+        <content value="1路3号纱嘴工作[状态：进---针位：0---模式：普通]" ico="" />
+        <content value="1路3号纱嘴辅助[状态：出---针位：0---模式：普通]" ico="" />
+        <content value="1路3号剪刀[状态：进---针位：0---模式：普通]" ico=""/>
+        <content value="1路3号剪刀[状态：出---针位：0---模式：普通]" ico=""/>
+        <content value="1路进线吹气[状态：进---针位：0---模式：普通]" ico=""/>
+        <content value="1路剪刀吹气[状态：进---针位：0---模式：普通]" ico=""/>
+        <content value="1路换线吹气[状态：进---针位：0---模式：普通]" ico=""/>
+        <content value="1路进线吹气[状态：出---针位：0---模式：普通]" ico=""/>
+        <content value="1路剪刀吹气[状态：出---针位：0---模式：普通]" ico=""/>
+        <content value="1路换线吹气[状态：出---针位：0---模式：普通]" ico=""/>
+    </step>
+</macro>
+<macro value="[#M-6]1F-3Y OUT">
+    <step>
+        <content value="1路3号纱嘴退出工作[状态：出---针位：0---模式：普通]"/>
+        <content value="1路3号剪刀[状态：进---针位：0---模式：普通]" />
+        <content value="1路3号剪刀[状态：出---针位：0---模式：普通]" />
+    </step>
+</macro>
+<macro value="[#M-8]1F-4Y OUT">
+    <step>
+        <content value="1路4号纱嘴退出工作[状态：出---针位：0---模式：普通]"/>
+        <content value="1路4号剪刀[状态：进---针位：0---模式：普通]" />
+        <content value="1路4号剪刀[状态：出---针位：0---模式：普通]" />
+    </step>
+</macro>
+<macro value="[#M-9]1F-5Y IN">
+    <step>
+        <content value="1路5号纱嘴辅助[状态：进---针位：0---模式：普通]" ico="" />
+        <content value="1路5号纱嘴工作[状态：进---针位：0---模式：普通]" ico="" />
+        <content value="1路5号纱嘴辅助[状态：出---针位：0---模式：普通]" ico="" />
+        <content value="1路5号剪刀[状态：进---针位：0---模式：普通]" ico=""/>
+        <content value="1路5号剪刀[状态：出---针位：0---模式：普通]" ico=""/>
+        <content value="1路进线吹气[状态：进---针位：0---模式：普通]" ico=""/>
+        <content value="1路剪刀吹气[状态：进---针位：0---模式：普通]" ico=""/>
+        <content value="1路换线吹气[状态：进---针位：0---模式：普通]" ico=""/>
+        <content value="1路进线吹气[状态：出---针位：0---模式：普通]" ico=""/>
+        <content value="1路剪刀吹气[状态：出---针位：0---模式：普通]" ico=""/>
+        <content value="1路换线吹气[状态：出---针位：0---模式：普通]" ico=""/>
+    </step>
+</macro>
+<macro value="[#M-10]1F-5Y OUT">
+    <step>
+        <content value="1路5号纱嘴退出工作[状态：出---针位：0---模式：普通]"/>
+        <content value="1路5号剪刀[状态：进---针位：0---模式：普通]" />
+        <content value="1路5号剪刀[状态：出---针位：0---模式：普通]" />
+    </step>
+</macro>
+<macro value="[#M-11]1F-56 IN">
+    <step>
+        <content value="1路6号纱嘴辅助[状态：进---针位：0---模式：普通]" ico="" />
+        <content value="1路6号纱嘴工作[状态：进---针位：0---模式：普通]" ico="" />
+        <content value="1路6号纱嘴辅助[状态：出---针位：0---模式：普通]" ico="" />
+        <content value="1路6号剪刀[状态：进---针位：0---模式：普通]" ico=""/>
+        <content value="1路6号剪刀[状态：出---针位：0---模式：普通]" ico=""/>
+        <content value="1路进线吹气[状态：进---针位：0---模式：普通]" ico=""/>
+        <content value="1路剪刀吹气[状态：进---针位：0---模式：普通]" ico=""/>
+        <content value="1路换线吹气[状态：进---针位：0---模式：普通]" ico=""/>
+        <content value="1路进线吹气[状态：出---针位：0---模式：普通]" ico=""/>
+        <content value="1路剪刀吹气[状态：出---针位：0---模式：普通]" ico=""/>
+        <content value="1路换线吹气[状态：出---针位：0---模式：普通]" ico=""/>
+    </step>
+</macro>
+<macro value="[#M-12]1F-6Y OUT">
+    <step>
+        <content value="1路6号纱嘴辅助[状态：进---针位：0---模式：普通]" ico="" />
+        <content value="1路6号纱嘴辅助[状态：出---针位：0---模式：普通]" ico="" />
+        <content value="1路6号纱嘴工作[状态：进---针位：0---模式：普通]" ico="" />
+        <content value="1路6号纱嘴工作[状态：出---针位：0---模式：普通]" ico="" />
+        <content value="1路6号纱嘴退出工作[状态：进---针位：0---模式：普通]"/>
+        <content value="1路6号纱嘴退出工作[状态：出---针位：0---模式：普通]"/>
+        <content value="1路2号纱嘴辅助[状态：出---针位：0---模式：普通]" ico="" />
+        <content value="1路3号纱嘴辅助[状态：出---针位：0---模式：普通]" ico="" />
+        <content value="1路4号纱嘴辅助[状态：出---针位：0---模式：普通]" ico="" />
+        <content value="1路5号纱嘴辅助[状态：出---针位：0---模式：普通]" ico="" />
+        <content value="1路6号剪刀[状态：进---针位：0---模式：普通]" ico=""/>
+        <content value="1路6号剪刀[状态：出---针位：0---模式：普通]" ico=""/>
+        <content value="1路1号纱嘴辅助[状态：出---针位：0---模式：普通]" ico="" />
+    </step>
+</macro>
+<macro value="[#M-13]1Y-2Y IN">
+    <step>
+        <content value="集圈网眼刀半位[状态：进---针位：1---模式：普通]" ico=""/>
+        <content value="集圈网眼刀全位[状态：进---针位：27---模式：普通]" ico=""/>
+    </step>
+</macro>
+<macro value="[#M-14]1Y-2Y OUT">
+    <step>
+        <content value="集圈网眼刀半位[状态：出---针位：1---模式：普通]" ico=""/>
+        <content value="集圈网眼刀全位[状态：出---针位：27---模式：普通]" ico=""/>
+    </step>
+</macro>
+<macro value="[#M-15]3Y-4Y IN">
+<step>
+    <content value="上针筒成圈刀半位[状态：进---针位：1---模式：普通]" ico=""/>
+    <content value="上针筒成圈刀全位[状态：进---针位：27---模式：普通]" ico=""/>
+</step>
+</macro>
+<macro value="[#M-16]3Y-4Y OUT">
+<step>
+    <content value="上针筒成圈刀半位[状态：出---针位：37---模式：普通]" ico=""/>
+    <content value="上针筒成圈刀全位[状态：出---针位：1---模式：普通]" ico=""/>
+</step>
+</macro>
+<macro value="[#M-17]5Y-6Y IN">
+<step>
+    <content value="向下转移刀半位[状态：进---针位：1---模式：普通]" ico=""/>
+    <content value="向下转移刀全位[状态：进---针位：23---模式：普通]" ico=""/>
+</step>    
+</macro>
+<macro value="[#M-18]5Y-6Y OUT">
+<step>
+    <content value="向下转移刀半位[状态：出---针位：35---模式：普通]" ico=""/>
+    <content value="向下转移刀全位[状态：出---针位：1---模式：普通]" ico=""/>
+</step>  
+</macro>
+<macro value="[#M-19]7Y-8Y IN">
+<step>
+    <content value="包口刀半位[状态：进---针位：1---模式：普通]" ico=""/>
+    <content value="包口刀全位[状态：进---针位：27---模式：普通]" ico=""/>
+</step>
+</macro>
+<macro value="[#M-20]7Y-8Y OUT">
+<step>
+    <content value="包口刀半位[状态：出---针位：37---模式：普通]" ico=""/>
+    <content value="包口刀全位[状态：出---针位：1---模式：普通]" ico=""/>
+</step>
+</macro>
+<macro value="[#M-21]9Y-10Y IN">
+<step>
+    <content value="后跟成圈刀半位[状态：进---针位：1---模式：普通]" ico=""/>
+    <content value="后跟成圈刀全位[状态：进---针位：27---模式：普通]" ico=""/>
+</step>
+</macro>
+<macro value="[#M-22]9Y-10Y OUT">
+<step>
+    <content value="后跟成圈刀半位[状态：出---针位：27---模式：普通]" ico=""/>
+    <content value="后跟成圈刀全位[状态：出---针位：1---模式：普通]" ico=""/>
+</step>
+</macro>
+<macro value="[#M-23]1Y-2Y-3Y-4Y IN">
+<step>
+    <content value="集圈网眼刀半位[状态：进---针位：1---模式：普通]" ico=""/>
+    <content value="集圈网眼刀全位[状态：进---针位：27---模式：普通]" ico=""/>
+</step>
+</macro>
+<macro value="[#M-24]1Y-2Y-3Y-4Y OUT">
+<step>
+    <content value="集圈网眼刀半位[状态：出---针位：27---模式：普通]" ico=""/>
+    <content value="集圈网眼刀全位[状态：出---针位：1---模式：普通]" ico=""/>
+</step>
+</macro>
+<macro value="[#M-25]1Y-2Y-3Y-4Y IN">
+<step>
+    <content value="上针筒成圈刀半位[状态：进---针位：1---模式：普通]" ico=""/>
+    <content value="上针筒成圈刀全位[状态：进---针位：27---模式：普通]" ico=""/>
+</step>    
+</macro>
+<macro value="[#M-26]1Y-2Y-3Y-4Y OUT">
+<step>
+    <content value="上针筒成圈刀半位[状态：出---针位：37---模式：普通]" ico=""/>
+    <content value="上针筒成圈刀全位[状态：出---针位：1---模式：普通]" ico=""/>
+</step>    
+</macro>
+<macro value="[#M-27]12Y IN">
+<step>
+    <content value="掀针[状态：进---针位：41---模式：强制前]" ico=""/>
+    <content value="掀针[状态：出---针位：125---模式：强制前]" ico=""/>
+</step>    
+</macro>
+<macro value="[#M-28]12Y OUT">
+<step>
+    <content value="掀针[状态：进---针位：41---模式：强制前]" ico=""/>
+    <content value="掀针[状态：出---针位：125---模式：强制前]" ico=""/>
+</step>   
+</macro>
+</MacroDefine>
+<machineTypes>
+    <machineType name="1路机">
+        <Yarnfinger name="1路纱嘴" count="6" types="标准/标准/标准/标准/标准/橡筋"/>
+    </machineType>
+    <machineType name="2路机">
+        <Yarnfinger name="1路纱嘴" count="6" types="标准/标准/标准/标准/标准/橡筋"/>
+        <Yarnfinger name="2路纱嘴" count="4" types="标准/标准/标准/橡筋"/>
+    </machineType>
+    <machineType name="3路机" LKS="true">
+        <Yarnfinger name="1路纱嘴" count="6" types="标准/标准/标准/标准/标准/橡筋"/>
+        <Yarnfinger name="2路纱嘴" count="4" types="标准/标准/标准/橡筋"/>
+        <Yarnfinger name="3路纱嘴" count="3" types="标准/标准/橡筋"/>
+    </machineType>
+</machineTypes>
+
+<!-- 纱嘴时序设置 -->
+<Timiings>
+
+</Timiings>
+
+<!-- 密度设置 -->
+<stitch>
+    <motor name="下针筒马达">
+        <content block="WELT" startStep="2" endStep="4" startValue="100" endValue="110" steps="Auto"/>
+    </motor>
+    <motor name="上针筒马达">
+        <content block="WELT" startStep="2" endStep="4" startValue="100" endValue="110" steps="Auto"/>
+        <content block="WELT" startStep="2" endStep="4" startValue="100" endValue="110" steps="Auto"/>
+    </motor>
+    <motor name="橡筋马达">
+        <content block="WELT" startStep="2" endStep="4" startValue="100" endValue="110" steps="Auto"/>
+        <content block="WELT" startStep="2" endStep="4" startValue="100" endValue="110" steps="222"/>
+        <content block="WELT" startStep="2" endStep="4" startValue="100" endValue="110" steps="Auto"/>
+    </motor>   
+</stitch>
+</body>
+
+</html>

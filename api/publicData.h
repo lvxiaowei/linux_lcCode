@@ -1,0 +1,177 @@
+#ifndef PUBLICDATA_H
+#define PUBLICDATA_H
+#include <QString>
+#include <QStringList>
+#include <QKeyEvent>
+/*sta----------------------------------设备各类配置文件的路径------------------------------------*/
+/*Chain File*/
+#define CHAIN_FILE_LOCAL_PATH   "/home/root/dualcylind/sta/"
+#define CHAIN_ACTIVE_FILE_PATH  "/home/root/dualcylind/lxw/21212.db"
+/*配置文件*/
+#define COMMCONFIG_FILE_PATH  "/home/root/dualcylind/lxw/commonConfig.xml"
+/*airValve config*/
+#define AIRVALUECONFIG_EN       "/home/root/dualcylind/config_STA/inivalve_en.txt"
+#define AIRVALUECONFIG_CH       "/home/root/dualcylind/config_STA/inivalve_zh.txt"
+/*inSignal config*/
+#define SINGANCONFIG_EN         "/home/root/dualcylind/config_STA/Inputsignal_en.txt"
+#define SINGANCONFIG_CH         "/home/root/dualcylind/config_STA/Inputsignal_zh.txt"
+/*pattern file*/
+#define PATTERN_FILE_LOCAL_PATH "/home/root/dualcylind/lxw/pattern"
+
+#define CONFIG_FILE_XML_PATH        "/home/root/dualcylind/MachineConfig.xml"
+/*end----------------------------------设备各类配置文件的路径------------------------------------*/
+
+typedef struct objProperty
+{
+    int       operMode;       /*操作类型：新建、打开*/
+    int       fileType;       /*文件类型：链条文件=0、归零文件=1、宏文件=2*/
+    QString   fileName;       /*文件名字*/
+    QString   strMachineType; /*机器类型*/
+    QString   needle;         /*针数*/
+    QString   filePath;       /*文件路径*/
+}objProperty;
+
+enum PUBLICDATA_H{
+    NEW_FILE,
+    OPEN_FILE,
+    SAVE_FILE,
+};
+
+enum FILETYPE{
+    CHAINFILE = 0,    /*链条文件*/
+    ZEROFILE,         /*归零文件*/
+    MACFILE,          /*宏文件*/
+};
+
+/*记录配置文件中宏模块的名字和ico的结构体*/
+typedef struct proNameAndIco
+{
+    QString name;
+    QString ico;
+}proNameAndIco;
+
+/*记录纱嘴相关数据的结构体*/
+typedef struct yarnfingerPro
+{
+    QString     name;    /*名称*/
+    int         count;   /*纱嘴数*/
+    QStringList types;   /*类型*/
+}yarnfingerPro;
+
+/*记录机器类型相关数据的结构体*/
+typedef struct machineTypePro
+{
+    QList<yarnfingerPro> lstYarnFingerPro;   /*记录纱嘴相关数据的结构体*/
+    bool  bNeedLKS;                          /*是否有LKS选针器*/
+}machineTypePro;
+
+/*记录命令模块相关数据的结构体*/
+typedef struct cmdSettingPro
+{
+    QString  NO;    /*记录相关的编号，编号与阀号一一对应*/
+    QString  name;  /*命令的名字*/
+    QString  ico;   /*命令的图案*/
+    QString  cmdType;   /*当前命令对应的弹出框编号*/
+}cmdSettingPro;
+/*记录马达参数的结构体*/
+typedef struct motorPro
+{
+    QString block;          /*步段名称*/
+    QString startStep;      /*开始步骤*/
+    QString endStep;        /*结束步骤*/
+    QString startValue;     /*密度开始值*/
+    QString endValue;       /*密度结束值*/
+    QString steps;          /*变化圈数*/
+}motorPro;
+
+
+/*主链条节点层*/
+enum CmdTreeNodeLevel{
+    FIRST_LEVEL_NODE = 1,   /*一级节点*/
+    SECEND_LEVEL_NODE,      /*二级节点*/
+    THIRD_LEVEL_NODE,       /*三级节点*/
+    DEFALUT_LEVE_NODE
+};
+
+#define CONFIGFILE "commonConfig.xml"
+#define DEFAULT    "default"
+
+#define TEMPORARYFORDER "temporaryFolder"
+
+/*SQL相关处理语句*/
+/*主链条相关语句*/
+#define SQL_CreateMainChainTable       "create table mainChainTable (weavingPosition varchar ( 20 ) NOT NULL, step int NOT NULL, cmdType int NOT NULL, cmdContent varchar ( 30 ) NOT NULL,val1  varchar ( 20 ),val2  varchar ( 20 ),val3  varchar ( 20 ),val4  varchar ( 20 ),val5  varchar ( 20 ),val6  varchar ( 20 ),val7  varchar ( 20 ),val8  varchar ( 20 ),val9 varchar ( 20 ),val10 varchar ( 20 ))"
+#define SQL_WriteMainChainTable        "insert into mainChainTable (weavingPosition, step, cmdType, cmdContent, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10) values ( :weavingPosition, :step, :cmdType, :cmdContent, :val1, :val2, :val3, :val4, :val5, :val6, :val7, :val8, :val9, :val10)"
+/*选针器相关语句*/
+#define SQL_CreateSelectionTable       "create table selectionTable (id int not null, value varvchar (300), primary key (id))"
+#define SQL_WriteSelectionTable        "insert into selectionTable (id, value) values ( :id, :value)"
+/*密度设置相关语句*/
+#define SQL_CreateStitchTable          "create table stitchTable (motoType int not null, No int, stepName varchar (20), startStep int, endStep int, startVal int, endVal int, steps int )"
+#define SQL_WriteStitchTable           "insert into stitchTable (motoType, No, stepName, startStep, endStep, startVal, endVal, steps ) values( :motoType, :No, :stepName, :startStep, :endStep, :startVal, :endVal, :steps )"
+/*宏相关语句*/
+#define SQL_CreateMacroTable           "create table macroTable (name varchar(20), step int, cmdType int , cmdContent varchar (30), needlVal int )"
+#define SQL_WriteMacroTable            "insert into macroTable (name, step, cmdType, cmdContent, needlVal) values( :name, :step, :cmdType, :cmdContent, :needlVal )"
+/*花纹相关的语句*/
+#define SQL_CreatePatternTable         "create table patternTable (patternName varchar(20), selectionName varchar(10), lineVal int, selectionVal varchar (300), YarnfingerVal varchar(10), rep int )"
+#define SQL_WritePatternTable          "insert into patternTable (patternName,selectionName,lineVal,selectionVal,YarnfingerVal,rep) values (:patternName,:selectionName,:lineVal,:selectionVal,:YarnfingerVal,:rep)"
+#define SQL_CreatePatternTimingsTable  "create table patternTimingsTable (patternName varchar(20), Yarnfinger varchar(10), YarnfingerNo varchar(10), needlIn int, needlOut int)"
+#define SQL_WritePatternTimingsTable   "insert into patternTimingsTable (patternName, Yarnfinger, YarnfingerNo, needlIn, needlOut) values (:patternName, :Yarnfinger, :YarnfingerNo, :needlIn, :needlOut)"
+/*通用配置*/
+#define SQL_CreateCommonCfgTable       "create table commonCfgTable (fidName varchar(20), fidValue varchar(20))"
+#define SQL_WriteCommonCfgTable        "insert into commonCfgTable (fidName, fidValue) values (:fidName, :fidValue)"
+/*表名字*/
+#define TABLE_MAINCHAIN       "mainChainTable"       //主链条表
+#define TABLE_SELECTIONS      "selectionTable"       //选针表
+#define TABLE_STITCH          "stitchTable"          //密度设置界面
+#define TABLE_MACRO           "macroTable"           //宏表
+#define TABLE_PATTERN         "patternTable"         //花型
+#define TABLE_PATTERNTIMINGS  "patternTimingsTable"  //花纹纱嘴时序表
+#define TABLE_COMMONCFG       "commonCfgTable"       //通用配置表
+/*记录主链条三级节点相关属性的结构体*/
+typedef struct chainLv3NodePro
+{
+    QString chainContent;          /*三级节点的内容*/
+    QString val1;
+    QString val2;
+    QString val3;
+    QString val4;
+    QString val5;
+    QString val6;
+    QString val7;
+    QString val8;
+    QString val9;
+    QString val10;
+}chainLv3NodePro;
+
+/*链条树上面命令行的操作类型*/
+enum CMD_OPER_TYPE
+{
+    OPER_VALVE = 1,              /*阀操作*/
+    OPER_MACRO,                  /*宏*/
+    OPER_SPEED,                  /*速度*/
+    OPER_ELASTIC_START,          /*橡筋开始*/
+    OPER_ELASTIC_END,            /*橡筋结束*/
+    OPER_SELECTION,              /*固定选针*/
+    OPER_PATTERN_USE,            /*花型调用*/
+    OPER_PATTERN_CONTINUE,       /*花型继续*/
+    OPER_PATTERN_QUIT,           /*花型退出*/
+    OPER_FOOTPATTERN_USE,        /*脚底花型调用*/
+    OPER_FOOTPATTERN_QUIT,       /*脚底花型退出*/
+    OPER_STEP_CIRCLE,            /*步循环*/
+    OPER_CIRCLE,                 /*循环*/
+    OPER_CIRCLE_END,             /*循环结束*/
+    OPER_CHAIN_PAUSE,            /*链条暂停*/
+    OPER_MINICIRCLE_ENABLE,      /*最小循环使能*/
+    OPER_MINICIRCLE_DISABLE,     /*最小循环除能*/
+    OPER_OIL,                    /*加油*/
+    OPER_FOOT_INCREASE_DCREASE,  /*脚底增减*/
+    OPER_TURNING,                /*转向指令*/
+    OPER_LOWSPEED_CMD,           /*低速命令*/
+    OPER_UPMOTO,                 /*上针筒马达密度归零*/
+    OPER_DOWNMOTO,               /*下针筒马达密度归零*/
+    OPER_ELASTICMOTO,            /*橡筋马达密度归零*/
+    OPER_ZEROING,                /*归零程序调用*/
+    OPER_CHAIN_END               /*链条结束*/
+};
+
+#endif // PUBLICDATA_H
