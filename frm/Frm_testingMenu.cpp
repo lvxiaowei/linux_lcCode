@@ -44,6 +44,9 @@ void Frm_testingMenu::keyPressEvent(int key)
     case 3:
         dealPg4(key);
         break;
+    case 4:
+        dealPg5(key);
+        break;
     default:
         break;
     }
@@ -56,7 +59,7 @@ void Frm_testingMenu::initShowFrmConfig()
     ui->m_stackWgt->setCurrentIndex(0);
 }
 
-/*处理串口数据-page1*/
+/*处理串口数据-菜单界面*/
 void Frm_testingMenu::dealPg1(int key)
 {
     switch (key) {
@@ -79,7 +82,10 @@ void Frm_testingMenu::dealPg1(int key)
         break;
     }
     case Key_7:
+    {
+        initYFPage();
         break;
+    }
     case Key_PageUp:
         break;
     default:
@@ -331,6 +337,77 @@ void Frm_testingMenu::dealPg4(int key)
     }
 }
 
+/*处理串口数据-page2--梭子测试*/
+void Frm_testingMenu::dealPg5(int key)
+{
+    switch (key) {
+    case Key_F9:
+        if(g_lstRightButton.at(0)->text().isEmpty())
+            return;
+        initShowFrmConfig();
+        emit writeToXddp(YFTEST, "out");
+        break;
+    case Key_F8:
+    {
+        if(g_lstRightButton.at(1)->text() == tr("停止"))
+        {
+            freshRightButtonContent(QStringList()<<tr("返回")<<tr("自动")<<tr("手动")<<tr("")<<tr("")<<tr("频率"));
+            m_bIsTesting = false;
+        }
+        else
+        {
+            freshRightButtonContent(QStringList()<<tr("")<<tr("停止")<<tr("")<<tr("")<<tr("")<<tr(""));
+            m_bIsTesting = true;
+        }
+        m_strTestMode = "true";
+        writeToXddp(YFTEST);
+        break;
+    }
+    case Key_9:
+    {
+        if(g_lstRightButton.at(2)->text().isEmpty())
+        {
+            return;
+        }
+        m_strTestMode = "false";
+        writeToXddp(YFTEST);
+        break;
+    }
+    case Key_8:
+        break;
+    case Key_7:
+        break;
+    case Key_PageUp:
+    {
+        if(g_lstRightButton.at(5)->text().isEmpty())
+        {
+            return;
+        }
+        int curtFrq = ui->m_labNO_5->text().split("(").at(0).toInt()+1;
+        ui->m_labNO_5->setText(QString("%1(秒)").arg(curtFrq%5==0 ? 5:curtFrq%5));
+        break;
+    }
+
+    case Key_Up:
+    {
+        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
+        QCoreApplication::sendEvent(ui->m_tabYF1, &keyPress);
+        ui->m_labYFNO->setText(QString("%1").arg(ui->m_tabYF1->currentIndex().row()+1));
+        break;
+    }
+    case Key_Down:
+    {
+        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier, QString());
+        QCoreApplication::sendEvent(ui->m_tabYF1, &keyPress);
+        ui->m_labYFNO->setText(QString("%1").arg(ui->m_tabYF1->currentIndex().row()+1));
+        break;
+    }
+
+    default:
+        break;
+    }
+}
+
 /*气阀测试界面初始化*/
 void Frm_testingMenu::initAirValvePage()
 {
@@ -406,6 +483,29 @@ void Frm_testingMenu::initAirValve()
     ui->m_tabAirValve->setCurrentCell(0,0);
 }
 
+/*初始化梭子测试界面*/
+void Frm_testingMenu::initYFPage()
+{
+    ui->m_stackWgt->setCurrentIndex(4);
+    /*初始化表格数据*/
+    ui->m_tabYF1->clearContents();
+    ui->m_tabYF1->setRowCount(0);
+    ui->m_tabYF1->setColumnCount(1); //设置总列数；
+    ui->m_tabYF1->setRowCount(6);   //初始化总行数；
+    ui->m_tabYF1->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);//均分列
+    ui->m_tabYF1->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);//均分行
+    for(int i=0;i<6;++i)
+    {
+        ui->m_tabYF1->setItem(i,0,new QTableWidgetItem(QString("梭子—1F%1").arg(i+1)));
+    }
+    ui->m_tabYF1->setCurrentCell(0,0);
+
+    m_bIsTesting = false;
+    freshRightButtonContent(QStringList()<<tr("返回")<<tr("自动")<<tr("手动")<<tr("")<<tr("")<<tr("频率"));
+
+    emit writeToXddp(YFTEST, "in");
+}
+
 /*当前需要测试的气阀变化的槽函数*/
 void Frm_testingMenu::focusAirValveChanged()
 {
@@ -468,6 +568,17 @@ void Frm_testingMenu::writeToXddp(const int testType, QString operMode)
         jsContent.insert("motor_no", m_iPos);  //电机号。0表示下针筒，1表示上针筒，2表示橡筋马达
         jsContent.insert("pos", m_lstMotoVal.at(m_iPos)->text().toInt());
         jsContent.insert("state", g_lstRightButton.at(1)->text()==tr("开始")? false:true);
+        break;
+    }
+    case YFTEST:
+    {
+        json.insert("mesg_type", "yf_test");
+        jsContent.insert("yf_no",1);  //选针器号（目前机型上只有一个）
+        jsContent.insert("state",m_bIsTesting);  // true表示开始，false表示停止
+        jsContent.insert("pin",ui->m_labYFNO->text().toInt());    //选针的值
+        jsContent.insert("mode",m_strTestMode);         //false表示手动　true表示自动
+        jsContent.insert("freq",1000*ui->m_labNO_5->text().split("(").at(0).toInt());  //自动模式下的测试频率
+
         break;
     }
     default:

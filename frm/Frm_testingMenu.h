@@ -8,7 +8,8 @@
 enum TEST_TYPE{
     AIRVALVETEST = 0,
     SELECTIONTEST,
-    MOTOTEST
+    MOTOTEST,
+    YFTEST
 };
 
 namespace Ui {
@@ -34,11 +35,13 @@ private:
     void dealPg2(int key);
     void dealPg3(int key);
     void dealPg4(int key);
+    void dealPg5(int key);
     bool readAirValveConfig();
     void initAirValve();
     void initAirValvePage();
     void initMotoPage();
     void initActuatorPage();
+    void initYFPage();
 
 
     void writeToXddp(const int testType, QString operMode="");  /*向XDDP发送数据*/
