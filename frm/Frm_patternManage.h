@@ -6,6 +6,12 @@
 #include "baseClassWgt.h"
 #include "api/myMessageBox.h"
 
+enum PAT_SET{
+    PAT_SET_PAT1 = 1,
+    PAT_SET_PAT2,
+    PAT_SET_PAT3
+};
+
 /*用来画patternTableWgt中的图案的的类*/
 class paletteBoard : public QWidget
 {
@@ -104,7 +110,7 @@ private:
     void dealPg2_patTimingSet(int key);
     void initPatternProcesPage();
     void initPatManageTabl();
-
+    void setWorkingPat(int pat);
 
     patternTableWgt *  m_pattrenTable;
     YFTableWgt *       m_YFTable;
