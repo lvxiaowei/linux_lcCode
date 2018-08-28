@@ -140,7 +140,7 @@ void Frm_timingTable::initTimingsTable()
         tableWidget->verticalHeader()->setStyleSheet("QHeaderView::section{background:skyblue;}");
         tableWidget->horizontalHeader()->setVisible(false);
         tableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch); //均分行
-
+        tableWidget->setStyleSheet("gridline-color: rgb(0,0,0)");
         //设置单元格大小
         for(int i=0; i<tableWidget->columnCount(); ++i)
         {
