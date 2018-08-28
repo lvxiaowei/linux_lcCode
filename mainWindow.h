@@ -21,18 +21,21 @@ public:
      void keyPressEvent(int key);  //处理串口数据
      void initShowFrmConfig();
 public slots:
-
+     void timerUpDate();
 private:
     Ui::mainWindow *ui;
 
     void init();     //初始化
     void initIco();
     void initData();
+    void initSystemTime();
 
     QMovie *m_chain_01, *m_chain_02, *m_chain_03, *m_chain_04, *m_chain_05, *m_chain_06,*m_chain_07, *m_chain_08, *m_chain_09, *m_chain_10, *m_chain_11, *m_chain_12;
     QPixmap *m_ON_status,*m_OFF_status;
     int m_iIndex;
     bool m_bKeyLock;
+
+    QTimer *m_timer;
 };
 
 #endif // MAINWINDOW_H

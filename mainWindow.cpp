@@ -30,6 +30,12 @@ void mainWindow::initData()
 
     g_pStackedWgt = ui->m_stackedWidget;
 
+    /*新建定时器*/
+    m_timer = new QTimer(this);
+
+    /*设置系统时间控件*/
+    initSystemTime();
+
     setNextDealWgt(PAGE_RUNNING);
 
 }
@@ -58,6 +64,21 @@ void mainWindow::initIco()
 
     ui->m_gifKInt->setMovie(m_chain_01);
     m_chain_01->start();
+}
+
+/*系统时间控件定时刷新*/
+void mainWindow::initSystemTime()
+{
+    connect(m_timer,SIGNAL(timeout()),this,SLOT(timerUpDate()));
+    m_timer->start(100);
+}
+
+/*系统时间控件定时刷新*/
+void mainWindow::timerUpDate()
+{
+    QDateTime QDateCurentTime= QDateTime::currentDateTime();//获取系统现在的时间
+    QString strCurentTime = QDateCurentTime.toString("yyyy-MM-dd hh:mm:ss dddd"); //设置显示格式
+    ui->m_labSysTime->setText(strCurentTime);//在标签上显示时间
 }
 
 void mainWindow::addChildWgt(QWidget *w)
@@ -118,12 +139,6 @@ void mainWindow::keyPressEvent(int key)
 
 
 
-
-    case Key_F0:
-    {
-//        ui->m_btnF0->setProperty();
-        break;
-    }
     default:
         break;
     }
