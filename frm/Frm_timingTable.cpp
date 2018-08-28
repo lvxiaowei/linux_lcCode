@@ -135,7 +135,7 @@ void Frm_timingTable::initTimingsTable()
         QTableWidget *tableWidget = new QTableWidget(10, 4*(tableNode.childNodes().count()));  //时序表一共10行固定的，列的话根据硕子的数目来决定，一把硕子4列
         /*设置表头内容*/
         QStringList header;
-        header<<tr("名称")<<tr("状态(in/out)")<<tr("动作方式(in/out)")<<tr("沙嘴辅助")<<tr("沙嘴半位/全位")<<tr("剪刀")<<tr("进线吹气")<<tr("剪刀吹气")<<tr("换线吹气")<<tr("护针吹气");
+        header<<tr("名称")<<tr("状态(in/out)")<<tr("动作方式(in/out)")<<tr("纱嘴辅助")<<tr("纱嘴半位/全位")<<tr("剪刀")<<tr("进线吹气")<<tr("剪刀吹气")<<tr("换线吹气")<<tr("护针吹气");
         tableWidget->setVerticalHeaderLabels(header);
         tableWidget->verticalHeader()->setStyleSheet("QHeaderView::section{background:skyblue;}");
         tableWidget->horizontalHeader()->setVisible(false);

@@ -145,7 +145,7 @@ void Frm_patternManage::dealPg2_menu(int key)
     case Key_F8:
     {
         ui->m_frmYFSet->show();
-        freshRightButtonContent(QStringList()<<tr("返回")<<tr("沙嘴选择")<<tr("起始行")<<tr("结束行")<<tr("操作")<<tr("设置"));
+        freshRightButtonContent(QStringList()<<tr("返回")<<tr("纱嘴选择")<<tr("起始行")<<tr("结束行")<<tr("操作")<<tr("设置"));
         break;
     }
     case Key_9:
@@ -175,13 +175,13 @@ void Frm_patternManage::dealPg2_menu(int key)
     }
 }
 
-/*处理串口数据-page2-沙嘴设置界面处理*/
+/*处理串口数据-page2-纱嘴设置界面处理*/
 void Frm_patternManage::dealPg2_YFSet(int key)
 {
     switch (key) {
     case Key_F9:
     {
-        freshRightButtonContent(QStringList()<<tr("返回")<<tr("沙嘴设置")<<tr("循环设置")<<tr("选针器\n配色设置")<<tr("花纹沙嘴\n时序设置")<<tr("保存"));
+        freshRightButtonContent(QStringList()<<tr("返回")<<tr("纱嘴设置")<<tr("循环设置")<<tr("选针器\n配色设置")<<tr("花纹纱嘴\n时序设置")<<tr("保存"));
         ui->m_frmYFSet->hide();
         break;
     }
@@ -257,7 +257,7 @@ void Frm_patternManage::dealPg2_loop(int key)
     switch (key) {
     case Key_F9:
     {
-        freshRightButtonContent(QStringList()<<tr("返回")<<tr("沙嘴设置")<<tr("循环设置")<<tr("选针器\n配色设置")<<tr("花纹沙嘴\n时序设置")<<tr("保存"));
+        freshRightButtonContent(QStringList()<<tr("返回")<<tr("纱嘴设置")<<tr("循环设置")<<tr("选针器\n配色设置")<<tr("花纹纱嘴\n时序设置")<<tr("保存"));
         ui->m_stackPatOper->setCurrentIndex(0);
         break;
     }
@@ -327,7 +327,7 @@ void Frm_patternManage::dealPg2_selectColor(int key)
     switch (key) {
     case Key_F9:
     {
-        freshRightButtonContent(QStringList()<<tr("返回")<<tr("沙嘴设置")<<tr("循环设置")<<tr("选针器\n配色设置")<<tr("花纹沙嘴\n时序设置")<<tr("保存"));
+        freshRightButtonContent(QStringList()<<tr("返回")<<tr("纱嘴设置")<<tr("循环设置")<<tr("选针器\n配色设置")<<tr("花纹纱嘴\n时序设置")<<tr("保存"));
         ui->m_stackPatOper->setCurrentIndex(0);
         break;
     }
@@ -359,13 +359,13 @@ void Frm_patternManage::dealPg2_selectColor(int key)
     }
 }
 
-/*处理串口数据-page2-花纹沙嘴时序设置*/
+/*处理串口数据-page2-花纹纱嘴时序设置*/
 void Frm_patternManage::dealPg2_patTimingSet(int key)
 {
     switch (key) {
     case Key_F9:
     {
-        freshRightButtonContent(QStringList()<<tr("返回")<<tr("沙嘴设置")<<tr("循环设置")<<tr("选针器\n配色设置")<<tr("花纹沙嘴\n时序设置")<<tr("保存"));
+        freshRightButtonContent(QStringList()<<tr("返回")<<tr("纱嘴设置")<<tr("循环设置")<<tr("选针器\n配色设置")<<tr("花纹纱嘴\n时序设置")<<tr("保存"));
         ui->m_stackPatOper->setCurrentIndex(0);
         break;
     }
@@ -440,7 +440,7 @@ void Frm_patternManage::initShowFrmConfig()
 /*初始化花型编辑界面*/
 void Frm_patternManage::initPatternProcesPage()
 {
-    freshRightButtonContent(QStringList()<<tr("返回")<<tr("沙嘴设置")<<tr("循环设置")<<tr("选针器\n配色设置")<<tr("花纹沙嘴\n时序设置")<<tr("保存"));
+    freshRightButtonContent(QStringList()<<tr("返回")<<tr("纱嘴设置")<<tr("循环设置")<<tr("选针器\n配色设置")<<tr("花纹纱嘴\n时序设置")<<tr("保存"));
     ui->m_stackPat->setCurrentIndex(1);
 
     QString filePath = ui->m_tabPatManage->item(ui->m_tabPatManage->currentRow(),3)->text();
@@ -463,9 +463,9 @@ void Frm_patternManage::initPatternProcesPage()
     /**************************************初始化刷子填色表格**************************************/
     QMap<QString, int>  m_mapYF;
     m_mapYF.clear();
-    m_mapYF[QString("%1").arg(tr("1路沙嘴"))] = 6;
+    m_mapYF[QString("%1").arg(tr("1路纱嘴"))] = 6;
     m_lstYF.clear();
-    m_lstYF<< tr("1路1号沙嘴") << tr("1路2号沙嘴")<< tr("1路3号沙嘴")<< tr("1路4号沙嘴")<< tr("1路5号沙嘴")<< tr("1路6号沙嘴");
+    m_lstYF<< tr("1路1号纱嘴") << tr("1路2号纱嘴")<< tr("1路3号纱嘴")<< tr("1路4号纱嘴")<< tr("1路5号纱嘴")<< tr("1路6号纱嘴");
     m_YFTable = new YFTableWgt(m_mapYF, this, m_iScale,  m_pattrenTable->rowCount());
     ui->m_layoutYf->addWidget(m_YFTable);
     m_YFTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
@@ -516,7 +516,7 @@ void Frm_patternManage::initPatternProcesPage()
     }
     ui->m_needlSelectColor->setCurrentItem(ui->m_needlSelectColor->topLevelItem(0));
     ui->m_needlSelectColor->expandAll();
-    /**************************************花纹沙嘴时需设置**************************************/
+    /**************************************花纹纱嘴时需设置**************************************/
     QTableWidgetItem* item0, *item3;
     ui->m_tabTimings->verticalHeader()->setVisible(false);
     ui->m_tabTimings->setRowCount(6);
@@ -1059,12 +1059,12 @@ YFTableWgt::YFTableWgt(QMap<QString, int> m_mapYF, QWidget *parent, int scale, i
     setRowHeight(0,18);
 }
 
-/*设置沙嘴的选择情况*/
+/*设置纱嘴的选择情况*/
 bool YFTableWgt::setYF(int column, int star, int end, bool set)
 {
     if(column>6 || column<1)
     {
-        myMessageBox::getInstance()->setMessage(tr("沙嘴设置范围不正确，请重新设置！"), BoxInfo);
+        myMessageBox::getInstance()->setMessage(tr("纱嘴设置范围不正确，请重新设置！"), BoxInfo);
         return false;
     }
     if(star>end || end>rowCount())

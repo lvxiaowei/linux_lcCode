@@ -235,7 +235,7 @@
                       <string notr="true"/>
                      </property>
                      <property name="text">
-                      <string>沙嘴选择:</string>
+                      <string>纱嘴选择:</string>
                      </property>
                     </widget>
                    </item>
@@ -251,7 +251,7 @@
                       <string notr="true">color: rgb(138, 226, 52);</string>
                      </property>
                      <property name="text">
-                      <string>1路1号沙嘴</string>
+                      <string>1路1号纱嘴</string>
                      </property>
                      <property name="alignment">
                       <set>Qt::AlignCenter</set>
