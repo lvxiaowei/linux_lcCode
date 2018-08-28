@@ -45,9 +45,10 @@ void mainWindow::initIco()
 {
     m_ON_status  = new QPixmap(":/image/start.png");             //运行状态；
     m_OFF_status = new QPixmap(":/image/stop.png");              //停止状态；
-
+    m_Forward    = new QPixmap(":/image/RotationForward.png");    //正转；
+    m_Reversal   = new QPixmap(":/image/RotationReversal.png");   //反转；
     ui->m_pngRunState->setPixmap(*m_OFF_status);
-
+    ui->m_pngDirection->setPixmap(*m_Reversal);
     /*编织位置的显示图片*/
     m_chain_01  = new QMovie(":/image/chain_01.gif");
     m_chain_02  = new QMovie(":/image/chain_02.gif");
@@ -131,6 +132,7 @@ void mainWindow::keyPressEvent(int key)
         {
             m_iIndex==1 ? setNextDealWgt(PAGE_SETTING):setNextDealWgt(PAGE_TESTINGMENU);
             myMessageBox::getInstance()->hide();
+            disconnect(m_timer,SIGNAL(timeout()),this,SLOT(writeToXddp()));
         }
         break;
     }
@@ -149,5 +151,57 @@ void mainWindow::initShowFrmConfig()
 {
     ui->m_stackedWidget->setCurrentIndex(0);
     freshRightButtonContent(QStringList()<<tr("设置")<<tr("测试")<<tr("")<<tr("")<<tr("")<<tr("键盘锁定"));
+    connect(m_timer,SIGNAL(timeout()),this,SLOT(writeToXddp()));
     m_bKeyLock = false;
+}
+
+/*向XDDP发送数据*/
+void mainWindow::writeToXddp()
+{
+
+    QJsonObject json;
+    json.insert("mesg_type", "working_state");
+    json.insert("mesg_dir", "req");
+    json.insert("content", "");
+    // 构建 JSON 文档
+    QJsonDocument document;
+    document.setObject(json);
+    QByteArray byteArray = document.toJson(QJsonDocument::Indented);
+
+    emit xddpDataToScheduler(byteArray);
+}
+
+/*处理XDDP数据*/
+void mainWindow::handleXddpData(QByteArray data)
+{
+    QJsonParseError jsonError;
+    QJsonDocument doucment = QJsonDocument::fromJson(data, &jsonError);  // 转化为 JSON 文档
+    if (!doucment.isNull() && (jsonError.error == QJsonParseError::NoError)) {
+        if (doucment.isObject()) {
+            QJsonObject object = doucment.object();
+            if (object.contains("mesg_type")) {
+                if (object.value("mesg_type").toString() != "working_state"
+                        || object.value("mesg_dir").toString() != "ret") {
+                    return;
+                }
+            }
+            QJsonValue strVal = object.value("content");
+            if(!strVal.isObject()) return;
+            QJsonObject obj = strVal.toObject();
+
+            ui->m_pngRunState->setPixmap(obj.value("state") == true ? *m_ON_status:*m_OFF_status);   //运行状态
+            ui->m_pngDirection->setPixmap(obj.value("dir") == true? *m_Forward:*m_Reversal);      //电机转动方向
+            ui->m_edtStep->setText(QString("%1/%2").arg(obj.value("step_no").toInt()).arg(obj.value("step_nr").toInt()));  //当前步号/总步数
+            ui->m_edtNeedle->setText(QString("%1").arg(obj.value("needle_no").toInt())); //当前针号
+            ui->m_edtCircle->setText(QString("%1/%2").arg(obj.value("round_no").toInt()).arg(obj.value("round_nr").toInt())); //当前圈数/总圈数
+            //            ui->m_labStepTotal->setText(QString("%1").arg(obj.value("rep_nr").toInt()));//总循环数
+            //            ui->m_labStepCurent->setText(QString("%1").arg(obj.value("rep_no").toInt()));//当前循环数
+            //            ui->m_labRowTotal->setText(QString("%1").arg(obj.value("pattern_line_nr").toInt()));//花形总行数
+            //            ui->m_labRowCrunt->setText(QString("%1").arg(obj.value("pattern_line_no").toInt()));//当前花形行号
+            ui->m_edtOutput->setText(QString("%1/%2").arg(obj.value("volume_no").toInt()).arg(obj.value("volume_nr").toInt()));
+            ui->m_edtChain->setText(QString("%1").arg(obj.value("chain_name").toString())); //当前激活链条名
+            ui->m_edtPattern->setText(QString("%1").arg(obj.value("pattern_name").toString())); //当前激活花型名
+            ui->m_edtSpeed->setText(QString("%1").arg(obj.value("speed").toInt())); //速度
+        }
+    }
 }

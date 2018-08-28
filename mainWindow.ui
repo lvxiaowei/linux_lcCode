@@ -93,7 +93,7 @@
             <string notr="true">background-color: rgb(114, 159, 207);</string>
            </property>
            <property name="text">
-            <string>STAUBLI</string>
+            <string>Aurora</string>
            </property>
           </widget>
          </item>
@@ -176,7 +176,7 @@ background-color: rgb(136, 138, 133);</string>
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLabel" name="m_pngDirection">
+           <widget class="QLabel" name="m_pngPart">
             <property name="minimumSize">
              <size>
               <width>90</width>
@@ -343,12 +343,15 @@ background-color: rgb(136, 138, 133);</string>
            </widget>
           </item>
           <item row="3" column="0">
-           <widget class="QLabel" name="m_pngDirection_2">
+           <widget class="QLabel" name="m_pngDirection">
             <property name="styleSheet">
              <string notr="true">background-color: rgb(238, 238, 236);</string>
             </property>
             <property name="text">
              <string/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -409,7 +412,7 @@ background-color: rgb(136, 138, 133);</string>
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEdit">
+           <widget class="QLineEdit" name="m_edtNeedle">
             <property name="enabled">
              <bool>true</bool>
             </property>
@@ -461,7 +464,7 @@ background-color: rgb(136, 138, 133);</string>
            </widget>
           </item>
           <item row="0" column="3">
-           <widget class="QLineEdit" name="lineEdit_4">
+           <widget class="QLineEdit" name="m_edtPattern">
             <property name="font">
              <font>
               <pointsize>15</pointsize>
@@ -504,7 +507,7 @@ background-color: rgb(136, 138, 133);</string>
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QLineEdit" name="lineEdit_7">
+           <widget class="QLineEdit" name="m_edtSpeed">
             <property name="font">
              <font>
               <pointsize>15</pointsize>
@@ -547,7 +550,7 @@ background-color: rgb(136, 138, 133);</string>
            </widget>
           </item>
           <item row="1" column="3">
-           <widget class="QLineEdit" name="lineEdit_8">
+           <widget class="QLineEdit" name="m_edtChain">
             <property name="font">
              <font>
               <pointsize>15</pointsize>
@@ -590,7 +593,7 @@ background-color: rgb(136, 138, 133);</string>
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QLineEdit" name="lineEdit_6">
+           <widget class="QLineEdit" name="m_edtStep">
             <property name="font">
              <font>
               <pointsize>15</pointsize>
@@ -676,7 +679,7 @@ background-color: rgb(136, 138, 133);</string>
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QLineEdit" name="lineEdit_2">
+           <widget class="QLineEdit" name="m_edtCircle">
             <property name="font">
              <font>
               <pointsize>15</pointsize>
@@ -719,7 +722,7 @@ background-color: rgb(136, 138, 133);</string>
            </widget>
           </item>
           <item row="3" column="3">
-           <widget class="QLineEdit" name="lineEdit_5">
+           <widget class="QLineEdit" name="m_edtOutput">
             <property name="font">
              <font>
               <pointsize>15</pointsize>

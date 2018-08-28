@@ -55,6 +55,10 @@ void schedule::handleXddpData(QByteArray data)
     {
         m_frmTestMenu->handleXddpData(data);
     }
+    else if(data.contains("working_state"))
+    {
+        m_pMainWindow->handleXddpData(data);
+    }
     Q_UNUSED(data);
 }
 
