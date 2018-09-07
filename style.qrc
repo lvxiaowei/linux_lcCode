@@ -57,5 +57,14 @@
         <file>image/out.png</file>
         <file>image/motoTest_stepper.png</file>
         <file>image/锁定.png</file>
+        <file>image/nedle.png</file>
+        <file>image/calculator.png</file>
+        <file>image/chain.png</file>
+        <file>image/decorativePattern.png</file>
+        <file>image/time.png</file>
+        <file>image/speed.png</file>
+        <file>image/step.png</file>
+        <file>image/round.png</file>
+        <file>image/moto.png</file>
     </qresource>
 </RCC>
