@@ -41,17 +41,14 @@ void Frm_patternManage::dealPg1(int key)
     }
     case Key_F8:
     {
-        setWorkingPat(PAT_SET_PAT1);
         break;
     }
     case Key_9:
     {
-        setWorkingPat(PAT_SET_PAT2);
         break;
     }
     case Key_8:
     {
-        setWorkingPat(PAT_SET_PAT3);
         break;
     }
     case Key_7:
@@ -135,7 +132,7 @@ void Frm_patternManage::dealPg2_menu(int key)
     {
         ui->m_stackPat->setCurrentIndex(0);
         ui->m_title->setText(tr("[花型管理]"));
-        freshRightButtonContent(QStringList()<<tr("返回")<<tr("设置\n花型１")<<tr("设置\n花型2")<<tr("设置\n花型3")<<tr("")<<tr("编辑"));
+        freshRightButtonContent(QStringList()<<tr("返回")<<tr("")<<tr("")<<tr("")<<tr("")<<tr("编辑"));
         delete m_pattrenTable;
         delete m_YFTable;
         m_pattrenTable = NULL;
@@ -432,7 +429,7 @@ void Frm_patternManage::initShowFrmConfig()
 {
     ui->m_stackPat->setCurrentIndex(0);
     ui->m_title->setText(tr("[花型管理]"));
-    freshRightButtonContent(QStringList()<<tr("返回")<<tr("设置\n花型１")<<tr("设置\n花型2")<<tr("设置\n花型3")<<tr("")<<tr("编辑"));
+    freshRightButtonContent(QStringList()<<tr("返回")<<tr("")<<tr("")<<tr("")<<tr("")<<tr("编辑"));
     initPatManageTabl();
     ui->m_frmYFSet->hide();
 }
@@ -443,7 +440,7 @@ void Frm_patternManage::initPatternProcesPage()
     freshRightButtonContent(QStringList()<<tr("返回")<<tr("纱嘴设置")<<tr("循环设置")<<tr("选针器\n配色设置")<<tr("花纹纱嘴\n时序设置")<<tr("保存"));
     ui->m_stackPat->setCurrentIndex(1);
 
-    QString filePath = ui->m_tabPatManage->item(ui->m_tabPatManage->currentRow(),3)->text();
+    QString filePath = ui->m_tabPatManage->item(ui->m_tabPatManage->currentRow(),2)->text();
     ui->m_title->setText(QString(tr("[花型编辑] %1")).arg(filePath));
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly))
@@ -563,13 +560,12 @@ void Frm_patternManage::initPatManageTabl()
     /*初始化表格数据*/
     ui->m_tabPatManage->clearContents();
     ui->m_tabPatManage->setRowCount(0);
-    ui->m_tabPatManage->setColumnCount(5); //设置总列数；
+    ui->m_tabPatManage->setColumnCount(4); //设置总列数；
     ui->m_tabPatManage->setColumnWidth(0,50);
     ui->m_tabPatManage->setColumnWidth(1,90);
-    ui->m_tabPatManage->setColumnWidth(2,90);
-    ui->m_tabPatManage->setColumnWidth(3,0);
+    ui->m_tabPatManage->setColumnWidth(2,0);
 
-    ui->m_tabPatManage->setHorizontalHeaderLabels(QStringList()<<tr("序号")<<tr("工作设定")<<tr("文件大小")<<tr("文件路径")<<tr("花型文件")); //设置表头名称；
+    ui->m_tabPatManage->setHorizontalHeaderLabels(QStringList()<<tr("序号")<<tr("文件大小")<<tr("文件路径")<<tr("花型文件")); //设置表头名称；
 
     QFont font=ui->m_tabPatManage->horizontalHeader()->font();  //设置表头的字体为粗体；
     font.setBold(true);
@@ -580,24 +576,9 @@ void Frm_patternManage::initPatManageTabl()
     ui->m_tabPatManage->horizontalHeaderItem(1)->setTextColor(QColor(0,85,0));
     ui->m_tabPatManage->horizontalHeaderItem(2)->setTextColor(QColor(0,85,0));
     ui->m_tabPatManage->horizontalHeaderItem(3)->setTextColor(QColor(0,85,0));
-    ui->m_tabPatManage->horizontalHeaderItem(4)->setTextColor(QColor(0,85,0));
 
     ui->m_tabPatManage ->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->m_tabPatManage->horizontalHeader()->setFixedHeight(43);                  //设置表头的高度；
-
-    //获取xml配置文件中花型设置的内容
-    QDomDocument document;
-    QString pat1,pat2,pat3;
-    if(getXmlConfig(document))
-    {
-        QDomNodeList nodePat1 = document.elementsByTagName("pat1");
-        if(nodePat1.count()!=0) pat1=nodePat1.at(0).toElement().attribute("name");
-        QDomNodeList nodePat2 = document.elementsByTagName("pat2");
-        if(nodePat2.count()!=0) pat2=nodePat2.at(0).toElement().attribute("name");
-        QDomNodeList nodePat3 = document.elementsByTagName("pat3");
-        if(nodePat3.count()!=0) pat3=nodePat3.at(0).toElement().attribute("name");
-    }
-
 
     QDir dir(PATTERN_FILE_LOCAL_PATH);
     if(!dir.exists())
@@ -621,66 +602,17 @@ void Frm_patternManage::initPatManageTabl()
             ui->m_tabPatManage->insertRow(rows);
             ui->m_tabPatManage->setItem(rows,0,new QTableWidgetItem(QString("%1").arg(rows+1)));
 
-            //根据配置文件中花型信息显示工作设定值
-            if(pat1.compare(fileName_str,Qt::CaseInsensitive)==0)
-            {
-                ui->m_tabPatManage->setItem(rows,1,new QTableWidgetItem("Pat1"));
-            }
-            else if(pat2.compare(fileName_str,Qt::CaseInsensitive)==0)
-            {
-                ui->m_tabPatManage->setItem(rows,1,new QTableWidgetItem("Pat2"));
-            }
-            else if(pat3.compare(fileName_str,Qt::CaseInsensitive)==0)
-            {
-                ui->m_tabPatManage->setItem(rows,1,new QTableWidgetItem("Pat3"));
-            }
-            else {
-                ui->m_tabPatManage->setItem(rows,1,new QTableWidgetItem(" "));
-            }
-
-            ui->m_tabPatManage->setItem(rows,2,new QTableWidgetItem(fileSize_str));
-            ui->m_tabPatManage->setItem(rows,3,new QTableWidgetItem(file_info.filePath()));
-            ui->m_tabPatManage->setItem(rows,4,new QTableWidgetItem(fileName_str));
+            ui->m_tabPatManage->setItem(rows,1,new QTableWidgetItem(fileSize_str));
+            ui->m_tabPatManage->setItem(rows,2,new QTableWidgetItem(file_info.filePath()));
+            ui->m_tabPatManage->setItem(rows,3,new QTableWidgetItem(fileName_str));
             ui->m_tabPatManage->item(rows,0)->setTextAlignment(Qt::AlignCenter);
             ui->m_tabPatManage->item(rows,1)->setTextAlignment(Qt::AlignCenter);
-            ui->m_tabPatManage->item(rows,2)->setTextAlignment(Qt::AlignCenter);
-            ui->m_tabPatManage->item(rows,4)->setTextAlignment(Qt::AlignCenter);
+            ui->m_tabPatManage->item(rows,3)->setTextAlignment(Qt::AlignCenter);
         }
     }
 
     if(ui->m_tabPatManage->rowCount()>0)
         ui->m_tabPatManage->setCurrentCell(0,0);
-}
-
-/*设置工作花型*/
-void Frm_patternManage::setWorkingPat(int pat)
-{
-    for(int i=0; i<ui->m_tabPatManage->rowCount(); ++i)
-    {
-        if(ui->m_tabPatManage->item(i,1)->text() == QString("Pat%1").arg(pat))
-        {
-            ui->m_tabPatManage->item(i,1)->setText(" ");
-            break;
-        }
-    }
-    int irow=ui->m_tabPatManage->currentRow();
-    ui->m_tabPatManage->item(irow,1)->setText(QString("Pat%1").arg(pat));
-
-    //设置花型写入到配置xml
-    QDomDocument document;
-    if(!getXmlConfig(document))
-        return;
-    QString nodeName=QString("pat%1").arg(pat);
-    QDomNodeList nodePat = document.elementsByTagName(nodeName);
-    if(nodePat.count()!=0)
-    {
-        nodePat.at(0).toElement().setAttribute("name", ui->m_tabPatManage->item(irow,4)->text());
-        QFile file(CONFIG_FILE_XML_PATH);
-        file.open(QIODevice::WriteOnly|QFile::Truncate);
-        QTextStream stream(&file);
-        document.save(stream, 4);
-        file.close();
-    }
 }
 
 /*START*****************************************************paletteBoard******************************************************************************/

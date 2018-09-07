@@ -110,7 +110,6 @@ private:
     void dealPg2_patTimingSet(int key);
     void initPatternProcesPage();
     void initPatManageTabl();
-    void setWorkingPat(int pat);
 
     patternTableWgt *  m_pattrenTable;
     YFTableWgt *       m_YFTable;
