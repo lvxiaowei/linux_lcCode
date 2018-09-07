@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout" rowstretch="7,2">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -41,6 +41,66 @@
      <property name="currentIndex">
       <number>-1</number>
      </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QGroupBox" name="m_grpAssist">
+     <property name="font">
+      <font>
+       <pointsize>13</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">#m_grpAssist{color: rgb(245, 121, 0); background-color: rgb(114, 159, 207);}
+
+</string>
+     </property>
+     <property name="title">
+      <string>辅助设置：</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <item row="0" column="0">
+       <widget class="QTableWidget" name="m_wgtAssist">
+        <row>
+         <property name="text">
+          <string>New Row</string>
+         </property>
+        </row>
+        <row>
+         <property name="text">
+          <string>New Row</string>
+         </property>
+        </row>
+        <row>
+         <property name="text">
+          <string>New Row</string>
+         </property>
+        </row>
+        <column>
+         <property name="text">
+          <string>New Column</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>

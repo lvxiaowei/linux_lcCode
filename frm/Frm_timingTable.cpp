@@ -42,12 +42,22 @@ void Frm_timingTable::keyPressEvent(int key)
     case Key_Up:
     {
         QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
-        if(m_curentTable->currentRow()==3) return;
+        if((m_curentTable->currentRow()==3 && m_curentTable != ui->m_wgtAssist)) return;
+        if(m_curentTable == ui->m_wgtAssist && ui->m_wgtAssist->currentRow()==1)
+        {
+            m_curentTable =  dynamic_cast<QTableWidget*>(ui->tabWidget->currentWidget());
+            return;
+        }
         QCoreApplication::sendEvent(m_curentTable, &keyPress);
         break;
     }
     case Key_Down:
     {
+        if(m_curentTable != ui->m_wgtAssist && m_curentTable->currentRow()==10)
+        {
+            m_curentTable = ui->m_wgtAssist;
+            return;
+        }
         QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier, QString());
         QCoreApplication::sendEvent(m_curentTable, &keyPress);
         break;
@@ -127,15 +137,16 @@ void Frm_timingTable::initTimingsTable()
     QDomNodeList nodeTimTab = document.elementsByTagName("timingsTable");
     if(nodeTimTab.count()==0) return;
 
+    //沙嘴时序初始化
     for(int i=0; i<nodeTimTab.at(0).childNodes().count(); ++i)
     {
         QDomNode tableNode = nodeTimTab.at(0).childNodes().at(i);
         QString  tableName = tableNode.toElement().attribute("name");
 
-        QTableWidget *tableWidget = new QTableWidget(10, 4*(tableNode.childNodes().count()));  //时序表一共10行固定的，列的话根据硕子的数目来决定，一把硕子4列
+        QTableWidget *tableWidget = new QTableWidget(11, 4*(tableNode.childNodes().count()));  //时序表一共11行固定的，列的话根据硕子的数目来决定，一把硕子4列
         /*设置表头内容*/
         QStringList header;
-        header<<tr("名称")<<tr("状态(in/out)")<<tr("动作方式(in/out)")<<tr("纱嘴辅助")<<tr("纱嘴半位/全位")<<tr("剪刀")<<tr("进线吹气")<<tr("剪刀吹气")<<tr("换线吹气")<<tr("护针吹气");
+        header<<tr("名称")<<tr("状态(in/out)")<<tr("动作方式(in/out)")<<tr("纱嘴辅助")<<tr("纱嘴半位/全位")<<tr("剪刀")<<tr("进线吹气")<<tr("剪刀吹气")<<tr("换线吹气")<<tr("护针吹气")<<tr("重叠针数");
         tableWidget->setVerticalHeaderLabels(header);
         tableWidget->verticalHeader()->setStyleSheet("QHeaderView::section{background:skyblue;}");
         tableWidget->horizontalHeader()->setVisible(false);
@@ -144,7 +155,7 @@ void Frm_timingTable::initTimingsTable()
         //设置单元格大小
         for(int i=0; i<tableWidget->columnCount(); ++i)
         {
-            tableWidget->setColumnWidth(i,60);
+            tableWidget->setColumnWidth(i,50);
         }
 
         ui->tabWidget->addTab(tableWidget,tableName);
@@ -159,6 +170,7 @@ void Frm_timingTable::initTimingsTable()
             tableWidget->setSpan(0, j*4,   1, 4);
             tableWidget->setSpan(1, j*4,   1, 2);
             tableWidget->setSpan(1, j*4+2, 1, 2);
+            tableWidget->setSpan(10, j*4, 1, 4);
             //初始化数据表头，前3行
             tableWidget->setItem(0, j*4,   new QTableWidgetItem(itemName));
             tableWidget->item(0,j*4)->setBackgroundColor(QColor("skyblue"));
@@ -181,6 +193,7 @@ void Frm_timingTable::initTimingsTable()
                     QString val = lstVal.at(m*7+n);
                     tableWidget->setItem(n+3, j*4+m, new QTableWidgetItem(val));
                 }
+            tableWidget->setItem(10, j*4, new QTableWidgetItem(lstVal.at(28)));
         }
 
         //设置表格数据单元格居中
@@ -195,6 +208,38 @@ void Frm_timingTable::initTimingsTable()
             }
         tableWidget->setCurrentCell(3,0);
     }
+
+    //辅助设置初始化
+    /*设置表头内容*/
+    QDomNodeList nodeDelayStep = document.elementsByTagName("delayStep");
+    if(nodeDelayStep.count()==0) return;
+    QString strCircle = nodeDelayStep.at(0).toElement().attribute("circle");
+    QString strNeedle = nodeDelayStep.at(0).toElement().attribute("needle");
+
+    QStringList header;
+    header<<tr("   名称   ")<<tr("   圈数")<<tr("   针数");
+    ui->m_wgtAssist->setVerticalHeaderLabels(header);
+    ui->m_wgtAssist->verticalHeader()->setStyleSheet("QHeaderView::section{background:skyblue;}");
+    ui->m_wgtAssist->horizontalHeader()->setVisible(false);
+    ui->m_wgtAssist->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch); //均分行
+    ui->m_wgtAssist->setStyleSheet("gridline-color: rgb(0,0,0)");
+    ui->m_wgtAssist->setItem(0, 0,   new QTableWidgetItem(tr("延时步数")));
+    ui->m_wgtAssist->item(0,0)->setBackgroundColor(QColor("skyblue"));
+    ui->m_wgtAssist->setItem(1, 0,   new QTableWidgetItem(strCircle));
+    ui->m_wgtAssist->setItem(2, 0,   new QTableWidgetItem(strNeedle));
+    //设置单元格大小
+    ui->m_wgtAssist->setColumnWidth(0,150);
+    //设置表格数据单元格居中
+    for(int i=0; i<ui->m_wgtAssist->rowCount(); ++i)
+    {
+        QTableWidgetItem* item=ui->m_wgtAssist->item(i,0);
+        if(item != NULL)
+        {
+            item->setTextAlignment(Qt::AlignCenter);
+        }
+    }
+    ui->m_wgtAssist->setCurrentCell(1,0);
+
 }
 
 //保存数据到配置文件
@@ -204,9 +249,9 @@ void Frm_timingTable::saveConfigFile()
     if(!getXmlConfig(document))
         return;
 
+    //沙嘴时序
     QDomNodeList nodeTimTab = document.elementsByTagName("timingsTable");
     if(nodeTimTab.count()==0) return;
-
     for(int i=0; i<ui->tabWidget->count(); ++i)
     {
         QTableWidget *wgtTable = dynamic_cast<QTableWidget*>(ui->tabWidget->widget(i));
@@ -245,11 +290,20 @@ void Frm_timingTable::saveConfigFile()
                 {
                     lstVal.append(wgtTable->item(n+3, j*4+m)->text());
                 }
+            lstVal.append(wgtTable->item(10, j*4)->text());
 
             itemNode.toElement().setAttribute("val",lstVal.join(","));
 
         }
     }
+
+    //辅助设置
+    QDomNodeList nodeDelayStep = document.elementsByTagName("delayStep");
+    if(nodeDelayStep.count()==0) return;
+    nodeDelayStep.at(0).toElement().setAttribute("circle", ui->m_wgtAssist->item(1,0)->text());
+    nodeDelayStep.at(0).toElement().setAttribute("needle", ui->m_wgtAssist->item(2,0)->text());
+
+
 
     QFile file(CONFIG_FILE_XML_PATH);
     file.open(QIODevice::WriteOnly|QFile::Truncate);
@@ -257,5 +311,5 @@ void Frm_timingTable::saveConfigFile()
     document.save(stream, 4);
     file.close();
 
-     myMessageBox::getInstance()->setMessage(tr("保存修改成功！"), BoxInfo);
+    myMessageBox::getInstance()->setMessage(tr("保存修改成功！"), BoxInfo);
 }
