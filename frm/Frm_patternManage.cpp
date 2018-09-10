@@ -25,6 +25,9 @@ void Frm_patternManage::keyPressEvent(int key)
     case 1:
         dealPg2(key);
         break;
+    case 2:
+        dealPg3(key);
+        break;
     default:
         break;
     }
@@ -41,6 +44,7 @@ void Frm_patternManage::dealPg1(int key)
     }
     case Key_F8:
     {
+        initTimingsTable();
         break;
     }
     case Key_9:
@@ -132,7 +136,7 @@ void Frm_patternManage::dealPg2_menu(int key)
     {
         ui->m_stackPat->setCurrentIndex(0);
         ui->m_title->setText(tr("[花型管理]"));
-        freshRightButtonContent(QStringList()<<tr("返回")<<tr("")<<tr("")<<tr("")<<tr("")<<tr("编辑"));
+        freshRightButtonContent(QStringList()<<tr("返回")<<tr("时序设置")<<tr("")<<tr("")<<tr("")<<tr("编辑"));
         delete m_pattrenTable;
         delete m_YFTable;
         m_pattrenTable = NULL;
@@ -424,12 +428,105 @@ void Frm_patternManage::dealPg2_patTimingSet(int key)
     }
 }
 
+/*处理串口数据-page3*/
+void Frm_patternManage::dealPg3(int key)
+{
+    QTableWidget *wgtTable = dynamic_cast<QTableWidget*>(ui->m_tabYF->currentWidget());
+    if(wgtTable==NULL) return;
+
+    switch (key) {
+    case Key_F9:
+    {
+        setNextDealWgt(PAGE_PATTERNMANAGE);
+        break;
+    }
+    case Key_F8:
+    {
+        break;
+    }
+    case Key_9:
+    {
+        break;
+    }
+    case Key_8:
+    {
+
+        break;
+    }
+    case Key_7:
+    {
+
+        break;
+    }
+    case Key_PageUp:
+    {
+        saveTimingsDataToConfigFile();
+        break;
+    }
+
+    case Key_Up:
+    {
+        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
+        if((wgtTable->currentRow()==1)) return;
+        QCoreApplication::sendEvent(wgtTable, &keyPress);
+        break;
+    }
+    case Key_Down:
+    {
+        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier, QString());
+        QCoreApplication::sendEvent(wgtTable, &keyPress);
+        break;
+    }
+    case Key_Left:
+    {
+        if((wgtTable->currentColumn()==1)) return;
+        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Left, Qt::NoModifier, QString());
+        QCoreApplication::sendEvent(wgtTable, &keyPress);
+        break;
+    }
+    case Key_Right:
+    {
+        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier, QString());
+        QCoreApplication::sendEvent(wgtTable, &keyPress);
+        break;
+    }
+
+    case Key_0:
+    case Key_1:
+    case Key_2:
+    case Key_3:
+    case Key_4:
+    case Key_5:
+    case Key_6:
+    {
+        if((wgtTable->currentColumn()==3)) return;
+        bool ok;
+        QString strInputValue = QString("%1").arg(m_mapNoKeyToValue[key]);
+        QString strCurentValue = wgtTable->currentItem()->text() + strInputValue;
+        wgtTable->currentItem()->setText(QString::number((strCurentValue.trimmed()).toInt(&ok,10)));
+
+    }
+        break;
+    case Key_Del:
+    {
+        if((wgtTable->currentColumn()==3)) return;
+        bool ok;
+        QString strCurentValue = wgtTable->currentItem()->text();
+        strCurentValue = strCurentValue.left(strCurentValue.length() - 1);
+        wgtTable->currentItem()->setText(QString::number((strCurentValue.trimmed()).toInt(&ok,10)));
+        break;
+    }
+    default:
+        break;
+    }
+}
+
 /*数据初始化*/
 void Frm_patternManage::initShowFrmConfig()
 {
     ui->m_stackPat->setCurrentIndex(0);
     ui->m_title->setText(tr("[花型管理]"));
-    freshRightButtonContent(QStringList()<<tr("返回")<<tr("")<<tr("")<<tr("")<<tr("")<<tr("编辑"));
+    freshRightButtonContent(QStringList()<<tr("返回")<<tr("时序设置")<<tr("")<<tr("")<<tr("")<<tr("编辑"));
     initPatManageTabl();
     ui->m_frmYFSet->hide();
 }
@@ -613,6 +710,132 @@ void Frm_patternManage::initPatManageTabl()
 
     if(ui->m_tabPatManage->rowCount()>0)
         ui->m_tabPatManage->setCurrentCell(0,0);
+}
+
+/*初始化花型进出时序表格*/
+void Frm_patternManage::initTimingsTable()
+{
+    ui->m_stackPat->setCurrentIndex(2);
+    freshRightButtonContent(QStringList()<<tr("返回")<<tr("")<<tr("")<<tr("")<<tr("")<<tr("保存修改"));
+    //移除所有的tab
+    for(int i=0; i<ui->m_tabYF->count(); ++i)
+    {
+        ui->m_tabYF->removeTab(0);
+    }
+
+    QDomDocument document;
+    if(!getXmlConfig(document))
+        return;
+
+    QDomNodeList nodeTimTab = document.elementsByTagName("YFTimingsTable");
+    if(nodeTimTab.count()==0) return;
+
+    //沙嘴时序初始化
+    for(int i=0; i<nodeTimTab.at(0).childNodes().count(); ++i)
+    {
+        QDomElement tableElement = nodeTimTab.at(0).childNodes().at(i).toElement();
+        QString  tableName = QString(tr("%1路纱嘴")).arg(tableElement.attribute("name").remove("F"));
+        int iCount=tableElement.attribute("count").toInt();
+        QStringList lstVal = tableElement.attribute("val").split(",");
+        QStringList lstTypes = tableElement.attribute("types").split("/");
+
+        QTableWidget *tableWidget = new QTableWidget(iCount+1, 4);
+        /*设置表头内容*/
+        tableWidget->verticalHeader()->setVisible(false);
+        tableWidget->horizontalHeader()->setVisible(false);
+        tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch); //均分行
+        tableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch); //均分行
+        tableWidget->setStyleSheet("gridline-color: rgb(0,0,0)");
+        tableWidget->verticalHeader()->setStyleSheet("QHeaderView::section{background:skyblue;}");
+        /*设置表格内容*/
+        QStringList header;
+        header<<tr("名称")<<tr("针位[IN]")<<tr("针位[OUT]")<<tr("类型");
+        for(int i=0; i<4; ++i)
+        {
+            tableWidget->setItem(0,i, new QTableWidgetItem(header.at(i)));
+            tableWidget->item(0,i)->setBackgroundColor(QColor("skyblue"));
+        }
+        for(int i=1; i<tableWidget->rowCount(); ++i)
+        {
+            tableWidget->setItem(i,0, new QTableWidgetItem(QString("%1号纱嘴").arg(i)));
+            tableWidget->item(i,0)->setBackgroundColor(QColor("skyblue"));
+        }
+
+        for(int i=1; i<tableWidget->rowCount(); ++i)
+            for(int j=1; j<tableWidget->columnCount(); ++j)
+            {
+                if(j==3) //类型那一列
+                {
+                    tableWidget->setItem(i,j, new QTableWidgetItem(lstTypes.at(i-1)=="0" ? tr("标准"):tr("橡筋")));
+                }
+                else {
+                    tableWidget->setItem(i,j, new QTableWidgetItem(lstVal.at((i-1)*2+(j-1))));
+                }
+
+            }
+        //设置表格数据单元格居中
+        for(int i=0; i< tableWidget->rowCount(); ++i)
+            for(int j=0; j<tableWidget->columnCount(); ++j)
+            {
+                QTableWidgetItem* item=tableWidget->item(i,j);
+                if(item != NULL)
+                {
+                    item->setTextAlignment(Qt::AlignCenter);
+                }
+            }
+        tableWidget->setCurrentCell(1,1);
+
+        ui->m_tabYF->addTab(tableWidget,tableName);
+
+    }
+}
+
+//保存数据到配置文件
+void Frm_patternManage::saveTimingsDataToConfigFile()
+{
+    QDomDocument document;
+    if(!getXmlConfig(document))
+        return;
+
+    //沙嘴时序
+    QDomNodeList lstNodeTimTab = document.elementsByTagName("YFTimingsTable");
+    if(lstNodeTimTab.count()==0) return;
+    QDomNode nodeTimTab = lstNodeTimTab.at(0);
+
+    QDomNode itemNode;
+    for(int i=0; i<ui->m_tabYF->count(); ++i)
+    {
+        QTableWidget *wgtTable = dynamic_cast<QTableWidget*>(ui->m_tabYF->widget(i));
+
+        if(wgtTable==NULL) continue;
+
+        for(int n=0; n<nodeTimTab.childNodes().count(); ++n)
+        {
+            if(nodeTimTab.childNodes().at(n).toElement().attribute("name")==QString("%1F").arg(i+1))
+            {
+                itemNode = nodeTimTab.childNodes().at(n);
+                break;
+            }
+        }
+        //获取xml里面item节点的val需要的值
+        //初始化针位数据
+        QStringList lstVal;
+        for(int i=1; i<wgtTable->rowCount(); ++i)
+            for(int j=1; j<=2; ++j)
+            {
+                lstVal.append(wgtTable->item(i, j)->text());
+            }
+        itemNode.toElement().setAttribute("val",lstVal.join(","));
+
+    }
+
+    QFile file(CONFIG_FILE_XML_PATH);
+    file.open(QIODevice::WriteOnly|QFile::Truncate);
+    QTextStream stream(&file);
+    document.save(stream, 4);
+    file.close();
+
+    myMessageBox::getInstance()->setMessage(tr("保存修改成功！"), BoxInfo);
 }
 
 /*START*****************************************************paletteBoard******************************************************************************/

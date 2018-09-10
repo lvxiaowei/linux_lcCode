@@ -108,9 +108,11 @@ private:
     void dealPg2_loop(int key);
     void dealPg2_selectColor(int key);
     void dealPg2_patTimingSet(int key);
+    void dealPg3(int key);
     void initPatternProcesPage();
     void initPatManageTabl();
-
+    void initTimingsTable();
+    void saveTimingsDataToConfigFile();
     patternTableWgt *  m_pattrenTable;
     YFTableWgt *       m_YFTable;
     int m_iScale;    //图案放大系数
