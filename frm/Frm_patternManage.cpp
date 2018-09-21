@@ -98,12 +98,10 @@ void Frm_patternManage::dealPg2(int key)
     }
     case 2:
     {
-        //dealPg2_selectColor(key);
         break;
     }
     case 3:
     {
-        //dealPg2_patTimingSet(key);
         break;
     }
     default:
@@ -314,112 +312,6 @@ void Frm_patternManage::dealPg2_loop(int key)
     }
 }
 
-/*处理串口数据-page2-选针器配色设置*/
-void Frm_patternManage::dealPg2_selectColor(int key)
-{
-    switch (key) {
-    case Key_F9:
-    {
-        freshRightButtonContent(QStringList()<<tr("返回")<<tr("纱嘴设置")<<tr("循环设置")<<tr("")<<tr("")<<tr("保存"));
-        ui->m_stackPatOper->setCurrentIndex(0);
-        break;
-    }
-
-
-    case Key_Up:
-    {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui->m_needlSelectColor, &keyPress);
-        break;
-    }
-    case Key_Down:
-    {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui->m_needlSelectColor, &keyPress);
-        break;
-    }
-    case Key_Set:
-    {
-        if(ui->m_needlSelectColor->currentItem()->type() != SECEND_LEVEL_NODE) return;
-
-        Qt::CheckState stat =  ui->m_needlSelectColor->currentItem()->checkState(0);
-        ui->m_needlSelectColor->currentItem()->setCheckState(0,stat==Qt::Checked ? Qt::Unchecked:Qt::Checked);
-
-        break;
-    }
-    default:
-        break;
-    }
-}
-
-/*处理串口数据-page2-花纹纱嘴时序设置*/
-void Frm_patternManage::dealPg2_patTimingSet(int key)
-{
-    switch (key) {
-    case Key_F9:
-    {
-        freshRightButtonContent(QStringList()<<tr("返回")<<tr("纱嘴设置")<<tr("循环设置")<<tr("")<<tr("")<<tr("保存"));
-        ui->m_stackPatOper->setCurrentIndex(0);
-        break;
-    }
-
-
-    case Key_Up:
-    {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui->m_tabTimings, &keyPress);
-        break;
-    }
-    case Key_Down:
-    {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui->m_tabTimings, &keyPress);
-        break;
-    }
-    case Key_Left:
-    {
-        if(ui->m_tabTimings->currentItem()->column()==1) break;
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Left, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui->m_tabTimings, &keyPress);
-        break;
-    }
-    case Key_Right:
-    {
-        if(ui->m_tabTimings->currentItem()->column()==2) break;
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui->m_tabTimings, &keyPress);
-        break;
-    }
-
-
-    case Key_0:
-    case Key_1:
-    case Key_2:
-    case Key_3:
-    case Key_4:
-    case Key_5:
-    case Key_6:
-    {
-        bool ok;
-        QString strInputValue = QString("%1").arg(m_mapNoKeyToValue[key]);
-        QString strCurentValue = ui->m_tabTimings->currentItem()->text() + strInputValue;
-        ui->m_tabTimings->currentItem()->setText(QString::number((strCurentValue.trimmed()).toInt(&ok,10)));
-
-    }
-        break;
-    case Key_Del:
-    {
-        bool ok;
-        QString strCurentValue = ui->m_tabTimings->currentItem()->text();
-        strCurentValue = strCurentValue.left(strCurentValue.length() - 1);
-        ui->m_tabTimings->currentItem()->setText(QString::number((strCurentValue.trimmed()).toInt(&ok,10)));
-        break;
-    }
-    default:
-        break;
-    }
-}
-
 /*处理串口数据-page3*/
 void Frm_patternManage::dealPg3(int key)
 {
@@ -618,45 +510,6 @@ void Frm_patternManage::initPatternProcesPage()
     }
     ui->m_needlSelectColor->setCurrentItem(ui->m_needlSelectColor->topLevelItem(0));
     ui->m_needlSelectColor->expandAll();
-    /**************************************花纹纱嘴时需设置**************************************/
-    QTableWidgetItem* item0, *item3;
-    ui->m_tabTimings->verticalHeader()->setVisible(false);
-    ui->m_tabTimings->setRowCount(6);
-    ui->m_tabTimings->setColumnCount(4);
-    ui->m_tabTimings->setColumnWidth(0,70);
-    ui->m_tabTimings->setColumnWidth(1,45);
-    ui->m_tabTimings->setColumnWidth(2,45);
-    ui->m_tabTimings->setColumnWidth(3,50);
-
-    ui->m_tabTimings->setHorizontalHeaderLabels(QStringList()<<tr("名称")<<tr("IN")<<tr("OUT")<<tr("类型"));
-
-    QFont fontTimings=ui->m_tabTimings->horizontalHeader()->font();  //设置表头的字体为粗体；
-    fontTimings.setBold(true);
-    fontTimings.setPixelSize(20);
-    ui->m_tabTimings->horizontalHeader()->setFont(fontTimings);
-
-    ui->m_tabTimings->horizontalHeaderItem(0)->setTextColor(QColor(0,85,0));
-    ui->m_tabTimings->horizontalHeaderItem(1)->setTextColor(QColor(0,85,0));
-    ui->m_tabTimings->horizontalHeaderItem(2)->setTextColor(QColor(0,85,0));
-    ui->m_tabTimings->horizontalHeaderItem(3)->setTextColor(QColor(0,85,0));
-    for(int i=0; i<6; ++i)
-    {
-        item0 = new QTableWidgetItem(QString(tr("%1号纱嘴")).arg(i+1));
-        item0->setTextAlignment(Qt::AlignCenter);
-        item0->setFlags(item0->flags() & (~Qt::ItemIsEditable));
-        ui->m_tabTimings->setItem(i, 0, item0);
-
-        ui->m_tabTimings->setItem(i,1,new QTableWidgetItem(QString("0")));
-        ui->m_tabTimings->setItem(i,2,new QTableWidgetItem(QString("0")));
-        ui->m_tabTimings->item(i,1)->setTextAlignment(Qt::AlignCenter);
-        ui->m_tabTimings->item(i,2)->setTextAlignment(Qt::AlignCenter);
-
-        item3 = new QTableWidgetItem(QString("%1").arg(i==5 ? tr("橡筋"):tr("标准")));
-        item3->setTextAlignment(Qt::AlignCenter);
-        item3->setFlags(item3->flags() & (~Qt::ItemIsEditable));
-        ui->m_tabTimings->setItem(i, 3, item3);
-    }
-    ui->m_tabTimings->setCurrentCell(0,1);
 }
 
 /*初始化花型管理表格*/
@@ -693,7 +546,7 @@ void Frm_patternManage::initPatManageTabl()
     else
     {
         QStringList filters;     //定义过滤变量；
-        filters<<QString("*.hsp")<< QString("*.dis");
+        filters<< QString("*.dis");
         QDirIterator dir_iterator(PATTERN_FILE_LOCAL_PATH,filters,QDir::Files | QDir::NoSymLinks,QDirIterator::Subdirectories);//定义迭代器并设置过滤器；
         QString fileName_str,fileSize_str; //定义文件名称，文件的大小；
         while(dir_iterator.hasNext())
@@ -962,173 +815,11 @@ void patternTableWgt::initPatternTab()
 /*根据传入的数据刷新图案*/
 void patternTableWgt::freshPattern(QString fileType, QByteArray& bt)
 {
-    if(fileType.compare("wgr",Qt::CaseInsensitive)==0)
-    {
-        initWgrFilePattern(bt);
-    }
-    else if(fileType.compare("hsp",Qt::CaseInsensitive)==0)
-    {
-        initHspFilePattern(bt);
-    }
-    else if(fileType.compare("dat",Qt::CaseInsensitive)==0)
-    {
-        initDatFilePattern(bt);
-    }
-    else if(fileType.compare("dis",Qt::CaseInsensitive)==0)
+    if(fileType.compare("dis",Qt::CaseInsensitive)==0)
     {
         initDisFilePattern(bt);
     }
 }
-
-/*根据传入的数据刷新图案---WGR格式*/
-void patternTableWgt::initWgrFilePattern(QByteArray& bt)
-{
-    //Demio花型文件按byte解析(16进制)： //只是目前的分析进展，已经满足大部分花型的解析
-    //4D：表示花型文件的针数
-    //51 52：表示花型文件的行数 52高位 51低位
-    //55：表示当前花型文件配色种类(不一定在花型中使用)
-    //56开始：每5个字节代表一种配色，前3位字节分别代表rgb的三个数字，后2位字节补0作为扩充
-    //配色全部解析完之后空2个字节：1、每个字节代表一个格子的颜色，其数值代表的上面配色的顺序编号
-    //                         2、花型是从最下面一行开始解析的一直到第一行
-    //                         3、针数不为4的倍数的话，一行的长度会补齐为4的倍数
-
-    /*以下是按照demio的数据进行文件解析的*/
-
-    /*获取文件的行数*/
-    int patternLine = (quint8)bt.at(81)+(quint8)bt.at(82)*256;
-    m_row = patternLine+1;
-
-    /*从bt中获取配色信息*/
-    int colorNum = (quint8)bt.at(85);
-    int r,g,b;
-    m_lstColor.clear();
-    for(int i =0; i<colorNum; ++i)
-    {
-        r = (quint8)bt.at(86+0+i*5);
-        g = (quint8)bt.at(86+1+i*5);
-        b = (quint8)bt.at(86+2+i*5);
-        m_lstColor <<QColor(r,g,b);
-    }
-
-    /*表格初始化*/
-    initPatternTab();
-
-    int lineNum = ((quint8)bt.at(56))%4 == 0 ? (quint8)bt.at(56) : (((quint8)bt.at(56))/4+1)*4;
-    int num = 88+ ((quint8)bt.at(85))*5;
-
-    m_mapSelectedColor.clear();
-    for(int i=patternLine-1; i>=0; i--)
-        for(int j=0;j<lineNum;j++)
-        {
-            colorNum = (quint8)bt.at(num);
-            m_image.setPixel(j,i,m_lstColor.at(colorNum).rgba());
-            m_mapSelectedColor[colorNum] = m_lstColor.at(colorNum);
-            num++;
-        }
-    m_palettBoard = new paletteBoard(m_image,m_scale);
-    setCellWidget(1,1,m_palettBoard);
-}
-
-/*根据传入的数据刷新图案---HSP格式*/
-void patternTableWgt::initHspFilePattern(QByteArray& bt)
-{
-    //HSP文件:
-    //30：链条针数
-    //32: 颜色数目
-    //34 35：代表链条最高行数 34低位 35高位
-    //60~B9：文件保存时候的反复设置项目，每6个字节一组，共15组；每一组三个数据(开始行 结束行 转动)，每个数据占2个字节，低位在前高位在后
-    //150:开始画图  按使用颜色进行分区 每个区域中 一行32字节(无论多少针都是32字节) 32字节转换成2进制从高位起对应行的最左边起，1填色 0为默认的黑色
-
-    /*获取文件的行数*/
-    m_row = (quint8)bt.at(52)+(quint8)bt.at(53)*256 +1;
-    qDebug()<<"当前花型的行数"<<m_row;
-    /*初始化配色信息*/
-    m_lstColor.clear();
-    m_lstColor <<QColor(0,0,0) <<QColor(62,184,184) <<QColor(255, 75,0);
-
-    m_mapSelectedColor[0] = QColor(0,0,0);
-    m_mapSelectedColor[1] = QColor(62,184,184);
-    m_mapSelectedColor[2] = QColor(255, 75,0);
-
-    int colorNo = (quint8)bt.at(50);
-    /*表格初始化*/
-    initPatternTab();
-    int beginPosition = 336;
-    int circlTimes = (m_column-1)%8==0 ? (m_column-1)/8 : (m_column-1)/8+1; /*每个字节代表了8个格子，这块确认下需要多少字节*/
-    int value;
-    for(int i=0; i<colorNo; ++i)  /*颜色的循环*/
-    {
-        for(int j=0; j<m_row-1; ++j)    /*行数的循环*/
-        {
-            for(int z=0; z<circlTimes; ++z)  /*字节的循环*/
-            {
-                value = (quint8)bt.at(beginPosition+z);
-
-                for(int m= 7; m>=0; --m)  /*一个字节8个格子的循环*/
-                {
-                    int x=z*8+m;
-                    if((value & 0x1)==1)
-                        m_image.setPixel(x,j,m_lstColor.at(i+1).rgba());
-                    value >>= 1;
-                }
-            }
-
-            beginPosition += 32;
-        }
-    }
-    m_palettBoard = new paletteBoard(m_image,m_scale);
-    setCellWidget(1,1,m_palettBoard);
-}
-
-/*根据传入的数据刷新图案---Dat格式*/
-void patternTableWgt::initDatFilePattern(QByteArray& bt)
-{
-    //Dat文件：
-    //9：链条针数
-    //4C 4D或者4E 4F代表链条最高行数 4C 4E低位 4D 4F高位
-    //50开始：表示的是保存文件界面的反复设置框相关的参数，每组6个字节，每2个字节代表一个数据----这块数据和我们无关
-    //150：开始画图
-
-    /*获取文件的行数*/
-    m_row = (quint8)bt.at(76)+(quint8)bt.at(77)*256 +1;
-
-    /*初始化配色信息*/
-    m_lstColor.clear();
-    m_lstColor <<QColor(0,0,0) <<QColor(62,184,184) <<QColor(255, 75,0);
-
-    m_mapSelectedColor[0] = QColor(0,0,0);
-    m_mapSelectedColor[1] = QColor(62,184,184);
-    m_mapSelectedColor[2] = QColor(255, 75,0);
-
-    //int colorNo = (quint8)bt.at(50);
-    /*表格初始化*/
-    initPatternTab();
-
-    int beginPosition = 336;
-    int circlTimes = (m_column-1)%8==0 ? (m_column-1)/8 : (m_column-1)/8+1; /*每个字节代表了8个格子，这块确认下需要多少字节*/
-    //    for(int i=0; i<colorNo; ++i)  /*颜色的循环*/     当前没能分析出dat文件中的选色情况
-    for(int j=0; j<m_row-1; ++j)    /*行数的循环*/
-    {
-        for(int z=0; z<circlTimes; ++z)  /*字节的循环*/
-        {
-            int value = (quint8)bt.at(beginPosition+z);
-
-            for(int m= 7; m>=0; --m)  /*一个字节8个格子的循环*/
-            {
-                int x=z*8+m;
-                if((value & 0x1)==1)
-                    m_image.setPixel(x,j,m_lstColor.at(1).rgba());
-                value >>= 1;
-            }
-        }
-
-        beginPosition += 32;
-    }
-
-    m_palettBoard = new paletteBoard(m_image,m_scale);
-    setCellWidget(1,1,m_palettBoard);
-}
-
 
 /*根据传入的数据刷新图案---Dis格式*/
 void patternTableWgt::initDisFilePattern(QByteArray& bt)
@@ -1254,7 +945,6 @@ YFTableWgt::YFTableWgt(QMap<QString, int> m_mapYF, QWidget *parent, int scale, i
         setRowHeight(i,m_scale);
     }
 
-
     for(int j=0;j<count;++j)
     {
         setColumnWidth(j,m_scale);
@@ -1279,9 +969,7 @@ YFTableWgt::YFTableWgt(QMap<QString, int> m_mapYF, QWidget *parent, int scale, i
         {
             arry.append(QString("%1").arg((quint8)bt.at(fileHead->YF_SelectInfoPos+i*fileHead->rows+j)));
         }
-
         lstArry<<arry;
-        qDebug()<<"----------------"<<arry<<arry.length()<<lstArry.count();
     }
 
     int iColum=1;

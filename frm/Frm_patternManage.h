@@ -43,9 +43,6 @@ public:
 
     void freshPattern(QString fileType, QByteArray &bt);
     void initPatternTab();
-    void initWgrFilePattern(QByteArray &bt);
-    void initHspFilePattern(QByteArray& bt);
-    void initDatFilePattern(QByteArray& bt);
     void initDisFilePattern(QByteArray& bt);
     QMap<int, QColor> getSelectedColor(){return m_mapSelectedColor;}
 
@@ -107,8 +104,6 @@ private:
     void dealPg2_menu(int key);
     void dealPg2_YFSet(int key);
     void dealPg2_loop(int key);
-    void dealPg2_selectColor(int key);
-    void dealPg2_patTimingSet(int key);
     void dealPg3(int key);
     void initPatternProcesPage();
     void initPatManageTabl();
