@@ -98,12 +98,12 @@ void Frm_patternManage::dealPg2(int key)
     }
     case 2:
     {
-        dealPg2_selectColor(key);
+        //dealPg2_selectColor(key);
         break;
     }
     case 3:
     {
-        dealPg2_patTimingSet(key);
+        //dealPg2_patTimingSet(key);
         break;
     }
     default:
@@ -155,20 +155,6 @@ void Frm_patternManage::dealPg2_menu(int key)
         freshRightButtonContent(QStringList()<<tr("返回")<<tr("")<<tr("")<<tr("")<<tr("")<<tr(""));
         break;
     }
-    case Key_8:
-    {
-        ui->m_stackPatOper->setCurrentIndex(2);
-        freshRightButtonContent(QStringList()<<tr("返回")<<tr("")<<tr("")<<tr("")<<tr("")<<tr(""));
-        break;
-
-        break;
-    }
-    case Key_7:
-    {
-        ui->m_stackPatOper->setCurrentIndex(3);
-        freshRightButtonContent(QStringList()<<tr("返回")<<tr("")<<tr("")<<tr("")<<tr("")<<tr(""));
-        break;
-    }
     case Key_PageUp:
         break;
     default:
@@ -182,7 +168,7 @@ void Frm_patternManage::dealPg2_YFSet(int key)
     switch (key) {
     case Key_F9:
     {
-        freshRightButtonContent(QStringList()<<tr("返回")<<tr("纱嘴设置")<<tr("循环设置")<<tr("选针器\n配色设置")<<tr("花纹纱嘴\n时序设置")<<tr("保存"));
+        freshRightButtonContent(QStringList()<<tr("返回")<<tr("纱嘴设置")<<tr("循环设置")<<tr("")<<tr("")<<tr("保存"));
         ui->m_frmYFSet->hide();
         break;
     }
@@ -211,7 +197,13 @@ void Frm_patternManage::dealPg2_YFSet(int key)
     case Key_PageUp:
     {
         bool ok;
-        m_YFTable->setYF(m_lstYF.indexOf(ui->m_labYfName->text())+1,ui->m_edtRowStar->text().toInt(&ok,10),ui->m_edtRowEnd->text().toInt(&ok,10),(ui->m_labOperType->text()==tr("选择")));
+
+        //这里的colunm得根据去除表格中的空白行换算出来的
+        QString strYFName=ui->m_labYfName->text();
+        int column(1);
+        column = m_lstYF.indexOf(ui->m_labYfName->text()) + strYFName.left(1).toInt()*2 - 1;
+
+        m_YFTable->setYF(column,ui->m_edtRowStar->text().toInt(&ok,10),ui->m_edtRowEnd->text().toInt(&ok,10),(ui->m_labOperType->text()==tr("选择")));
         break;
 
     }
@@ -258,7 +250,7 @@ void Frm_patternManage::dealPg2_loop(int key)
     switch (key) {
     case Key_F9:
     {
-        freshRightButtonContent(QStringList()<<tr("返回")<<tr("纱嘴设置")<<tr("循环设置")<<tr("选针器\n配色设置")<<tr("花纹纱嘴\n时序设置")<<tr("保存"));
+        freshRightButtonContent(QStringList()<<tr("返回")<<tr("纱嘴设置")<<tr("循环设置")<<tr("")<<tr("")<<tr("保存"));
         ui->m_stackPatOper->setCurrentIndex(0);
         break;
     }
@@ -328,7 +320,7 @@ void Frm_patternManage::dealPg2_selectColor(int key)
     switch (key) {
     case Key_F9:
     {
-        freshRightButtonContent(QStringList()<<tr("返回")<<tr("纱嘴设置")<<tr("循环设置")<<tr("选针器\n配色设置")<<tr("花纹纱嘴\n时序设置")<<tr("保存"));
+        freshRightButtonContent(QStringList()<<tr("返回")<<tr("纱嘴设置")<<tr("循环设置")<<tr("")<<tr("")<<tr("保存"));
         ui->m_stackPatOper->setCurrentIndex(0);
         break;
     }
@@ -366,7 +358,7 @@ void Frm_patternManage::dealPg2_patTimingSet(int key)
     switch (key) {
     case Key_F9:
     {
-        freshRightButtonContent(QStringList()<<tr("返回")<<tr("纱嘴设置")<<tr("循环设置")<<tr("选针器\n配色设置")<<tr("花纹纱嘴\n时序设置")<<tr("保存"));
+        freshRightButtonContent(QStringList()<<tr("返回")<<tr("纱嘴设置")<<tr("循环设置")<<tr("")<<tr("")<<tr("保存"));
         ui->m_stackPatOper->setCurrentIndex(0);
         break;
     }
@@ -534,11 +526,12 @@ void Frm_patternManage::initShowFrmConfig()
 /*初始化花型编辑界面*/
 void Frm_patternManage::initPatternProcesPage()
 {
-    freshRightButtonContent(QStringList()<<tr("返回")<<tr("纱嘴设置")<<tr("循环设置")<<tr("选针器\n配色设置")<<tr("花纹纱嘴\n时序设置")<<tr("保存"));
+    freshRightButtonContent(QStringList()<<tr("返回")<<tr("纱嘴设置")<<tr("循环设置")<<tr("")<<tr("")<<tr("保存"));
     ui->m_stackPat->setCurrentIndex(1);
 
     QString filePath = ui->m_tabPatManage->item(ui->m_tabPatManage->currentRow(),2)->text();
     ui->m_title->setText(QString(tr("[花型编辑] %1")).arg(filePath));
+    QString fileName = ui->m_tabPatManage->item(ui->m_tabPatManage->currentRow(),3)->text();
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly))
     {
@@ -549,27 +542,37 @@ void Frm_patternManage::initPatternProcesPage()
 
     file.close();
 
+    PatternFile_Head *fileHead = (PatternFile_Head*)bt.data();
+
     m_iScale = 10;
     /*******************************初始化图案表格**************************************/
-    m_pattrenTable = new patternTableWgt(this, 168, "hsp", m_iScale, bt);
+    m_pattrenTable = new patternTableWgt(this, fileHead->needles, fileName.split(".").last(), m_iScale, bt);
     ui->m_grdPat->addWidget(m_pattrenTable);
     m_pattrenTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     /**************************************初始化刷子填色表格**************************************/
     QMap<QString, int>  m_mapYF;
     m_mapYF.clear();
-    m_mapYF[QString("%1").arg(tr("1路纱嘴"))] = 6;
     m_lstYF.clear();
-    m_lstYF<< tr("1路1号纱嘴") << tr("1路2号纱嘴")<< tr("1路3号纱嘴")<< tr("1路4号纱嘴")<< tr("1路5号纱嘴")<< tr("1路6号纱嘴");
-    m_YFTable = new YFTableWgt(m_mapYF, this, m_iScale,  m_pattrenTable->rowCount());
+    for(int i=0; i<fileHead->machineRoads; ++i)
+    {
+        m_mapYF[QString(tr("%1路纱嘴")).arg(i+1)] = fileHead->YF_Amount[i];
+        for(int j=0; j<fileHead->YF_Amount[i]; ++j)
+        {
+            m_lstYF<< QString(tr("%1路%2号纱嘴")).arg(i+1).arg(j+1);
+        }
+    }
+
+    m_YFTable = new YFTableWgt(m_mapYF, this, m_iScale,  m_pattrenTable->rowCount(), bt);
     ui->m_layoutYf->addWidget(m_YFTable);
     m_YFTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     /**************************************初始化循环设置**************************************/
     ui->m_tabLoop->clearContents();
-    ui->m_tabLoop->setRowCount(10);
+    ui->m_tabLoop->setRowCount(20);
     ui->m_tabLoop->setColumnCount(4); //设置总列数；
     ui->m_tabLoop->setColumnWidth(0,40);
     ui->m_tabLoop->setColumnWidth(1,50);
     ui->m_tabLoop->setColumnWidth(2,50);
+    ui->m_tabLoop->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->m_tabLoop->setHorizontalHeaderLabels(QStringList()<<tr("序号")<<tr("起始")<<tr("结束")<<tr("编织行数"));
     QFont font=ui->m_tabLoop->horizontalHeader()->font();  //设置表头的字体为粗体；
     font.setBold(true);
@@ -580,12 +583,17 @@ void Frm_patternManage::initPatternProcesPage()
     ui->m_tabLoop->horizontalHeaderItem(1)->setTextColor(QColor(0,85,0));
     ui->m_tabLoop->horizontalHeaderItem(2)->setTextColor(QColor(0,85,0));
     ui->m_tabLoop->horizontalHeaderItem(3)->setTextColor(QColor(0,85,0));
-    for(int i=0; i<10; ++i)
+    int m,n,j;
+    for(int i=0; i<20; ++i)
     {
+        m = ((quint8)bt.at(fileHead->REP_InfoPos+i*6)+ (quint8)bt.at(fileHead->REP_InfoPos+i*6+1)*256);
+        n = ((quint8)bt.at(fileHead->REP_InfoPos+i*6+2)+ (quint8)bt.at(fileHead->REP_InfoPos+i*6+3)*256);
+        j = ((quint8)bt.at(fileHead->REP_InfoPos+i*6+4)+ (quint8)bt.at(fileHead->REP_InfoPos+i*6+5)*256);
+
         ui->m_tabLoop->setItem(i,0,new QTableWidgetItem(QString("%1").arg(i)));
-        ui->m_tabLoop->setItem(i,1,new QTableWidgetItem(QString("0")));
-        ui->m_tabLoop->setItem(i,2,new QTableWidgetItem(QString("0")));
-        ui->m_tabLoop->setItem(i,3,new QTableWidgetItem(QString("0")));
+        ui->m_tabLoop->setItem(i,1,new QTableWidgetItem(QString("%1").arg(m)));
+        ui->m_tabLoop->setItem(i,2,new QTableWidgetItem(QString("%1").arg(n)));
+        ui->m_tabLoop->setItem(i,3,new QTableWidgetItem(QString("%1").arg(j)));
         ui->m_tabLoop->item(i,0)->setTextAlignment(Qt::AlignCenter);
         ui->m_tabLoop->item(i,1)->setTextAlignment(Qt::AlignCenter);
         ui->m_tabLoop->item(i,2)->setTextAlignment(Qt::AlignCenter);
@@ -685,7 +693,7 @@ void Frm_patternManage::initPatManageTabl()
     else
     {
         QStringList filters;     //定义过滤变量；
-        filters<<QString("*.hsp");
+        filters<<QString("*.hsp")<< QString("*.dis");
         QDirIterator dir_iterator(PATTERN_FILE_LOCAL_PATH,filters,QDir::Files | QDir::NoSymLinks,QDirIterator::Subdirectories);//定义迭代器并设置过滤器；
         QString fileName_str,fileSize_str; //定义文件名称，文件的大小；
         while(dir_iterator.hasNext())
@@ -966,6 +974,10 @@ void patternTableWgt::freshPattern(QString fileType, QByteArray& bt)
     {
         initDatFilePattern(bt);
     }
+    else if(fileType.compare("dis",Qt::CaseInsensitive)==0)
+    {
+        initDisFilePattern(bt);
+    }
 }
 
 /*根据传入的数据刷新图案---WGR格式*/
@@ -1117,6 +1129,43 @@ void patternTableWgt::initDatFilePattern(QByteArray& bt)
     setCellWidget(1,1,m_palettBoard);
 }
 
+
+/*根据传入的数据刷新图案---Dis格式*/
+void patternTableWgt::initDisFilePattern(QByteArray& bt)
+{
+    PatternFile_Head *fileHead = (PatternFile_Head*)bt.data();
+
+    /*获取文件的行数*/
+    m_row = fileHead->rows +1;
+
+    m_column = fileHead->needles+1;
+    /*初始化配色信息*/
+    int colorCount = fileHead->colorAmount;
+
+    m_lstColor.clear();
+    for(int i=0; i<colorCount; ++i)
+    {
+        QColor rgb = QColor((quint8)bt.at(fileHead->palettePos+1+i*4),(quint8)bt.at(fileHead->palettePos+2+i*4),(quint8)bt.at(fileHead->palettePos+3+i*4));
+        m_lstColor <<rgb;
+        m_mapSelectedColor[(quint8)bt.at(fileHead->palettePos+i*4)] = rgb;
+    }
+
+    /*表格初始化*/
+    initPatternTab();
+
+    for(int i=0; i<fileHead->rows; ++i)
+        for(int j=0; j<fileHead->needles; j++)
+        {
+
+            int num = (quint8)bt.at(fileHead->patternPos+i*(fileHead->needles)+j);
+            m_image.setPixel(j,i, (m_mapSelectedColor.keys().contains(num) ? m_mapSelectedColor[num].rgba():QColor(0,0,0).rgba()));
+        }
+
+
+    m_palettBoard = new paletteBoard(m_image,10);
+    setCellWidget(1,1,m_palettBoard);
+}
+
 void patternTableWgt::drawPos(int i)
 {
     m_scallBarVer->setPos(i);
@@ -1143,7 +1192,7 @@ void patternTableWgt::zoomIn()
 /*END******************************************************patternTableWgt*********************************************/
 
 /*start*****************************************************YFTableWgt******************************************************************************/
-YFTableWgt::YFTableWgt(QMap<QString, int> m_mapYF, QWidget *parent, int scale, int row) :
+YFTableWgt::YFTableWgt(QMap<QString, int> m_mapYF, QWidget *parent, int scale, int row, QByteArray bt) :
     cMyTableWIdget(parent)
 {
     /*算一下需要的列数，包含间隔的空格*/
@@ -1212,12 +1261,51 @@ YFTableWgt::YFTableWgt(QMap<QString, int> m_mapYF, QWidget *parent, int scale, i
     }
 
     setRowHeight(0,18);
+
+    //初始化沙嘴数据
+    PatternFile_Head *fileHead = (PatternFile_Head*)bt.data();
+    //获取总列数
+    int iCount(0);
+    for(int i=0; i<m_mapYF.count(); ++i)
+    {
+        iCount+=m_mapYF.values().at(i);
+    }
+    QStringList lstArry;
+    QString arry;
+    for(int i=0; i<iCount; ++i)
+    {
+        arry.clear();
+        for(int j=0; j<fileHead->rows; ++j)
+        {
+            arry.append(QString("%1").arg((quint8)bt.at(fileHead->YF_SelectInfoPos+i*fileHead->rows+j)));
+        }
+
+        lstArry<<arry;
+        qDebug()<<"----------------"<<arry<<arry.length()<<lstArry.count();
+    }
+
+    int iColum=1;
+    num=0;
+    for(int i=0; i<m_mapYF.count(); ++i)
+    {
+        for(int j=0; j<m_mapYF.values().at(i); ++j)
+        {
+            for(int z=0; z<fileHead->rows; ++z)
+            {
+                item(z+1,iColum)->setBackground(lstArry.at(num).mid(z,1)=="0" ? QBrush(QColor(255,255,255)):QColor(255, 0, 0));
+            }
+            num++;
+            iColum++;
+        }
+        iColum+=2;
+    }
+
 }
 
 /*设置纱嘴的选择情况*/
 bool YFTableWgt::setYF(int column, int star, int end, bool set)
 {
-    if(column>6 || column<1)
+    if(column>columnCount() || column<1)
     {
         myMessageBox::getInstance()->setMessage(tr("纱嘴设置范围不正确，请重新设置！"), BoxInfo);
         return false;

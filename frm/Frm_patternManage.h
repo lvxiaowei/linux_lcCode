@@ -46,6 +46,7 @@ public:
     void initWgrFilePattern(QByteArray &bt);
     void initHspFilePattern(QByteArray& bt);
     void initDatFilePattern(QByteArray& bt);
+    void initDisFilePattern(QByteArray& bt);
     QMap<int, QColor> getSelectedColor(){return m_mapSelectedColor;}
 
     QImage            m_image;
@@ -68,7 +69,7 @@ class YFTableWgt : public cMyTableWIdget
     Q_OBJECT
 
 public:
-    explicit YFTableWgt(QMap<QString, int> m_mapYF, QWidget *parent = 0, int scale = 5, int row = 200);
+    explicit YFTableWgt(QMap<QString, int> m_mapYF, QWidget *parent = 0, int scale = 5, int row = 200, QByteArray bt=0);
 
     bool setYF(int column, int star, int end, bool set);
 };

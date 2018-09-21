@@ -174,4 +174,22 @@ enum CMD_OPER_TYPE
     OPER_CHAIN_END               /*链条结束*/
 };
 
+struct PatternFile_Head
+{
+    char md5[16]; //128位MD5值
+    quint16 needles; //针数
+    quint16 rows; //花型行数
+    quint8 machineRoads; //机器路数,最大16路
+    quint8 YF_Amount[16];//每路对应的纱嘴个数，最大16路
+    quint8 colorAmount; //颜色数量(最多支持256种颜色)
+    quint32 palettePos; //调色板指针位置
+    quint32 paletteSize; //调色板数据区大小
+    quint32 patternPos; //花型主体指针位置
+    quint32 patternSize; //花型主体数据区大小
+    quint32 YF_SelectInfoPos; //纱嘴选择信息指针位置
+    quint32 YF_SelectInfoSize; //纱嘴选择信息数据区大小
+    quint32 REP_InfoPos; //REP循环信息指针位置
+    quint32 REP_InfoSize; //REP循环信息数据区大小
+};
+
 #endif // PUBLICDATA_H
