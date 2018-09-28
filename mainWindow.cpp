@@ -193,7 +193,7 @@ void mainWindow::handleXddpData(QByteArray data)
             ui->m_pngDirection->setPixmap(obj.value("dir") == true? *m_Forward:*m_Reversal);      //电机转动方向
             ui->m_edtStep->setText(QString("%1/%2").arg(obj.value("step_no").toInt()).arg(obj.value("step_nr").toInt()));  //当前步号/总步数
             ui->m_edtNeedle->setText(QString("%1").arg(obj.value("needle_no").toInt())); //当前针号
-            ui->m_edtCircle->setText(QString("%1/%2").arg(obj.value("round_no").toInt()).arg(obj.value("round_nr").toInt())); //当前圈数/总圈数
+            ui->m_edtCircle->setText(QString("%1/%2").arg(obj.value("rep_no").toInt()).arg(obj.value("rep_nr").toInt())); //当前圈数/总圈数
             //            ui->m_labStepTotal->setText(QString("%1").arg(obj.value("rep_nr").toInt()));//总循环数
             //            ui->m_labStepCurent->setText(QString("%1").arg(obj.value("rep_no").toInt()));//当前循环数
             //            ui->m_labRowTotal->setText(QString("%1").arg(obj.value("pattern_line_nr").toInt()));//花形总行数

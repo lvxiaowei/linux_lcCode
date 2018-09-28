@@ -464,7 +464,7 @@ background-image: url(:/image/tooopen_20185644.jpg);</string>
                 <string notr="true">background-color: rgb(238, 238, 236);</string>
                </property>
                <property name="text">
-                <string>1/2/20</string>
+                <string>0/0/0</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -527,7 +527,7 @@ background-image: url(:/image/tooopen_20185644.jpg);</string>
                 <string notr="true">background-color: rgb(238, 238, 236);</string>
                </property>
                <property name="text">
-                <string>11</string>
+                <string>1</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -1676,7 +1676,7 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
-                <string>[F6]
+                <string>[F5]
 </string>
                </property>
               </widget>
@@ -1749,7 +1749,7 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
-                <string>[F5]
+                <string>[F4]
 </string>
                </property>
               </widget>
@@ -1822,7 +1822,7 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
-                <string>[F2]
+                <string>[F1]
 产量清零</string>
                </property>
               </widget>
@@ -1967,7 +1967,7 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
-                <string>[F4]
+                <string>[F3]
 </string>
                </property>
               </widget>
@@ -2004,7 +2004,7 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
-                <string>[F3]
+                <string>[F2]
 总产量设置</string>
                </property>
               </widget>
@@ -2077,7 +2077,7 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
-                <string>[F1]
+                <string>[F0]
 归零</string>
                </property>
               </widget>
@@ -2114,7 +2114,7 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
-                <string>[F7]
+                <string>[F6]
 </string>
                </property>
               </widget>
@@ -2139,7 +2139,7 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
-                <string>[F8]
+                <string>[F7]
 </string>
                </property>
               </widget>

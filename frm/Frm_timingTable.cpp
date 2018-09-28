@@ -211,10 +211,21 @@ void Frm_timingTable::initTimingsTable()
 
     //辅助设置初始化
     /*设置表头内容*/
+    //延时步数
     QDomNodeList nodeDelayStep = document.elementsByTagName("delayStep");
     if(nodeDelayStep.count()==0) return;
-    QString strCircle = nodeDelayStep.at(0).toElement().attribute("circle");
-    QString strNeedle = nodeDelayStep.at(0).toElement().attribute("needle");
+    QString strDelayStepCircle = nodeDelayStep.at(0).toElement().attribute("circle");
+    QString strDelayStepNeedle = nodeDelayStep.at(0).toElement().attribute("needle");
+    //护针吹气
+    QDomNodeList nodeNeedleBlow = document.elementsByTagName("needleBlow");
+    if(nodeDelayStep.count()==0) return;
+    QString strNeedleBlowCircle = nodeNeedleBlow.at(0).toElement().attribute("circle");
+    QString strNeedleBlowNeedle = nodeNeedleBlow.at(0).toElement().attribute("needle");
+    //剪刀吹气
+    QDomNodeList nodeCutterBlow = document.elementsByTagName("cutterBlow");
+    if(nodeDelayStep.count()==0) return;
+    QString strCutterBlowCircle = nodeCutterBlow.at(0).toElement().attribute("circle");
+    QString strCutterBlowNeedle = nodeCutterBlow.at(0).toElement().attribute("needle");
 
     QStringList header;
     header<<tr("   名称   ")<<tr("   圈数")<<tr("   针数");
@@ -223,21 +234,35 @@ void Frm_timingTable::initTimingsTable()
     ui->m_wgtAssist->horizontalHeader()->setVisible(false);
     ui->m_wgtAssist->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch); //均分行
     ui->m_wgtAssist->setStyleSheet("gridline-color: rgb(0,0,0)");
+
     ui->m_wgtAssist->setItem(0, 0,   new QTableWidgetItem(tr("延时步数")));
     ui->m_wgtAssist->item(0,0)->setBackgroundColor(QColor("skyblue"));
-    ui->m_wgtAssist->setItem(1, 0,   new QTableWidgetItem(strCircle));
-    ui->m_wgtAssist->setItem(2, 0,   new QTableWidgetItem(strNeedle));
+    ui->m_wgtAssist->setItem(1, 0,   new QTableWidgetItem(strDelayStepCircle));
+    ui->m_wgtAssist->setItem(2, 0,   new QTableWidgetItem(strDelayStepNeedle));
+
+    ui->m_wgtAssist->setItem(0, 1,   new QTableWidgetItem(tr("护针吹气")));
+    ui->m_wgtAssist->item(0,1)->setBackgroundColor(QColor("skyblue"));
+    ui->m_wgtAssist->setItem(1, 1,   new QTableWidgetItem(strNeedleBlowCircle));
+    ui->m_wgtAssist->setItem(2, 1,   new QTableWidgetItem(strNeedleBlowNeedle));
+
+    ui->m_wgtAssist->setItem(0, 2,   new QTableWidgetItem(tr("剪刀吹气")));
+    ui->m_wgtAssist->item(0,2)->setBackgroundColor(QColor("skyblue"));
+    ui->m_wgtAssist->setItem(1, 2,   new QTableWidgetItem(strCutterBlowCircle));
+    ui->m_wgtAssist->setItem(2, 2,   new QTableWidgetItem(strCutterBlowNeedle));
     //设置单元格大小
     ui->m_wgtAssist->setColumnWidth(0,150);
+    ui->m_wgtAssist->setColumnWidth(1,150);
+    ui->m_wgtAssist->setColumnWidth(2,150);
     //设置表格数据单元格居中
-    for(int i=0; i<ui->m_wgtAssist->rowCount(); ++i)
-    {
-        QTableWidgetItem* item=ui->m_wgtAssist->item(i,0);
-        if(item != NULL)
+    for(int j=0; j<ui->m_wgtAssist->columnCount(); ++j)
+        for(int i=0; i<ui->m_wgtAssist->rowCount(); ++i)
         {
-            item->setTextAlignment(Qt::AlignCenter);
+            QTableWidgetItem* item=ui->m_wgtAssist->item(i,j);
+            if(item != NULL)
+            {
+                item->setTextAlignment(Qt::AlignCenter);
+            }
         }
-    }
     ui->m_wgtAssist->setCurrentCell(1,0);
 
 }
@@ -303,7 +328,15 @@ void Frm_timingTable::saveConfigFile()
     nodeDelayStep.at(0).toElement().setAttribute("circle", ui->m_wgtAssist->item(1,0)->text());
     nodeDelayStep.at(0).toElement().setAttribute("needle", ui->m_wgtAssist->item(2,0)->text());
 
+    QDomNodeList nodeNeedleBlow = document.elementsByTagName("needleBlow");
+    if(nodeNeedleBlow.count()==0) return;
+    nodeNeedleBlow.at(0).toElement().setAttribute("circle", ui->m_wgtAssist->item(1,1)->text());
+    nodeNeedleBlow.at(0).toElement().setAttribute("needle", ui->m_wgtAssist->item(2,1)->text());
 
+    QDomNodeList nodeCutterBlow = document.elementsByTagName("cutterBlow");
+    if(nodeCutterBlow.count()==0) return;
+    nodeCutterBlow.at(0).toElement().setAttribute("circle", ui->m_wgtAssist->item(1,2)->text());
+    nodeCutterBlow.at(0).toElement().setAttribute("needle", ui->m_wgtAssist->item(2,2)->text());
 
     QFile file(CONFIG_FILE_XML_PATH);
     file.open(QIODevice::WriteOnly|QFile::Truncate);
