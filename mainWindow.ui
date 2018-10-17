@@ -765,7 +765,7 @@ background-image: url(:/image/tooopen_20185644.jpg);</string>
                 <string notr="true">background-color: rgb(238, 238, 236);</string>
                </property>
                <property name="text">
-                <string>200</string>
+                <string>234/300</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -797,7 +797,7 @@ background-image: url(:/image/tooopen_20185644.jpg);</string>
                 <string notr="true">background-color: rgb(238, 238, 236);</string>
                </property>
                <property name="text">
-                <string>168</string>
+                <string>34/168</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -1640,7 +1640,8 @@ p, li { white-space: pre-wrap; }
 color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
-                <string>链条预览</string>
+                <string>Mini
+Cycle</string>
                </property>
               </widget>
              </item>
@@ -1676,8 +1677,8 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
-                <string>[F5]
-</string>
+                <string>Air
+Feeder</string>
                </property>
               </widget>
              </item>
@@ -1713,7 +1714,7 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
-                <string>单只自停</string>
+                <string>Zeroing</string>
                </property>
               </widget>
              </item>
@@ -1749,8 +1750,8 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
-                <string>[F4]
-</string>
+                <string>Take
+Down</string>
                </property>
               </widget>
              </item>
@@ -1786,7 +1787,8 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
-                <string>空转</string>
+                <string>PARA
+MOD</string>
                </property>
               </widget>
              </item>
@@ -1822,8 +1824,8 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
-                <string>[F1]
-产量清零</string>
+                <string>Y.F.ALL
+OUT</string>
                </property>
               </widget>
              </item>
@@ -1859,7 +1861,8 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
-                <string>加油</string>
+                <string>Low
+Speed</string>
                </property>
               </widget>
              </item>
@@ -1895,7 +1898,8 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
-                <string>低速锁定</string>
+                <string>Fan
+ON/OFF</string>
                </property>
               </widget>
              </item>
@@ -1931,7 +1935,8 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
-                <string>梭子抬起</string>
+                <string>End
+Cycle</string>
                </property>
               </widget>
              </item>
@@ -1967,8 +1972,8 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
-                <string>[F3]
-</string>
+                <string>PAT.SET
+Stop</string>
                </property>
               </widget>
              </item>
@@ -2004,8 +2009,8 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
-                <string>[F2]
-总产量设置</string>
+                <string>Cutter
+Set</string>
                </property>
               </widget>
              </item>
@@ -2041,7 +2046,8 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
-                <string>牵拉</string>
+                <string>Chain
+Block</string>
                </property>
               </widget>
              </item>
@@ -2077,8 +2083,7 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
-                <string>[F0]
-归零</string>
+                <string>Reset</string>
                </property>
               </widget>
              </item>
@@ -2114,8 +2119,8 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
-                <string>[F6]
-</string>
+                <string>Manual
+Cmd</string>
                </property>
               </widget>
              </item>
@@ -2139,8 +2144,7 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
-                <string>[F7]
-</string>
+                <string>Lang</string>
                </property>
               </widget>
              </item>
@@ -2164,7 +2168,7 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
-                <string/>
+                <string>Oiler</string>
                </property>
               </widget>
              </item>
