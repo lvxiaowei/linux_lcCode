@@ -46,3 +46,8 @@ void myMessageBox::setMessage(const QString msg, int type)
 
     this->show();
 }
+
+QString myMessageBox::getMessage()
+{
+    return ui->labInfo->text();
+}

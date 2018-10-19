@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(173, 127, 168);</string>
+  </property>
   <layout class="QGridLayout" name="gridLayout_3">
    <property name="leftMargin">
     <number>0</number>
@@ -39,7 +42,7 @@
       </font>
      </property>
      <property name="text">
-      <string>[链条编辑]</string>
+      <string>[链条管理]</string>
      </property>
     </widget>
    </item>
@@ -48,6 +51,147 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
+     <widget class="QWidget" name="page_3">
+      <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="2,1">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QFrame" name="frame">
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_7" rowstretch="0,0">
+          <item row="0" column="0">
+           <widget class="QTableWidget" name="m_tabChainManage">
+            <attribute name="horizontalHeaderStretchLastSection">
+             <bool>true</bool>
+            </attribute>
+            <attribute name="verticalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <property name="spacing">
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_14">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>当前工作链条:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="m_labWorkChain">
+              <property name="text">
+               <string>111</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_15">
+              <property name="text">
+               <string>当前操作文件夹：</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="m_labCurentOperForder">
+              <property name="text">
+               <string>本地</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QFrame" name="m_frmUsb">
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_5">
+          <property name="leftMargin">
+           <number>5</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>5</number>
+          </property>
+          <property name="bottomMargin">
+           <number>4</number>
+          </property>
+          <item row="0" column="0" colspan="2">
+           <widget class="QLabel" name="label_12">
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>载入链条文件：</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QTreeView" name="m_treeFile"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_13">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>文件类型：*.sta</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
      <widget class="QWidget" name="page">
       <layout class="QGridLayout" name="gridLayout_2">
        <property name="leftMargin">
@@ -65,25 +209,6 @@
        <property name="spacing">
         <number>0</number>
        </property>
-       <item row="0" column="0">
-        <widget class="QTreeWidget" name="m_chainTree">
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <attribute name="headerVisible">
-          <bool>false</bool>
-         </attribute>
-         <column>
-          <property name="text">
-           <string>New Column</string>
-          </property>
-         </column>
-        </widget>
-       </item>
        <item row="1" column="0">
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
@@ -225,6 +350,25 @@
          </item>
         </layout>
        </item>
+       <item row="0" column="0">
+        <widget class="QTreeWidget" name="m_chainTree">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <attribute name="headerVisible">
+          <bool>false</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>New Column</string>
+          </property>
+         </column>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="page_2">
@@ -281,6 +425,9 @@
          <attribute name="horizontalHeaderVisible">
           <bool>false</bool>
          </attribute>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
          <column/>
         </widget>
        </item>
@@ -291,6 +438,9 @@
          </property>
          <attribute name="horizontalHeaderVisible">
           <bool>false</bool>
+         </attribute>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
          </attribute>
          <column/>
         </widget>

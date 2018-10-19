@@ -1,25 +1,13 @@
 #include "Frm_chainProcessingClass.h"
 #include "ui_Frm_chainProcessingClass.h"
-
+#include <QFileSystemModel>
+#include <QDirModel>
 Frm_chainProcessingClass::Frm_chainProcessingClass(QWidget *parent) :
     baseClassWgt(parent),
     ui(new Ui::Frm_chainProcessingClass)
 {
     g_mapIndexToWgt[PAGE_CHAINPROCESSING]= this;
     ui->setupUi(this);
-
-    //几种不同命令类型的正则匹配
-    rx1=QRegExp(tr("(.*)[\[]状态：(.*)---针位：(.*)---模式：(.*)[]]"));             /*增加命令参数设置页面*/
-    rx2=QRegExp(tr("(.*)[\[]转速：(.*)---加速圈数：(.*)[]]"));                      /*增加速度设置页面*/
-    rx3=QRegExp(tr("(.*)[\[]宏：(.*)---动作针位：(.*)---模式：(.*)[]]"));            /*增加宏链接设置页面*/
-    rx4_1=QRegExp(tr("(.*)[\[]电机转向：(.*)---模式：(.*)---针位：(.*)[]]"));        /*增加电机转向设置页面-1*/
-    rx4_2=QRegExp(tr("(.*)[\[]电机转向：(.*)---模式：(.*)[]]"));                    /*增加电机转向设置页面-2*/
-    rx5=QRegExp(tr("(.*)[\[]动作状态：(.*)---针位：(.*)[]]"));                      /*增加低速度设置页面*/
-    rx6=QRegExp(tr("(.*)[\[]选针编号：(.*)---动作方式：(.*)---选针模式：(.*)[]]"));   /*增加选针模式设置页面*/
-    rx7=QRegExp(tr("(.*)[\[]向左移：(.*)---向右移：(.*)[]]"));                      /*增加脚底花纹宽度页面*/
-    rx8=QRegExp(tr("(.*)[\[]花纹名称：(.*)[]]"));                                  /*增加花纹调用页面*/
-    rx9=QRegExp(tr("(.*)[\[](.*),(.*),(.*),(.*),(.*),(.*),(.*),(.*)[]]"));       /*循环页面*/
-    rx10=QRegExp(tr("(.*)[\[]动 作状态：(.*)[]]"));                                /*禁止归零页面*/
 }
 
 Frm_chainProcessingClass::~Frm_chainProcessingClass()
@@ -33,6 +21,179 @@ void Frm_chainProcessingClass::keyPressEvent(int key)
 {
     qDebug()<<"当前正在链条编辑界面,key="<<key;
 
+    switch (ui->stackedWidget->currentIndex()) {
+    case 0:
+        dealPg1(key);
+        break;
+    case 1:
+        dealPg2(key);
+        break;
+    case 2:
+        dealPg3(key);
+        break;
+    default:
+        break;
+    }
+}
+
+/*处理串口数据-page1*/
+void Frm_chainProcessingClass::dealPg1(int key)
+{
+    if(myMessageBox::getInstance()->isVisible())
+    {
+        switch (key) {
+        case Key_plus:
+        {
+            if(myMessageBox::getInstance()->getMessage().contains(QString(tr("确定要删除"))))
+            {
+                QFile file(m_delFile);
+                file.remove();
+            }
+            else {
+                QFile file(m_destFile);
+                file.remove();
+                QFile::copy(m_sourceFile, m_destFile);
+            }
+            initChainManageTable();
+            myMessageBox::getInstance()->hide();
+            break;
+        }
+        case Key_minus:
+            myMessageBox::getInstance()->hide();
+        default:
+            break;
+        }
+    }
+
+    switch (key) {
+    case Key_F9:
+        setNextDealWgt(PAGE_SETTING);
+        break;
+    case Key_F8:
+    {
+        m_sourceFile = m_treeFileModel->filePath(ui->m_treeFile->currentIndex());
+        m_destFile =  QString("%1/%2").arg(CHAIN_FILE_LOCAL_PATH).arg(m_treeFileModel->fileName(ui->m_treeFile->currentIndex()));
+        /*判断本地是否有同名文件*/
+        if(isFileExist(m_destFile))
+        {
+            myMessageBox::getInstance()->setMessage(tr("本地有同名文件，是否覆盖？"), BoxQuesion);
+        }
+        else {
+            QFile::copy(m_sourceFile, m_destFile);
+            initChainManageTable();
+            myMessageBox::getInstance()->setMessage(tr("从U盘拷贝到本地成功！"), BoxInfo);
+        }
+        break;
+    }
+    case Key_9:
+    {
+        m_sourceFile = ui->m_tabChainManage->item(ui->m_tabChainManage->currentRow(),2)->text();
+        m_destFile = QString("%1/%2").arg(USB_PATH).arg(ui->m_tabChainManage->item(ui->m_tabChainManage->currentRow(),3)->text());
+        /*判断本地是否有同名文件*/
+        if(isFileExist(m_destFile))
+        {
+            myMessageBox::getInstance()->setMessage(tr("U盘有同名文件，是否覆盖？"), BoxQuesion);
+        }
+        else {
+            QFile::copy(m_sourceFile, m_destFile);
+            myMessageBox::getInstance()->setMessage(tr("从本地拷贝到U盘成功！"), BoxInfo);
+        }
+        break;
+    }
+    case Key_8:
+    {
+        QString fileName;
+        if( ui->m_labCurentOperForder->text()==tr("本地"))
+        {
+            m_delFile = ui->m_tabChainManage->item(ui->m_tabChainManage->currentRow(),2)->text();
+            fileName = ui->m_tabChainManage->item(ui->m_tabChainManage->currentRow(),3)->text();
+
+            /*如果是正在运行的链条，不可以删除*/
+            if(fileName == ui->m_labWorkChain->text())
+            {
+                myMessageBox::getInstance()->setMessage(tr("不可以删除当前正在工作的链条！"), BoxInfo);
+                return;
+            }
+        }
+        else {
+            m_delFile = m_treeFileModel->filePath(ui->m_treeFile->currentIndex());
+            fileName = m_treeFileModel->fileName(ui->m_treeFile->currentIndex());
+        }
+        myMessageBox::getInstance()->setMessage(QString(tr("确定要删除%1文件%2吗？")).arg(ui->m_labCurentOperForder->text()).arg(fileName), BoxQuesion);
+        break;
+    }
+    case Key_7:
+    {
+        initChainTree();
+        ui->stackedWidget->setCurrentIndex(1);
+        freshRightButtonContent(QStringList()<<tr("返回")<<tr("新增")<<tr("删除")<<tr("编辑")<<tr("")<<tr("下一菜单\n[1/2]"));
+        break;
+    }
+    case Key_PageUp:
+    {
+        QString fileName=ui->m_tabChainManage->item(ui->m_tabChainManage->currentRow(),3)->text();
+
+        if(fileName == ui->m_labWorkChain->text()) return;
+
+        ui->m_labWorkChain->setText(fileName);
+
+        QDomDocument document;
+        if(!getXmlConfig(document))
+            return;
+        QDomNodeList nodeTimTab = document.elementsByTagName("activeFile");
+        if(nodeTimTab.count()!=0)
+        {
+            nodeTimTab.at(0).toElement().setAttribute("sta", ui->m_labWorkChain->text());
+        }
+        QFile file(CONFIG_FILE_XML_PATH);
+        file.open(QIODevice::WriteOnly|QFile::Truncate);
+        QTextStream stream(&file);
+        document.save(stream, 4);
+        file.close();
+        break;
+    }
+
+    case Key_Set:
+    {
+        if(ui->m_labCurentOperForder->text()==tr("本地")) return;
+
+        QModelIndex index = ui->m_treeFile->currentIndex();
+
+        ui->m_treeFile->isExpanded(index) ? ui->m_treeFile->collapse(index):ui->m_treeFile->expand(index);
+        break;
+    }
+
+    case Key_Up:
+    {
+        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
+        ui->m_labCurentOperForder->text()==tr("本地") ? QCoreApplication::sendEvent(ui->m_tabChainManage, &keyPress):QCoreApplication::sendEvent(ui->m_treeFile, &keyPress);
+        break;
+    }
+    case Key_Down:
+    {
+        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier, QString());
+        ui->m_labCurentOperForder->text()==tr("本地") ? QCoreApplication::sendEvent(ui->m_tabChainManage, &keyPress):QCoreApplication::sendEvent(ui->m_treeFile, &keyPress);
+        break;
+    }
+    case Key_Left:
+    {
+        ui->m_labCurentOperForder->setText(tr("本地"));
+        break;
+    }
+    case Key_Right:
+    {
+        ui->m_labCurentOperForder->setText(tr("u盘"));
+        break;
+    }
+
+    default:
+        break;
+    }
+}
+
+/*处理串口数据-page2*/
+void Frm_chainProcessingClass::dealPg2(int key)
+{
     if(myMessageBox::getInstance()->isVisible())
     {
         switch (key) {
@@ -54,24 +215,21 @@ void Frm_chainProcessingClass::keyPressEvent(int key)
 
     if(g_lstRightButton.at(5)->text() == tr("下一菜单\n[1/2]"))
     {
-        dealPg1(key);
+        dealPg2_1(key);
     }
     else if(g_lstRightButton.at(5)->text() == tr("上一菜单\n[2/2]"))
     {
-        dealPg2(key);
-    }
-    else if(g_lstRightButton.at(5)->text() == tr("[新增命令]"))
-    {
-        dealPg3(key);
+        dealPg2_2(key);
     }
 }
 
-/*处理串口数据-page1*/
-void Frm_chainProcessingClass::dealPg1(int key)
+/*处理串口数据-page2-1*/
+void Frm_chainProcessingClass::dealPg2_1(int key)
 {
     switch (key) {
     case Key_F9:
-        setNextDealWgt(PAGE_SETTING);
+        ui->stackedWidget->setCurrentIndex(0);
+        freshRightButtonContent(QStringList()<<tr("返回")<<tr("从U盘\n输入")<<tr("输出到\nU盘")<<tr("删除")<<tr("编辑本地\n选中链条")<<tr("工作链条\n设定"));
         break;
     case Key_F8:
     {
@@ -80,7 +238,9 @@ void Frm_chainProcessingClass::dealPg1(int key)
             myMessageBox::getInstance()->setMessage(tr("请选择具体需要新增的步骤！"), BoxInfo);
             return;
         }
-        ui->stackedWidget->setCurrentIndex(1);
+        initCmdEdit();
+        ui->cmd_val1->setFocus();
+        ui->stackedWidget->setCurrentIndex(2);
         freshRightButtonContent(QStringList()<<tr("返回")<<tr("确认添加")<<tr("")<<tr("")<<tr("")<<tr("[新增命令]"));
         break;
     }
@@ -118,8 +278,8 @@ void Frm_chainProcessingClass::dealPg1(int key)
     }
 }
 
-/*处理串口数据-page2*/
-void Frm_chainProcessingClass::dealPg2(int key)
+/*处理串口数据-page2-2*/
+void Frm_chainProcessingClass::dealPg2_2(int key)
 {
     switch (key) {
     case Key_F9:
@@ -184,7 +344,7 @@ void Frm_chainProcessingClass::dealPg3(int key)
     switch (key) {
     case Key_F9:
     {
-        ui->stackedWidget->setCurrentIndex(0);
+        ui->stackedWidget->setCurrentIndex(1);
         freshRightButtonContent(QStringList()<<tr("返回")<<tr("新增")<<tr("删除")<<tr("编辑")<<tr("")<<tr("下一菜单\n[1/2]"));
         break;
     }
@@ -251,12 +411,42 @@ void Frm_chainProcessingClass::dealPg3(int key)
 void Frm_chainProcessingClass::initShowFrmConfig()
 {
     m_cpItem =NULL;
-    m_iCmdPagePos=0;
-    freshRightButtonContent(QStringList()<<tr("返回")<<tr("新增")<<tr("删除")<<tr("编辑")<<tr("")<<tr("下一菜单\n[1/2]"));
-    initChainTree();
+    ui->m_labCurentOperForder->setText(tr("本地"));
+    freshRightButtonContent(QStringList()<<tr("返回")<<tr("从U盘\n输入")<<tr("输出到\nU盘")<<tr("删除")<<tr("编辑本地\n选中链条")<<tr("工作链条\n设定"));
 
-    initCmdEdit();
-    ui->cmd_val1->setFocus();
+    /*初始化链条管理窗口*/
+    initChainManageTable();
+
+    /*获取当前正在运行的链条名字*/
+    QDomDocument document;
+    if(!getXmlConfig(document))
+        return;
+
+    QDomNodeList nodeTimTab = document.elementsByTagName("activeFile");
+    if(nodeTimTab.count()!=0)
+    {
+        ui->m_labWorkChain->setText(nodeTimTab.at(0).toElement().attribute("sta"));
+    }
+
+    /*初始化usb窗口*/
+    m_treeFileModel = new QFileSystemModel();
+    m_treeFileModel->setRootPath(USB_PATH);
+
+    QStringList nameFilter;
+    nameFilter << "*.sta";
+    m_treeFileModel->setNameFilterDisables(false);
+    m_treeFileModel->setNameFilters(nameFilter);
+    ui->m_treeFile->setModel(m_treeFileModel);
+    ui->m_treeFile->setRootIndex(m_treeFileModel->index(USB_PATH));
+    ui->m_treeFile->setColumnHidden(1,true);
+    ui->m_treeFile->setColumnHidden(2,true);
+    ui->m_treeFile->setColumnHidden(3,true);
+
+    ui->m_treeFile->setCurrentIndex(m_treeFileModel->index(0,0));
+
+    QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
+    myHelper::sleep(10);
+    QCoreApplication::sendEvent(ui->m_treeFile, &keyPress);
 }
 
 //初始化链条命令树
@@ -322,6 +512,70 @@ void Frm_chainProcessingClass::initChainTree()
     secendLevelNodeSort();
 
     DBProcessingClass::GetInstance()->closeDB();
+}
+
+/*初始化链条管理表格*/
+void Frm_chainProcessingClass::initChainManageTable()
+{
+    /*start*******************************************初始化链条管理窗口******************************************************/
+    /*初始化表格数据*/
+    ui->m_tabChainManage->clearContents();
+    ui->m_tabChainManage->setRowCount(0);
+    ui->m_tabChainManage->setColumnCount(4); //设置总列数；
+    ui->m_tabChainManage->setColumnWidth(0,50);
+    ui->m_tabChainManage->setColumnWidth(1,90);
+    ui->m_tabChainManage->setColumnWidth(2,0);
+
+    ui->m_tabChainManage->setHorizontalHeaderLabels(QStringList()<<tr("序号")<<tr("文件大小")<<tr("文件路径")<<tr("链条文件")); //设置表头名称；
+
+    QFont font=ui->m_tabChainManage->horizontalHeader()->font();  //设置表头的字体为粗体；
+    font.setBold(true);
+    font.setPixelSize(20);
+    ui->m_tabChainManage->horizontalHeader()->setFont(font);
+
+    ui->m_tabChainManage->horizontalHeaderItem(0)->setTextColor(QColor(0,85,0));
+    ui->m_tabChainManage->horizontalHeaderItem(1)->setTextColor(QColor(0,85,0));
+    ui->m_tabChainManage->horizontalHeaderItem(2)->setTextColor(QColor(0,85,0));
+    ui->m_tabChainManage->horizontalHeaderItem(3)->setTextColor(QColor(0,85,0));
+
+    ui->m_tabChainManage ->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->m_tabChainManage->horizontalHeader()->setFixedHeight(43);                  //设置表头的高度；
+
+    QDir dir(CHAIN_FILE_LOCAL_PATH);
+    if(!dir.exists())
+    {
+        return;
+    }
+    else
+    {
+        QStringList filters;     //定义过滤变量；
+        filters<< QString("*.sta");
+        QDirIterator dir_iterator(CHAIN_FILE_LOCAL_PATH,filters,QDir::Files | QDir::NoSymLinks,QDirIterator::Subdirectories);//定义迭代器并设置过滤器；
+        QString fileName_str,fileSize_str; //定义文件名称，文件的大小；
+        while(dir_iterator.hasNext())
+        {
+            dir_iterator.next();
+            QFileInfo file_info=dir_iterator.fileInfo();
+
+            fileName_str=file_info.fileName();
+            fileSize_str=QString::number(file_info.size())+tr(" 字节");
+            int rows=ui->m_tabChainManage->rowCount();
+            ui->m_tabChainManage->insertRow(rows);
+            ui->m_tabChainManage->setItem(rows,0,new QTableWidgetItem(QString("%1").arg(rows+1)));
+
+            ui->m_tabChainManage->setItem(rows,1,new QTableWidgetItem(fileSize_str));
+            ui->m_tabChainManage->setItem(rows,2,new QTableWidgetItem(file_info.filePath()));
+            ui->m_tabChainManage->setItem(rows,3,new QTableWidgetItem(fileName_str));
+            ui->m_tabChainManage->item(rows,0)->setTextAlignment(Qt::AlignCenter);
+            ui->m_tabChainManage->item(rows,1)->setTextAlignment(Qt::AlignCenter);
+            ui->m_tabChainManage->item(rows,3)->setTextAlignment(Qt::AlignCenter);
+        }
+    }
+
+    if(ui->m_tabChainManage->rowCount()>0)
+        ui->m_tabChainManage->setCurrentCell(0,0);
+
+    /*end*******************************************初始化链条管理窗口******************************************************/
 }
 
 /*链条命令树二级节点排序*/
@@ -406,4 +660,14 @@ void Frm_chainProcessingClass::freshCmdContent()
     int i = ui->m_wgtCmdName->currentRow();
     qDebug()<<"-------------------"<<i;
     freshCmdFormData(i);
+}
+
+bool Frm_chainProcessingClass::isFileExist(QString fileFullName)
+{
+    QFileInfo fileInfo(fileFullName);
+    if(fileInfo.isFile())
+    {
+        return true;
+    }
+    return false;
 }

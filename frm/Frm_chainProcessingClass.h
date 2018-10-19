@@ -3,6 +3,7 @@
 
 #include <baseClassWgt.h>
 #include <QTreeWidgetItem>
+#include <QFileSystemModel>
 #include "api/myMessageBox.h"
 
 namespace Ui {
@@ -23,17 +24,21 @@ public slots:
     void freshCmdContent();
 private:
     void initChainTree();
+    void initChainManageTable();
     void secendLevelNodeSort();
     void initCmdEdit();
     void freshCmdFormData(int index);
+    bool isFileExist(QString fileFullName);
     void dealPg1(int key);
     void dealPg2(int key);
+    void dealPg2_1(int key);
+    void dealPg2_2(int key);
     void dealPg3(int key);
     int m_iCmdPagePos;    //用来记录新增命令窗口页左右键操作的时候当前处于那一列控件
     QTreeWidgetItem* m_cpItem;
-    QRegExp rx1, rx2, rx3, rx4_1, rx4_2, rx5, rx6, rx7, rx8, rx9, rx10;
-
+    QFileSystemModel *m_treeFileModel;
     Ui::Frm_chainProcessingClass *ui;
+    QString m_sourceFile,m_destFile,m_delFile; //进行文件拷贝时候的源文件和目的文件
 };
 
 #endif // FRM_CHAINPROCESSINGCLASS_H

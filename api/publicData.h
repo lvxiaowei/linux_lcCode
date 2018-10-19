@@ -9,6 +9,8 @@
 #define CHAIN_ACTIVE_FILE_PATH  "/home/root/dualcylind/lxw/21212.db"
 /*配置文件*/
 #define COMMCONFIG_FILE_PATH  "/home/root/dualcylind/lxw/commonConfig.xml"
+/*usb path*/
+#define USB_PATH "/media/sda1"
 /*airValve config*/
 #define AIRVALUECONFIG_EN       "/home/root/dualcylind/config_STA/inivalve_en.txt"
 #define AIRVALUECONFIG_CH       "/home/root/dualcylind/config_STA/inivalve_zh.txt"

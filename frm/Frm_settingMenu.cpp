@@ -26,15 +26,13 @@ void Frm_settingMenu::keyPressEvent(int key)
         setNextDealWgt(PAGE_CHAINPROCESSING);
         break;
     case Key_9:
-        qDebug()<<"1111";
-         setNextDealWgt(PAGE_TIMINGS);
-         qDebug()<<"2222";
+        setNextDealWgt(PAGE_PATTERNMANAGE);
         break;
     case Key_8:
-
+        setNextDealWgt(PAGE_TIMINGS);
         break;
     case Key_7:
-        setNextDealWgt(PAGE_PATTERNMANAGE);
+
         break;
     case Key_PageUp:
 
@@ -47,5 +45,5 @@ void Frm_settingMenu::keyPressEvent(int key)
 /*数据初始化*/
 void Frm_settingMenu::initShowFrmConfig()
 {
-    freshRightButtonContent(QStringList()<<tr("返回")<<tr("链条编辑")<<tr("梭子设置")<<tr(" ")<<tr("花型管理")<<tr("设定"));
+    freshRightButtonContent(QStringList()<<tr("返回")<<tr("链条管理")<<tr("花型管理")<<tr("梭子设置")<<tr("")<<tr("设定"));
 }

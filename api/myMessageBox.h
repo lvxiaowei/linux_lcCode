@@ -37,6 +37,7 @@ public:
     }
 
     void setMessage(const QString msg, int type);
+    QString getMessage();
 private:
     Ui::myMessageBox *ui;
 
