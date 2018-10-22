@@ -30,6 +30,24 @@ void mainWindow::initData()
 
     g_pStackedWgt = ui->m_stackedWidget;
 
+    /*初始化宏键和函数的映射关系*/
+    m_mapFun[Key_F7]    = &mainWindow::macroFun_Reset;
+    m_mapFun[Key_F6]    = &mainWindow::macroFun_YFALLOUT;
+    m_mapFun[Key_F5]    = &mainWindow::macroFun_CutterSet;
+    m_mapFun[Key_F4]    = &mainWindow::macroFun_PatSetStop;
+    m_mapFun[Key_F3]    = &mainWindow::macroFun_TakeDown;
+    m_mapFun[Key_F2]    = &mainWindow::macroFun_AirFeeder;
+    m_mapFun[Key_F1]    = &mainWindow::macroFun_ManualCmd;
+    m_mapFun[Key_F0]    = &mainWindow::macroFun_Lang;
+    m_mapFun[Key_Ins]   = &mainWindow::macroFun_MiniCycle;
+    m_mapFun[Key_Del]   = &mainWindow::macroFun_EndCycle;
+    m_mapFun[Key_6]     = &mainWindow::macroFun_LowSpeed;
+    m_mapFun[Key_5]     = &mainWindow::macroFun_ChainBlock;
+    m_mapFun[Key_4]     = &mainWindow::macroFun_Zeroing;
+    m_mapFun[Key_Left]  = &mainWindow::macroFun_FanOnOff;
+    m_mapFun[Key_Set]   = &mainWindow::macroFun_ParaMod;
+    m_mapFun[Key_Right] = &mainWindow::macroFun_Oiler;
+
     /*新建定时器*/
     m_timer = new QTimer(this);
 
@@ -125,6 +143,28 @@ void mainWindow::keyPressEvent(int key)
         break;
     }
 
+    case Key_F7:
+    case Key_F6:
+    case Key_F5:
+    case Key_F4:
+    case Key_F3:
+    case Key_F2:
+    case Key_F1:
+    case Key_F0:
+    case Key_Ins:
+    case Key_Del:
+    case Key_6:
+    case Key_5:
+    case Key_4:
+    case Key_Left:
+    case Key_Set:
+    case Key_Right:
+    {
+        if(m_mapFun.keys().contains(key))
+            (this->*m_mapFun[key])();
+        break;
+    }
+
 
     case Key_plus:
     {
@@ -204,4 +244,100 @@ void mainWindow::handleXddpData(QByteArray data)
             ui->m_edtSpeed->setText(QString("%1").arg(obj.value("speed").toInt())); //速度
         }
     }
+}
+
+//01 强制初始状态
+void mainWindow::macroFun_Reset()
+{
+    qDebug()<<"-------------------------"<<"强制初始状态";
+}
+
+//02 梭子全出
+void mainWindow::macroFun_YFALLOUT()
+{
+    qDebug()<<"-------------------------"<<"梭子全出";
+}
+
+//03 剪刀抬起
+void mainWindow::macroFun_CutterSet()
+{
+    qDebug()<<"-------------------------"<<"剪刀抬起";
+}
+
+//04 选针器停止
+void mainWindow::macroFun_PatSetStop()
+{
+    qDebug()<<"-------------------------"<<"选针器停止";
+}
+
+//05 牵拉
+void mainWindow::macroFun_TakeDown()
+{
+    qDebug()<<"-------------------------"<<"牵拉";
+}
+
+//06 进线吹气
+void mainWindow::macroFun_AirFeeder()
+{
+    qDebug()<<"-------------------------"<<"进线吹气";
+}
+
+//07 气阀命令
+void mainWindow::macroFun_ManualCmd()
+{
+    qDebug()<<"-------------------------"<<"气阀命令";
+}
+
+//08 语言切换
+void mainWindow::macroFun_Lang()
+{
+    qDebug()<<"-------------------------"<<"语言切换";
+}
+
+//09 快编
+void mainWindow::macroFun_MiniCycle()
+{
+    qDebug()<<"-------------------------"<<"快编";
+}
+
+//10 单只自停
+void mainWindow::macroFun_EndCycle()
+{
+    qDebug()<<"-------------------------"<<"单只自停";
+}
+
+//11 低速
+void mainWindow::macroFun_LowSpeed()
+{
+    qDebug()<<"-------------------------"<<"低速";
+}
+
+//12 空转
+void mainWindow::macroFun_ChainBlock()
+{
+    qDebug()<<"-------------------------"<<"空转";
+}
+
+//13 归零
+void mainWindow::macroFun_Zeroing()
+{
+    qDebug()<<"-------------------------"<<"归零";
+}
+
+//14 吸风马达
+void mainWindow::macroFun_FanOnOff()
+{
+    qDebug()<<"-------------------------"<<"吸风马达";
+}
+
+//15 密度/速度/圈数
+void mainWindow::macroFun_ParaMod()
+{
+    qDebug()<<"-------------------------"<<"密度/速度/圈数";
+}
+
+//16 加油
+void mainWindow::macroFun_Oiler()
+{
+    qDebug()<<"-------------------------"<<"加油";
 }
