@@ -5,8 +5,8 @@
 #include <QKeyEvent>
 /*sta----------------------------------设备各类配置文件的路径------------------------------------*/
 /*Chain File*/
-#define CHAIN_FILE_LOCAL_PATH   "/home/root/dualcylind/sta/"
-#define CHAIN_ACTIVE_FILE_PATH  "/home/root/dualcylind/lxw/21212.db"
+#define PATH_CHAIN_FILE_LOCAL   "/home/root/dualcylind/sta/"
+#define PATH_CHAIN_ACTIVE_FILE  "/home/root/dualcylind/lxw/21212.db"
 /*配置文件*/
 #define COMMCONFIG_FILE_PATH  "/home/root/dualcylind/lxw/commonConfig.xml"
 /*usb path*/
@@ -21,6 +21,8 @@
 #define PATTERN_FILE_LOCAL_PATH "/home/root/dualcylind/lxw/pattern"
 
 #define CONFIG_FILE_XML_PATH        "/home/root/dualcylind/MachineConfig.xml"
+/*背光设置路径*/
+#define PATH_BACKLIGHT  "/sys/devices/soc0/backlight.16/backlight/backlight.16/brightness"
 /*end----------------------------------设备各类配置文件的路径------------------------------------*/
 
 typedef struct objProperty

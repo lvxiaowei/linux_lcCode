@@ -72,7 +72,7 @@ void Frm_chainProcessingClass::dealPg1(int key)
     case Key_F8:
     {
         m_sourceFile = m_treeFileModel->filePath(ui->m_treeFile->currentIndex());
-        m_destFile =  QString("%1/%2").arg(CHAIN_FILE_LOCAL_PATH).arg(m_treeFileModel->fileName(ui->m_treeFile->currentIndex()));
+        m_destFile =  QString("%1/%2").arg(PATH_CHAIN_FILE_LOCAL).arg(m_treeFileModel->fileName(ui->m_treeFile->currentIndex()));
         /*判断本地是否有同名文件*/
         if(isFileExist(m_destFile))
         {
@@ -454,7 +454,7 @@ void Frm_chainProcessingClass::initChainTree()
 {
     ui->m_chainTree->clear();
 
-    DBProcessingClass::GetInstance()->openDB(CHAIN_ACTIVE_FILE_PATH);
+    DBProcessingClass::GetInstance()->openDB(PATH_CHAIN_ACTIVE_FILE);
 
     //初始化主链条一级节点
     QString select_sql = "select distinct weavingPosition from mainChainTable order by step";
@@ -541,7 +541,7 @@ void Frm_chainProcessingClass::initChainManageTable()
     ui->m_tabChainManage ->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->m_tabChainManage->horizontalHeader()->setFixedHeight(43);                  //设置表头的高度；
 
-    QDir dir(CHAIN_FILE_LOCAL_PATH);
+    QDir dir(PATH_CHAIN_FILE_LOCAL);
     if(!dir.exists())
     {
         return;
@@ -550,7 +550,7 @@ void Frm_chainProcessingClass::initChainManageTable()
     {
         QStringList filters;     //定义过滤变量；
         filters<< QString("*.sta");
-        QDirIterator dir_iterator(CHAIN_FILE_LOCAL_PATH,filters,QDir::Files | QDir::NoSymLinks,QDirIterator::Subdirectories);//定义迭代器并设置过滤器；
+        QDirIterator dir_iterator(PATH_CHAIN_FILE_LOCAL,filters,QDir::Files | QDir::NoSymLinks,QDirIterator::Subdirectories);//定义迭代器并设置过滤器；
         QString fileName_str,fileSize_str; //定义文件名称，文件的大小；
         while(dir_iterator.hasNext())
         {

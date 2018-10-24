@@ -27,6 +27,10 @@ public:
     Frm_patternManage  *m_frmPatternManage;
     Frm_timingTable*  m_frmTimings;
     QList<QWidget*> lstWgtFrm;
+private:
+    void lightUpOrOffScreen();
+
+    bool bIsLock;   /*屏幕是否息屏*/
 signals:
     void toSerialData(QByteArray data);
     void toXddpData(QByteArray data);

@@ -3,6 +3,9 @@
 schedule::schedule(QWidget *parent)
     : QWidget(parent)
 {
+    bIsLock = true;
+    lightUpOrOffScreen();
+
     m_pMainWindow = new mainWindow();
     m_pMainWindow->show();
 
@@ -29,7 +32,7 @@ schedule::schedule(QWidget *parent)
         connect(pWgtFrm,SIGNAL(xddpDataToScheduler(QByteArray)),this,SLOT(writeToXddp(QByteArray)));     /*向管理口发送数据*/
     }
 
-//    baseClassWgt::g_pStackedWgt->setCurrentIndex(4);
+    //    baseClassWgt::g_pStackedWgt->setCurrentIndex(4);
 }
 
 schedule::~schedule()
@@ -42,7 +45,18 @@ void schedule::handleSerialData(QByteArray data)
 {
     bool ok;
     int iValue = data.toHex().toInt(&ok, 16);
-    baseClassWgt::g_pCurentDealWgt->keyPressEvent(iValue);
+
+    switch (iValue) {
+    case Key_F0:
+        lightUpOrOffScreen();
+        break;
+    default:
+    {
+        if(!bIsLock)
+            baseClassWgt::g_pCurentDealWgt->keyPressEvent(iValue);
+        break;
+    }
+    }
 }
 
 /*处理XDDP发过来的数据*/
@@ -72,4 +86,28 @@ void schedule::writeToSerial(QByteArray data)
 void schedule::writeToXddp(QByteArray data)
 {
     emit toXddpData(data);
+}
+
+/*点亮或熄灭屏幕*/
+void schedule::lightUpOrOffScreen()
+{
+    int lightLv;
+    if(bIsLock == false)
+    {
+        lightLv = 0;
+        bIsLock = true;
+    }
+    else
+    {
+        lightLv = 7;
+        bIsLock = false;
+    }
+
+    QFile file(PATH_BACKLIGHT);
+    if(file.open(QIODevice::WriteOnly  | QIODevice::Text|QIODevice::Truncate))
+    {
+        QTextStream in(&file);
+        in << lightLv;
+        file.close();
+    }
 }

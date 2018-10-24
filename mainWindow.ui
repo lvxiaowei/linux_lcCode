@@ -2144,7 +2144,8 @@ Cmd</string>
 color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
-                <string>Lang</string>
+                <string>Back
+Light</string>
                </property>
               </widget>
              </item>
