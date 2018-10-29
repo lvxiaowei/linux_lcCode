@@ -82,3 +82,14 @@ bool baseClassWgt::getXmlConfig(QDomDocument& document)
     }
     return true;
 }
+
+/*设置并刷新控件的属性*/
+void baseClassWgt::setObjProperty(QWidget* pwgt, const char *name, const QVariant &value)
+{
+    if(!pwgt) return;
+
+    pwgt->setProperty(name, value);
+    pwgt->style()->unpolish(pwgt);
+    pwgt->style()->polish(pwgt);
+    pwgt->update();
+}

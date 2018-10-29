@@ -66,5 +66,8 @@
         <file>image/step.png</file>
         <file>image/round.png</file>
         <file>image/moto.png</file>
+        <file>style.qss</file>
+        <file>image/in_1.png</file>
+        <file>image/out_1.png</file>
     </qresource>
 </RCC>

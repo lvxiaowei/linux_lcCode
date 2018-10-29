@@ -67,7 +67,8 @@ FORMS += \
     frm/Frm_settingMenu.ui \
     frm/Frm_testingMenu.ui \
     frm/Frm_patternManage.ui \
-    frm/Frm_timingTable.ui
+    frm/Frm_timingTable.ui \
+    mainWindowPop.ui
 
 
 RESOURCES += \

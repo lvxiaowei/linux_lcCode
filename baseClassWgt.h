@@ -82,6 +82,7 @@ public:
     static baseClassWgt* g_pCurentDealWgt;
 
     bool getXmlConfig(QDomDocument& document);
+    void setObjProperty(QWidget* pwgt, const char *name, const QVariant &value);
 signals:
     void serialDataToScheduler(QByteArray data);
     void xddpDataToScheduler(QByteArray data);

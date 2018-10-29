@@ -131,21 +131,6 @@ enum CmdTreeNodeLevel{
 #define TABLE_PATTERN         "patternTable"         //花型
 #define TABLE_PATTERNTIMINGS  "patternTimingsTable"  //花纹纱嘴时序表
 #define TABLE_COMMONCFG       "commonCfgTable"       //通用配置表
-/*记录主链条三级节点相关属性的结构体*/
-typedef struct chainLv3NodePro
-{
-    QString chainContent;          /*三级节点的内容*/
-    QString val1;
-    QString val2;
-    QString val3;
-    QString val4;
-    QString val5;
-    QString val6;
-    QString val7;
-    QString val8;
-    QString val9;
-    QString val10;
-}chainLv3NodePro;
 
 /*链条树上面命令行的操作类型*/
 enum CMD_OPER_TYPE
@@ -178,22 +163,59 @@ enum CMD_OPER_TYPE
     OPER_CHAIN_END               /*链条结束*/
 };
 
+/*键盘上面宏键相关的操作类型*/
+enum macroFun
+{
+    macroFu_Reset = 1,   //01 强制初始状态
+    macroFu_YFALLOUT,    //02 梭子全出
+    macroFu_CutterSet,   //03 剪刀抬起
+    macroFu_PatSetStop,  //04 选针器停止
+    macroFu_TakeDown,    //05 牵拉
+    macroFu_AirFeeder,   //06 进线吹气
+    macroFu_ManualCmd,   //07 气阀命令
+    macroFu_BackLight,   //08 背光
+    macroFu_MiniCycle,   //09 快编
+    macroFu_EndCycle,    //10 单只自停
+    macroFu_LowSpeed,    //11 低速
+    macroFu_ChainBlock,  //12 空转
+    macroFu_Zeroing,     //13 归零
+    macroFu_FanOnOff,    //14 吸风马达
+    macroFu_ParaMod,     //15 密度/速度/圈数
+    macroFu_Oiler        //16 加油
+};
+
+/*各个界面不同操作提示确认窗口索引*/
+enum PromptWindowIndex
+{
+    pop_settting = macroFu_Oiler+1,  //切换到设置界面的提示窗口的索引
+    pop_testing,                     //切换到测试界面的提示窗口的索引
+    runningState,                    //主界面运行的索引
+};
+
 struct PatternFile_Head
 {
-    char md5[16]; //128位MD5值
-    quint16 needles; //针数
-    quint16 rows; //花型行数
-    quint8 machineRoads; //机器路数,最大16路
-    quint8 YF_Amount[16];//每路对应的纱嘴个数，最大16路
-    quint8 colorAmount; //颜色数量(最多支持256种颜色)
-    quint32 palettePos; //调色板指针位置
-    quint32 paletteSize; //调色板数据区大小
-    quint32 patternPos; //花型主体指针位置
-    quint32 patternSize; //花型主体数据区大小
-    quint32 YF_SelectInfoPos; //纱嘴选择信息指针位置
+    char md5[16];              //128位MD5值
+    quint16 needles;           //针数
+    quint16 rows;              //花型行数
+    quint8 machineRoads;       //机器路数,最大16路
+    quint8 YF_Amount[16];      //每路对应的纱嘴个数，最大16路
+    quint8 colorAmount;        //颜色数量(最多支持256种颜色)
+    quint32 palettePos;        //调色板指针位置
+    quint32 paletteSize;       //调色板数据区大小
+    quint32 patternPos;        //花型主体指针位置
+    quint32 patternSize;       //花型主体数据区大小
+    quint32 YF_SelectInfoPos;  //纱嘴选择信息指针位置
     quint32 YF_SelectInfoSize; //纱嘴选择信息数据区大小
-    quint32 REP_InfoPos; //REP循环信息指针位置
-    quint32 REP_InfoSize; //REP循环信息数据区大小
+    quint32 REP_InfoPos;       //REP循环信息指针位置
+    quint32 REP_InfoSize;      //REP循环信息数据区大小
 };
+
+#define STATUS      "states"
+/*运行指示灯的点灯状态*/
+#define STATUS_ON   "ON"
+#define STATUS_OFF  "OFF"
+/*气阀的进出状态*/
+#define STATUS_IN   "IN"
+#define STATUS_OUT  "OUT"
 
 #endif // PUBLICDATA_H

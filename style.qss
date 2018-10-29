@@ -1,0 +1,6 @@
+#m_labLed[states=IN]{
+qproperty-pixmap: url(:/image/in_1.png);
+}
+#m_labLed[states=OUT]{
+qproperty-pixmap: url(:/image/out_1.png);
+}

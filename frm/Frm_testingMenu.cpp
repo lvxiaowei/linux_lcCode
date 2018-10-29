@@ -543,7 +543,8 @@ void Frm_testingMenu::writeToXddp(const int testType, QString operMode)
     QJsonObject json;
     json.insert("mesg_dir", "req");
     QJsonObject jsContent;
-    jsContent.insert("operMode", operMode);
+    if(!operMode.isEmpty())
+        jsContent.insert("operMode", operMode);
     switch (testType) {
     case AIRVALVETEST:
     {

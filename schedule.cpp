@@ -86,6 +86,7 @@ void schedule::writeToSerial(QByteArray data)
 void schedule::writeToXddp(QByteArray data)
 {
     emit toXddpData(data);
+    qDebug()<<"发送给XDDP的数据:"<<data;
 }
 
 /*点亮或熄灭屏幕*/
