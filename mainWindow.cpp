@@ -197,7 +197,7 @@ void mainWindow::initShowFrmConfig()
 {
     ui->m_stackedWidget->setCurrentIndex(0);
     freshRightButtonContent(QStringList()<<tr("设置")<<tr("测试")<<tr("")<<tr("")<<tr("")<<tr("键盘锁定"));
-    //    connect(m_timer,SIGNAL(timeout()),this,SLOT(writeToXddp()));
+//        connect(m_timer,SIGNAL(timeout()),this,SLOT(writeToXddp()));
     m_bKeyLock = false;
     m_isRunning = false;
 }
@@ -223,67 +223,6 @@ void mainWindow::writeToXddp(const int operType, QString operMode)
         json.insert("mesg_type", "working_state");
         break;
     }
-        //    case macroFu_Reset:
-        //    {
-        //        json.insert("mesg_type", "func_key");
-        //        jsContent.insert("key", macroFu_Reset);
-        //        break;
-        //    }
-        //    case macroFu_YFALLOUT:
-        //    {
-        //        json.insert("mesg_type", "func_key");
-        //        jsContent.insert("key", macroFu_YFALLOUT);
-        //        break;
-        //    }
-        //    case macroFu_PatSetStop:
-        //    {
-        //        json.insert("mesg_type", "func_key");
-        //        jsContent.insert("key", macroFu_PatSetStop);
-        //        break;
-        //    }
-        //    case macroFu_TakeDown:
-        //    {
-        //        json.insert("mesg_type", "func_key");
-        //        jsContent.insert("key", macroFu_TakeDown);
-        //        break;
-        //    }
-
-        //    case macroFu_MiniCycle:
-        //    {
-        //        json.insert("mesg_type", "func_key");
-        //        jsContent.insert("key", macroFu_MiniCycle);
-        //        break;
-        //    }
-        //    case macroFu_EndCycle:
-        //    {
-        //        json.insert("mesg_type", "func_key");
-        //        jsContent.insert("key", macroFu_EndCycle);
-        //        break;
-        //    }
-        //    case macroFu_LowSpeed:
-        //    {
-        //        json.insert("mesg_type", "func_key");
-        //        jsContent.insert("key", macroFu_LowSpeed);
-        //        break;
-        //    }
-        //    case macroFu_ChainBlock:
-        //    {
-        //        json.insert("mesg_type", "func_key");
-        //        jsContent.insert("key", macroFu_ChainBlock);
-        //        break;
-        //    }
-        //    case macroFu_Zeroing:
-        //    {
-        //        json.insert("mesg_type", "func_key");
-        //        jsContent.insert("key", macroFu_Zeroing);
-        //        break;
-        //    }
-        //    case macroFu_FanOnOff:
-        //    {
-        //        json.insert("mesg_type", "func_key");
-        //        jsContent.insert("key", macroFu_FanOnOff);
-        //        break;
-        //    }
     case macroFu_ManualCmd:
     {
         json.insert("mesg_type", "func_key");

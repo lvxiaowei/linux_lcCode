@@ -23,9 +23,12 @@ schedule::schedule(QWidget *parent)
 
     m_frmTimings = new Frm_timingTable();
     m_pMainWindow->addChildWgt(m_frmTimings);
+
+    m_frmParaSetting = new Frm_parameterSettings();
+    m_pMainWindow->addChildWgt(m_frmParaSetting);
     /*将几个窗口放在加入到 lst 中*/
     lstWgtFrm.clear();
-    lstWgtFrm <<m_pMainWindow <<m_frmChain <<m_frmSettingMenu <<m_frmTestMenu <<m_frmPatternManage<<m_frmTimings;
+    lstWgtFrm <<m_pMainWindow <<m_frmChain <<m_frmSettingMenu <<m_frmTestMenu <<m_frmPatternManage<<m_frmTimings<<m_frmParaSetting;
 
     foreach (QWidget* pWgtFrm, lstWgtFrm) {
         connect(pWgtFrm,SIGNAL(serialDataToScheduler(QByteArray)),this,SLOT(writeToSerial(QByteArray))); /*向串口发送数据*/

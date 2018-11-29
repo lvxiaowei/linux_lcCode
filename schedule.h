@@ -8,6 +8,7 @@
 #include "frm/Frm_testingMenu.h"
 #include "frm/Frm_patternManage.h"
 #include "frm/Frm_timingTable.h"
+#include "frm/Frm_parameterSettings.h"
 #include "baseClassWgt.h"
 
 #include <QDebug>
@@ -26,6 +27,7 @@ public:
     Frm_testingMenu  *m_frmTestMenu;
     Frm_patternManage  *m_frmPatternManage;
     Frm_timingTable*  m_frmTimings;
+    Frm_parameterSettings *m_frmParaSetting;
     QList<QWidget*> lstWgtFrm;
 private:
     void lightUpOrOffScreen();

@@ -19,8 +19,9 @@ enum operatePage
     PAGE_MSGBOX,          //消息弹出框
     PAGE_CHAINPROCESSING, //链条管理
     PAGE_TESTINGMENU,     //测试菜单界面
-    PAGE_PATTERNMANAGE,    //花型管理界面
-    PAGE_TIMINGS,           //时序管理界面
+    PAGE_PATTERNMANAGE,   //花型管理界面
+    PAGE_TIMINGS,         //时序管理界面
+    PAGE_PARASETTING,     //参数设置
 };
 
 /*键盘key值对应表*/

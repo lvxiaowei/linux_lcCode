@@ -35,7 +35,7 @@ void Frm_settingMenu::keyPressEvent(int key)
 
         break;
     case Key_PageUp:
-
+        setNextDealWgt(PAGE_PARASETTING);
         break;
     default:
         break;

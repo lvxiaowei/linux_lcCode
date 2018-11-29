@@ -69,5 +69,8 @@
         <file>style.qss</file>
         <file>image/in_1.png</file>
         <file>image/out_1.png</file>
+        <file>image/machinset_setzero.png</file>
+        <file>image/button_cancel.png</file>
+        <file>image/button_ok.png</file>
     </qresource>
 </RCC>

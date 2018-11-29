@@ -41,7 +41,8 @@ SOURCES += \
     frm/Frm_settingMenu.cpp \
     frm/Frm_testingMenu.cpp \
     frm/Frm_patternManage.cpp \
-    frm/Frm_timingTable.cpp
+    frm/Frm_timingTable.cpp \
+    frm/Frm_parameterSettings.cpp
 
 HEADERS += \
     schedule.h \
@@ -58,7 +59,8 @@ HEADERS += \
     frm/Frm_settingMenu.h \
     frm/Frm_testingMenu.h \
     frm/Frm_patternManage.h \
-    frm/Frm_timingTable.h
+    frm/Frm_timingTable.h \
+    frm/Frm_parameterSettings.h
 
 FORMS += \
     mainWindow.ui \
@@ -68,7 +70,9 @@ FORMS += \
     frm/Frm_testingMenu.ui \
     frm/Frm_patternManage.ui \
     frm/Frm_timingTable.ui \
-    mainWindowPop.ui
+    mainWindowPop.ui \
+    frm/Frm_parameterSettings.ui \
+    frm/Frm_parameterSettingsPop.ui
 
 
 RESOURCES += \
