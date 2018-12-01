@@ -63,30 +63,30 @@ void Frm_testingMenu::initShowFrmConfig()
 void Frm_testingMenu::dealPg1(int key)
 {
     switch (key) {
-    case Key_F9:
+    case Key_F0:
         setNextDealWgt(PAGE_RUNNING);
         break;
-    case Key_F8:
+    case Key_F1:
     {
         initAirValvePage();
         break;
     }
-    case Key_9:
+    case Key_F2:
     {
         initActuatorPage();
         break;
     }
-    case Key_8:
+    case Key_F3:
     {
         initMotoPage();
         break;
     }
-    case Key_7:
+    case Key_F4:
     {
         initYFPage();
         break;
     }
-    case Key_PageUp:
+    case Key_F5:
         break;
     default:
         break;
@@ -97,22 +97,22 @@ void Frm_testingMenu::dealPg1(int key)
 void Frm_testingMenu::dealPg2(int key)
 {
     switch (key) {
-    case Key_F9:
+    case Key_F0:
         initShowFrmConfig();
         emit writeToXddp(AIRVALVETEST, "out");
         break;
-    case Key_F8:
+    case Key_F1:
         break;
-    case Key_9:
+    case Key_F2:
     {
         emit writeToXddp(AIRVALVETEST);
         break;
     }
-    case Key_8:
+    case Key_F3:
         break;
-    case Key_7:
+    case Key_F4:
         break;
-    case Key_PageUp:
+    case Key_F5:
     {
         int curtFrq = ui->m_labFre->text().split("(").at(0).toInt()+1;
         ui->m_labFre->setText(QString("%1(秒)").arg(curtFrq%5==0 ? 5:curtFrq%5));
@@ -157,13 +157,13 @@ void Frm_testingMenu::dealPg2(int key)
 void Frm_testingMenu::dealPg3(int key)
 {
     switch (key) {
-    case Key_F9:
+    case Key_F0:
         if(m_bIsTesting)
             return;
         initShowFrmConfig();
         emit writeToXddp(MOTOTEST, "out");
         break;
-    case Key_F8:
+    case Key_F1:
     {
         m_bIsTesting = !m_bIsTesting;
         if(m_bIsTesting && m_iPos==2)
@@ -207,6 +207,9 @@ void Frm_testingMenu::dealPg3(int key)
     case Key_4:
     case Key_5:
     case Key_6:
+    case Key_7:
+    case Key_8:
+    case Key_9:
     {
         if(!m_mapNoKeyToValue.contains(key) || m_bIsTesting) break;
 
@@ -217,7 +220,7 @@ void Frm_testingMenu::dealPg3(int key)
 
     }
         break;
-    case Key_Del:
+    case Key_minus:
     {
         bool ok;
         QString strCurentValue = m_lstMotoVal.at(m_iPos)->text();
@@ -234,13 +237,13 @@ void Frm_testingMenu::dealPg3(int key)
 void Frm_testingMenu::dealPg4(int key)
 {
     switch (key) {
-    case Key_F9:
+    case Key_F0:
         if(g_lstRightButton.at(0)->text().isEmpty())
             return;
         initShowFrmConfig();
         emit writeToXddp(SELECTIONTEST, "out");
         break;
-    case Key_F8:
+    case Key_F1:
     {
         if(g_lstRightButton.at(1)->text().isEmpty())
         {
@@ -260,7 +263,7 @@ void Frm_testingMenu::dealPg4(int key)
         writeToXddp(SELECTIONTEST);
         break;
     }
-    case Key_9:
+    case Key_F2:
     {
         if(g_lstRightButton.at(2)->text().isEmpty())
         {
@@ -280,7 +283,7 @@ void Frm_testingMenu::dealPg4(int key)
         writeToXddp(SELECTIONTEST);
         break;
     }
-    case Key_8:
+    case Key_F3:
     {
         if(g_lstRightButton.at(3)->text().isEmpty())
         {
@@ -300,14 +303,14 @@ void Frm_testingMenu::dealPg4(int key)
         writeToXddp(SELECTIONTEST);
         break;
     }
-    case Key_7:
+    case Key_F4:
     {
         m_bIsTesting = true;
         m_strTestMode = "single";
         writeToXddp(SELECTIONTEST);
         break;
     }
-    case Key_PageUp:
+    case Key_F5:
     {
         if(g_lstRightButton.at(5)->text().isEmpty())
             return;
@@ -341,13 +344,13 @@ void Frm_testingMenu::dealPg4(int key)
 void Frm_testingMenu::dealPg5(int key)
 {
     switch (key) {
-    case Key_F9:
+    case Key_F0:
         if(g_lstRightButton.at(0)->text().isEmpty())
             return;
         initShowFrmConfig();
         emit writeToXddp(YFTEST, "out");
         break;
-    case Key_F8:
+    case Key_F1:
     {
         if(g_lstRightButton.at(1)->text() == tr("停止"))
         {
@@ -363,7 +366,7 @@ void Frm_testingMenu::dealPg5(int key)
         writeToXddp(YFTEST);
         break;
     }
-    case Key_9:
+    case Key_F2:
     {
         if(g_lstRightButton.at(2)->text().isEmpty())
         {
@@ -373,11 +376,11 @@ void Frm_testingMenu::dealPg5(int key)
         writeToXddp(YFTEST);
         break;
     }
-    case Key_8:
+    case Key_F3:
         break;
-    case Key_7:
+    case Key_F4:
         break;
-    case Key_PageUp:
+    case Key_F5:
     {
         if(g_lstRightButton.at(5)->text().isEmpty())
         {

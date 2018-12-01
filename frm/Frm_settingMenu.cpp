@@ -19,22 +19,22 @@ void Frm_settingMenu::keyPressEvent(int key)
 {
     qDebug()<<"当前正在菜单界面,key="<<key;
     switch (key) {
-    case Key_F9:
+    case Key_F0:
         setNextDealWgt(PAGE_RUNNING);
         break;
-    case Key_F8:
+    case Key_F1:
         setNextDealWgt(PAGE_CHAINPROCESSING);
         break;
-    case Key_9:
+    case Key_F2:
         setNextDealWgt(PAGE_PATTERNMANAGE);
         break;
-    case Key_8:
+    case Key_F3:
         setNextDealWgt(PAGE_TIMINGS);
         break;
-    case Key_7:
+    case Key_F4:
 
         break;
-    case Key_PageUp:
+    case Key_F5:
         setNextDealWgt(PAGE_PARASETTING);
         break;
     default:

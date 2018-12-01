@@ -147,7 +147,7 @@
               <string notr="true"/>
              </property>
              <property name="text">
-              <string>确定(&amp;O)</string>
+              <string>确定(SET)</string>
              </property>
              <property name="icon">
               <iconset resource="../style.qrc">
@@ -176,7 +176,7 @@
               <string notr="true"/>
              </property>
              <property name="text">
-              <string>取消(&amp;C)</string>
+              <string>取消(ESC)</string>
              </property>
              <property name="icon">
               <iconset resource="../style.qrc">

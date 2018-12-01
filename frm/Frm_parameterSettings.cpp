@@ -45,18 +45,18 @@ void Frm_parameterSettings::keyPressEvent(int key)
 
     qDebug()<<"当前正在设置界面,key="<<key;
     switch (key) {
-    case Key_F9:
+    case Key_F0:
         setNextDealWgt(PAGE_SETTING);
         break;
-    case Key_F8:
+    case Key_F1:
         break;
-    case Key_9:
+    case Key_F2:
         break;
-    case Key_8:
+    case Key_F3:
         break;
-    case Key_7:
+    case Key_F4:
         break;
-    case Key_PageUp:
+    case Key_F5:
         break;
 
 
@@ -137,6 +137,9 @@ void Frm_parameterSettings::keyPressEventPopSet_paswd(int key)
     case Key_4:
     case Key_5:
     case Key_6:
+    case Key_7:
+    case Key_8:
+    case Key_9:
     {
         bool ok;
         QString strInputValue = QString("%1").arg(m_mapNoKeyToValue[key]);
@@ -145,7 +148,7 @@ void Frm_parameterSettings::keyPressEventPopSet_paswd(int key)
 
     }
         break;
-    case Key_Del:
+    case Key_minus:
     {
         QString strCurentValue = ui_pop.m_edtPasWd->text();
         strCurentValue = strCurentValue.left(strCurentValue.length() - 1);
@@ -207,15 +210,17 @@ void Frm_parameterSettings::keyPressEventPopSet_systimeSet(int key)
     case Key_4:
     case Key_5:
     case Key_6:
+    case Key_7:
+    case Key_8:
+    case Key_9:
     {
-        bool ok;
         QString strInputValue = QString("%1").arg(m_mapNoKeyToValue[key]);
         QString strCurentValue = ui_pop.m_edtTime->text() + strInputValue;
         ui_pop.m_edtTime->setText(strCurentValue.trimmed());
 
     }
         break;
-    case Key_Del:
+    case Key_minus:
     {
         QString strCurentValue = ui_pop.m_edtTime->text();
         strCurentValue = strCurentValue.left(strCurentValue.length() - 1);

@@ -50,7 +50,7 @@ void schedule::handleSerialData(QByteArray data)
     int iValue = data.toHex().toInt(&ok, 16);
 
     switch (iValue) {
-    case Key_F0:
+    case Key_Fun7:
         lightUpOrOffScreen();
         break;
     default:

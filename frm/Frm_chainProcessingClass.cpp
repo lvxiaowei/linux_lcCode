@@ -42,7 +42,7 @@ void Frm_chainProcessingClass::dealPg1(int key)
     if(myMessageBox::getInstance()->isVisible())
     {
         switch (key) {
-        case Key_plus:
+        case Key_Set:
         {
             if(myMessageBox::getInstance()->getMessage().contains(QString(tr("确定要删除"))))
             {
@@ -58,7 +58,7 @@ void Frm_chainProcessingClass::dealPg1(int key)
             myMessageBox::getInstance()->hide();
             break;
         }
-        case Key_minus:
+        case Key_Esc:
             myMessageBox::getInstance()->hide();
         default:
             break;
@@ -66,10 +66,10 @@ void Frm_chainProcessingClass::dealPg1(int key)
     }
 
     switch (key) {
-    case Key_F9:
+    case Key_F0:
         setNextDealWgt(PAGE_SETTING);
         break;
-    case Key_F8:
+    case Key_F1:
     {
         m_sourceFile = m_treeFileModel->filePath(ui->m_treeFile->currentIndex());
         m_destFile =  QString("%1/%2").arg(PATH_CHAIN_FILE_LOCAL).arg(m_treeFileModel->fileName(ui->m_treeFile->currentIndex()));
@@ -85,7 +85,7 @@ void Frm_chainProcessingClass::dealPg1(int key)
         }
         break;
     }
-    case Key_9:
+    case Key_F2:
     {
         m_sourceFile = ui->m_tabChainManage->item(ui->m_tabChainManage->currentRow(),2)->text();
         m_destFile = QString("%1/%2").arg(USB_PATH).arg(ui->m_tabChainManage->item(ui->m_tabChainManage->currentRow(),3)->text());
@@ -100,7 +100,7 @@ void Frm_chainProcessingClass::dealPg1(int key)
         }
         break;
     }
-    case Key_8:
+    case Key_F3:
     {
         QString fileName;
         if( ui->m_labCurentOperForder->text()==tr("本地"))
@@ -122,14 +122,14 @@ void Frm_chainProcessingClass::dealPg1(int key)
         myMessageBox::getInstance()->setMessage(QString(tr("确定要删除%1文件%2吗？")).arg(ui->m_labCurentOperForder->text()).arg(fileName), BoxQuesion);
         break;
     }
-    case Key_7:
+    case Key_F4:
     {
         initChainTree();
         ui->stackedWidget->setCurrentIndex(1);
         freshRightButtonContent(QStringList()<<tr("返回")<<tr("新增")<<tr("删除")<<tr("编辑")<<tr("")<<tr("下一菜单\n[1/2]"));
         break;
     }
-    case Key_PageUp:
+    case Key_F5:
     {
         QString fileName=ui->m_tabChainManage->item(ui->m_tabChainManage->currentRow(),3)->text();
 
@@ -197,7 +197,7 @@ void Frm_chainProcessingClass::dealPg2(int key)
     if(myMessageBox::getInstance()->isVisible())
     {
         switch (key) {
-        case Key_plus:
+        case Key_Set:
         {
             QTreeWidgetItem* item = ui->m_chainTree->currentItem();
             delete item;
@@ -206,7 +206,7 @@ void Frm_chainProcessingClass::dealPg2(int key)
             myMessageBox::getInstance()->hide();
             break;
         }
-        case Key_minus:
+        case Key_Esc:
             myMessageBox::getInstance()->hide();
         default:
             break;
@@ -227,11 +227,11 @@ void Frm_chainProcessingClass::dealPg2(int key)
 void Frm_chainProcessingClass::dealPg2_1(int key)
 {
     switch (key) {
-    case Key_F9:
+    case Key_F0:
         ui->stackedWidget->setCurrentIndex(0);
         freshRightButtonContent(QStringList()<<tr("返回")<<tr("从U盘\n输入")<<tr("输出到\nU盘")<<tr("删除")<<tr("编辑本地\n选中链条")<<tr("工作链条\n设定"));
         break;
-    case Key_F8:
+    case Key_F1:
     {
         if(ui->m_chainTree->currentItem()->type()==FIRST_LEVEL_NODE)
         {
@@ -244,19 +244,19 @@ void Frm_chainProcessingClass::dealPg2_1(int key)
         freshRightButtonContent(QStringList()<<tr("返回")<<tr("确认添加")<<tr("")<<tr("")<<tr("")<<tr("[新增命令]"));
         break;
     }
-    case Key_9:
+    case Key_F2:
     {
         myMessageBox::getInstance()->setMessage(tr("确认要删除当前步骤及步骤内的所有内容吗？"), BoxQuesion);
         break;
     }
-    case Key_8:
+    case Key_F3:
     {
         break;
     }
-    case Key_7:
+    case Key_F4:
 
         break;
-    case Key_PageUp:
+    case Key_F5:
     {
         freshRightButtonContent(QStringList()<<tr("复制")<<tr("粘贴")<<tr("")<<tr("")<<tr("")<<tr("上一菜单\n[2/2]"));
         break;
@@ -282,7 +282,7 @@ void Frm_chainProcessingClass::dealPg2_1(int key)
 void Frm_chainProcessingClass::dealPg2_2(int key)
 {
     switch (key) {
-    case Key_F9:
+    case Key_F0:
     {
         if(ui->m_chainTree->currentItem()->type()==THIRD_LEVEL_NODE){
             m_cpItem = ui->m_chainTree->currentItem()->clone();
@@ -293,7 +293,7 @@ void Frm_chainProcessingClass::dealPg2_2(int key)
         }
         break;
     }
-    case Key_F8:
+    case Key_F1:
     {
         if(!m_cpItem)
         {
@@ -310,13 +310,13 @@ void Frm_chainProcessingClass::dealPg2_2(int key)
         }
         break;
     }
-    case Key_9:
+    case Key_F2:
         break;
-    case Key_8:
+    case Key_F3:
         break;
-    case Key_7:
+    case Key_F4:
         break;
-    case Key_PageUp:
+    case Key_F5:
     {
         freshRightButtonContent(QStringList()<<tr("返回")<<tr("新增")<<tr("删除")<<tr("编辑")<<tr("")<<tr("下一菜单\n[1/2]"));
         break;
@@ -342,24 +342,24 @@ void Frm_chainProcessingClass::dealPg2_2(int key)
 void Frm_chainProcessingClass::dealPg3(int key)
 {
     switch (key) {
-    case Key_F9:
+    case Key_F0:
     {
         ui->stackedWidget->setCurrentIndex(1);
         freshRightButtonContent(QStringList()<<tr("返回")<<tr("新增")<<tr("删除")<<tr("编辑")<<tr("")<<tr("下一菜单\n[1/2]"));
         break;
     }
-    case Key_F8:
+    case Key_F1:
     {
 
         break;
     }
-    case Key_9:
+    case Key_F2:
         break;
-    case Key_8:
+    case Key_F3:
         break;
-    case Key_7:
+    case Key_F4:
         break;
-    case Key_PageUp:
+    case Key_F5:
     {
         break;
     }

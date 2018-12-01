@@ -37,27 +37,27 @@ void Frm_patternManage::keyPressEvent(int key)
 void Frm_patternManage::dealPg1(int key)
 {
     switch (key) {
-    case Key_F9:
+    case Key_F0:
     {
         setNextDealWgt(PAGE_SETTING);
         break;
     }
-    case Key_F8:
+    case Key_F1:
     {
         initTimingsTable();
         break;
     }
-    case Key_9:
+    case Key_F2:
     {
         break;
     }
-    case Key_8:
+    case Key_F3:
     {
         break;
     }
-    case Key_7:
+    case Key_F4:
         break;
-    case Key_PageUp:
+    case Key_F5:
     {
         initPatternProcesPage();
         break;
@@ -109,13 +109,13 @@ void Frm_patternManage::dealPg2(int key)
     }
 
     switch (key) {
-    case Key_plus:
+    case Key_Set:
     {
         m_pattrenTable->zoomOut();
         m_YFTable->zoomOut();
         break;
     }
-    case Key_minus:
+    case Key_Esc:
     {
         m_pattrenTable->zoomIn();
         m_YFTable->zoomIn();
@@ -130,7 +130,7 @@ void Frm_patternManage::dealPg2(int key)
 void Frm_patternManage::dealPg2_menu(int key)
 {
     switch (key) {
-    case Key_F9:
+    case Key_F0:
     {
         ui->m_stackPat->setCurrentIndex(0);
         ui->m_title->setText(tr("[花型管理]"));
@@ -141,19 +141,19 @@ void Frm_patternManage::dealPg2_menu(int key)
         m_YFTable = NULL;
         break;
     }
-    case Key_F8:
+    case Key_F1:
     {
         ui->m_frmYFSet->show();
         freshRightButtonContent(QStringList()<<tr("返回")<<tr("纱嘴选择")<<tr("起始行")<<tr("结束行")<<tr("操作")<<tr("设置"));
         break;
     }
-    case Key_9:
+    case Key_F2:
     {
         ui->m_stackPatOper->setCurrentIndex(1);
         freshRightButtonContent(QStringList()<<tr("返回")<<tr("")<<tr("")<<tr("")<<tr("")<<tr(""));
         break;
     }
-    case Key_PageUp:
+    case Key_F5:
         break;
     default:
         break;
@@ -164,35 +164,35 @@ void Frm_patternManage::dealPg2_menu(int key)
 void Frm_patternManage::dealPg2_YFSet(int key)
 {
     switch (key) {
-    case Key_F9:
+    case Key_F0:
     {
         freshRightButtonContent(QStringList()<<tr("返回")<<tr("纱嘴设置")<<tr("循环设置")<<tr("")<<tr("")<<tr("保存"));
         ui->m_frmYFSet->hide();
         break;
     }
-    case Key_F8:
+    case Key_F1:
     {
         int i = m_lstYF.indexOf(ui->m_labYfName->text());
         i++;
         ui->m_labYfName->setText( i>=m_lstYF.count() ? m_lstYF.at(0):m_lstYF.at(i));
         break;
     }
-    case Key_9:
+    case Key_F2:
     {
         ui->m_edtRowStar->setFocus();
         break;
     }
-    case Key_8:
+    case Key_F3:
     {
         ui->m_edtRowEnd->setFocus();
         break;
     }
-    case Key_7:
+    case Key_F4:
     {
         ui->m_labOperType->setText(ui->m_labOperType->text()==tr("选择") ? tr("取消"):tr("选择"));
         break;
     }
-    case Key_PageUp:
+    case Key_F5:
     {
         bool ok;
 
@@ -213,6 +213,9 @@ void Frm_patternManage::dealPg2_YFSet(int key)
     case Key_4:
     case Key_5:
     case Key_6:
+    case Key_7:
+    case Key_8:
+    case Key_9:
     {
         if(!m_mapNoKeyToValue.contains(key) || !(ui->m_edtRowStar->hasFocus() ||ui->m_edtRowEnd->hasFocus()) ) break;
 
@@ -224,7 +227,7 @@ void Frm_patternManage::dealPg2_YFSet(int key)
 
     }
         break;
-    case Key_Del:
+    case Key_minus:
     {
         if(!ui->m_edtRowStar->hasFocus() && !ui->m_edtRowEnd->hasFocus()) break;
 
@@ -246,7 +249,7 @@ void Frm_patternManage::dealPg2_YFSet(int key)
 void Frm_patternManage::dealPg2_loop(int key)
 {
     switch (key) {
-    case Key_F9:
+    case Key_F0:
     {
         freshRightButtonContent(QStringList()<<tr("返回")<<tr("纱嘴设置")<<tr("循环设置")<<tr("")<<tr("")<<tr("保存"));
         ui->m_stackPatOper->setCurrentIndex(0);
@@ -287,6 +290,9 @@ void Frm_patternManage::dealPg2_loop(int key)
     case Key_4:
     case Key_5:
     case Key_6:
+    case Key_7:
+    case Key_8:
+    case Key_9:
     {
         if(ui->m_tabLoop->currentItem()->column()==0) break;
 
@@ -297,7 +303,7 @@ void Frm_patternManage::dealPg2_loop(int key)
 
     }
         break;
-    case Key_Del:
+    case Key_minus:
     {
         if(ui->m_tabLoop->currentItem()->column()==0) break;
         bool ok;
@@ -319,30 +325,30 @@ void Frm_patternManage::dealPg3(int key)
     if(wgtTable==NULL) return;
 
     switch (key) {
-    case Key_F9:
+    case Key_F0:
     {
         setNextDealWgt(PAGE_PATTERNMANAGE);
         break;
     }
-    case Key_F8:
+    case Key_F1:
     {
         break;
     }
-    case Key_9:
+    case Key_F2:
     {
         break;
     }
-    case Key_8:
-    {
-
-        break;
-    }
-    case Key_7:
+    case Key_F3:
     {
 
         break;
     }
-    case Key_PageUp:
+    case Key_F4:
+    {
+
+        break;
+    }
+    case Key_F5:
     {
         saveTimingsDataToConfigFile();
         break;
@@ -382,6 +388,9 @@ void Frm_patternManage::dealPg3(int key)
     case Key_4:
     case Key_5:
     case Key_6:
+    case Key_7:
+    case Key_8:
+    case Key_9:
     {
         if((wgtTable->currentColumn()==3)) return;
         bool ok;
@@ -391,7 +400,7 @@ void Frm_patternManage::dealPg3(int key)
 
     }
         break;
-    case Key_Del:
+    case Key_minus:
     {
         if((wgtTable->currentColumn()==3)) return;
         bool ok;

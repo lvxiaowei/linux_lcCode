@@ -34,22 +34,22 @@ void mainWindow::initData()
     g_pStackedWgt = ui->m_stackedWidget;
 
     /*初始化宏键和函数的映射关系*/
-    m_mapFun[Key_F7]    = &mainWindow::macroFun_Reset;
-    m_mapFun[Key_F6]    = &mainWindow::macroFun_YFALLOUT;
-    m_mapFun[Key_F5]    = &mainWindow::macroFun_CutterSet;
-    m_mapFun[Key_F4]    = &mainWindow::macroFun_PatSetStop;
-    m_mapFun[Key_F3]    = &mainWindow::macroFun_TakeDown;
-    m_mapFun[Key_F2]    = &mainWindow::macroFun_AirFeeder;
-    m_mapFun[Key_F1]    = &mainWindow::macroFun_ManualCmd;
-    m_mapFun[Key_F0]    = &mainWindow::macroFun_BackLight;
-    m_mapFun[Key_Ins]   = &mainWindow::macroFun_MiniCycle;
-    m_mapFun[Key_Del]   = &mainWindow::macroFun_EndCycle;
-    m_mapFun[Key_6]     = &mainWindow::macroFun_LowSpeed;
-    m_mapFun[Key_5]     = &mainWindow::macroFun_ChainBlock;
-    m_mapFun[Key_4]     = &mainWindow::macroFun_Zeroing;
-    m_mapFun[Key_Left]  = &mainWindow::macroFun_FanOnOff;
-    m_mapFun[Key_Set]   = &mainWindow::macroFun_ParaMod;
-    m_mapFun[Key_Right] = &mainWindow::macroFun_Oiler;
+    m_mapFun[Key_Fun0]  = &mainWindow::macroFun_Reset;
+    m_mapFun[Key_Fun1]  = &mainWindow::macroFun_YFALLOUT;
+    m_mapFun[Key_Fun2]  = &mainWindow::macroFun_CutterSet;
+    m_mapFun[Key_Fun3]  = &mainWindow::macroFun_PatSetStop;
+    m_mapFun[Key_Fun4]  = &mainWindow::macroFun_TakeDown;
+    m_mapFun[Key_Fun5]  = &mainWindow::macroFun_AirFeeder;
+    m_mapFun[Key_Fun6]  = &mainWindow::macroFun_ManualCmd;
+    m_mapFun[Key_Fun7]  = &mainWindow::macroFun_BackLight;
+    m_mapFun[Key_Fun8]  = &mainWindow::macroFun_MiniCycle;
+    m_mapFun[Key_Fun9]  = &mainWindow::macroFun_EndCycle;
+    m_mapFun[Key_Fun10] = &mainWindow::macroFun_LowSpeed;
+    m_mapFun[Key_Fun11] = &mainWindow::macroFun_ChainBlock;
+    m_mapFun[Key_Fun12] = &mainWindow::macroFun_Zeroing;
+    m_mapFun[Key_Fun13] = &mainWindow::macroFun_FanOnOff;
+    m_mapFun[Key_Fun14] = &mainWindow::macroFun_ParaMod;
+    m_mapFun[Key_Fun15] = &mainWindow::macroFun_Oiler;
 
     /*新建定时器*/
     m_timer = new QTimer(this);
@@ -114,7 +114,7 @@ void mainWindow::keyPressEvent(int key)
     qDebug()<<"当前正在运行界面,key="<<key;
 
     /*键盘锁定不允许操作*/
-    if(m_bKeyLock && key != Key_PageUp) return;
+    if(m_bKeyLock && key != Key_F5) return;
 
     /*处理确认的弹出框窗口信息*/
     if(myMessageBox::getInstance()->isVisible())
@@ -130,28 +130,28 @@ void mainWindow::keyPressEvent(int key)
         return;
     }
     switch (key) {
-    case Key_F9:
+    case Key_F0:
     {
         myMessageBox::getInstance()->setMessage(tr("确定转到设置界面么?"), BoxQuesion);
         m_iIndex=pop_settting;
         break;
     }
-    case Key_F8:
+    case Key_F1:
     {
         myMessageBox::getInstance()->setMessage(tr("确定转到测试界面么?"), BoxQuesion);
         m_iIndex=pop_testing;
         break;
     }
-    case Key_9:
+    case Key_F2:
 
         break;
-    case Key_8:
+    case Key_F3:
 
         break;
-    case Key_7:
+    case Key_F4:
 
         break;
-    case Key_PageUp:
+    case Key_F5:
     {
         m_bKeyLock = !m_bKeyLock;
         ui->m_btnKeyLock->setEnabled(m_bKeyLock);
@@ -159,22 +159,22 @@ void mainWindow::keyPressEvent(int key)
         break;
     }
 
-    case Key_F7:
-    case Key_F6:
-    case Key_F5:
-    case Key_F4:
-    case Key_F3:
-    case Key_F2:
-    case Key_F1:
-    case Key_F0:
-    case Key_Ins:
-    case Key_Del:
-    case Key_6:
-    case Key_5:
-    case Key_4:
-    case Key_Left:
-    case Key_Set:
-    case Key_Right:
+    case Key_Fun0:
+    case Key_Fun1:
+    case Key_Fun2:
+    case Key_Fun3:
+    case Key_Fun4:
+    case Key_Fun5:
+    case Key_Fun6:
+    case Key_Fun7:
+    case Key_Fun8:
+    case Key_Fun9:
+    case Key_Fun10:
+    case Key_Fun11:
+    case Key_Fun12:
+    case Key_Fun13:
+    case Key_Fun14:
+    case Key_Fun15:
     {
         if(m_isRunning)
         {
@@ -293,7 +293,7 @@ void mainWindow::handleXddpData(QByteArray data)
 void mainWindow::processingPopup(int key)
 {
     switch (key) {
-    case Key_plus:
+    case Key_Set:
     {
         myMessageBox::getInstance()->hide();
         switch (m_iIndex) {
@@ -316,7 +316,7 @@ void mainWindow::processingPopup(int key)
 
         break;
     }
-    case Key_minus:
+    case Key_Esc:
         myMessageBox::getInstance()->hide();
     default:
         break;
@@ -360,7 +360,7 @@ void mainWindow::keyPressEventPopSet_cut(int key)
         writeToXddp(macroFu_CutterSet);
         break;
     }
-    case Key_F5:
+    case Key_Fun2:
     {
         writeToXddp(macroFu_CutterSet, "out");
         w->hide();
@@ -404,7 +404,7 @@ void mainWindow::keyPressEventPopSet_airValve(int key)
         writeToXddp(macroFu_ManualCmd);
         break;
     }
-    case Key_F1:
+    case Key_Fun6:
     {
         writeToXddp(macroFu_ManualCmd, "out");
         w->hide();

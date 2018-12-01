@@ -19,22 +19,22 @@ void Frm_timingTable::keyPressEvent(int key)
 {
     qDebug()<<"当前正在时序设置界面界面,key="<<key;
     switch (key) {
-    case Key_F9:
+    case Key_F0:
         setNextDealWgt(PAGE_SETTING);
         break;
-    case Key_F8:
+    case Key_F1:
 
         break;
-    case Key_9:
+    case Key_F2:
 
         break;
-    case Key_8:
+    case Key_F3:
 
         break;
-    case Key_7:
+    case Key_F4:
 
         break;
-    case Key_PageUp:
+    case Key_F5:
         saveConfigFile();
         break;
 
@@ -82,6 +82,9 @@ void Frm_timingTable::keyPressEvent(int key)
     case Key_4:
     case Key_5:
     case Key_6:
+    case Key_7:
+    case Key_8:
+    case Key_9:
     {
         if(m_curentTable->currentItem()->text()=="-") return;
         bool ok;
@@ -91,7 +94,7 @@ void Frm_timingTable::keyPressEvent(int key)
 
     }
         break;
-    case Key_Del:
+    case Key_minus:
     {
         if(m_curentTable->currentItem()->text()=="-") return;
         bool ok;
