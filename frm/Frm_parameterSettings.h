@@ -18,8 +18,9 @@ public:
 
     void keyPressEvent(int key);
     void initShowFrmConfig();
+    void handleXddpData(QByteArray data);
 public slots:
-    void writeToXddp();
+    void writeToXddp(QString operMode="get");
     void timerUpDate();
 private:
     Ui::Frm_parameterSettings *ui;

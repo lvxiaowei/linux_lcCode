@@ -65,16 +65,21 @@ void schedule::handleSerialData(QByteArray data)
 /*处理XDDP发过来的数据*/
 void schedule::handleXddpData(QByteArray data)
 {
-    qDebug()<<"处理XDDP发过来的数据:"<<data;
+    //    qDebug()<<"处理XDDP发过来的数据:"<<data;
 
     //处理测试界面相关的消息
-    if(data.contains("_test"))
+    if(data.contains("working_state") || data.contains("func_key"))
+    {
+        m_pMainWindow->handleXddpData(data);
+
+    }
+    else if(data.contains("_test"))
     {
         m_frmTestMenu->handleXddpData(data);
     }
-    else if(data.contains("working_state"))
+    else if(data.contains("\"zeroing\""))
     {
-        m_pMainWindow->handleXddpData(data);
+        m_frmParaSetting->handleXddpData(data);
     }
     Q_UNUSED(data);
 }

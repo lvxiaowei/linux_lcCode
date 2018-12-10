@@ -45,7 +45,6 @@ private:
     /*16个宏处理的函数*/
     typedef void (mainWindow::*myfun)();
     QMap<int, myfun> m_mapFun;
-    QMap<int, bool> m_mapEnable; /*按键的使能状态*/
     void macroFun_Reset();       //01 强制初始状态
     void macroFun_YFALLOUT();    //02 梭子全出
     void macroFun_CutterSet();   //03 剪刀抬起
@@ -70,6 +69,12 @@ private:
     bool m_isRunning;
     QStringList m_lstAirValve;              //配置文件的气阀名称；
     QTimer *m_timer;
+
+    QJsonArray m_arryYF, m_arryTake, m_arryAirFeefer, m_arryFan, m_arryOiler, m_arryCutter;
+    QBitArray m_bitValveStates, m_bitMacroState;
+
+    QStringList lst_segment;
+    QList<QMovie*> lst_move;
 };
 
 #endif // MAINWINDOW_H

@@ -150,6 +150,8 @@ void Frm_chainProcessingClass::dealPg1(int key)
         QTextStream stream(&file);
         document.save(stream, 4);
         file.close();
+
+        myMessageBox::getInstance()->setMessage(tr("运行链条设置成功!"), BoxInfo);
         break;
     }
 
@@ -433,7 +435,7 @@ void Frm_chainProcessingClass::initShowFrmConfig()
     m_treeFileModel->setRootPath(USB_PATH);
 
     QStringList nameFilter;
-    nameFilter << "*.sta";
+    nameFilter << "*.sta" << "*.dis";
     m_treeFileModel->setNameFilterDisables(false);
     m_treeFileModel->setNameFilters(nameFilter);
     ui->m_treeFile->setModel(m_treeFileModel);
@@ -549,7 +551,7 @@ void Frm_chainProcessingClass::initChainManageTable()
     else
     {
         QStringList filters;     //定义过滤变量；
-        filters<< QString("*.sta");
+        filters<< QString("*.sta")<< QString("*.dis");
         QDirIterator dir_iterator(PATH_CHAIN_FILE_LOCAL,filters,QDir::Files | QDir::NoSymLinks,QDirIterator::Subdirectories);//定义迭代器并设置过滤器；
         QString fileName_str,fileSize_str; //定义文件名称，文件的大小；
         while(dir_iterator.hasNext())

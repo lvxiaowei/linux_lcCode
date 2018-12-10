@@ -167,6 +167,7 @@ void Frm_parameterSettings::keyPressEventPopSet_paswd(int key)
         {
             ui_pop.stackedWidget->setCurrentIndex(1);
             myMessageBox::getInstance()->setMessage(tr("登录成功!"), BoxInfo);
+            writeToXddp("in");
             connect(m_timer,SIGNAL(timeout()),this,SLOT(writeToXddp()));
         }
         else {
@@ -188,10 +189,13 @@ void Frm_parameterSettings::keyPressEventPopSet_zeroingSet(int key)
         w->hide();
         ui->m_edtZeroing->setFocus();
         disconnect(m_timer,SIGNAL(timeout()),this,SLOT(writeToXddp()));
+        writeToXddp("out");
         break;
     }
     case Key_Set:
     {
+        writeToXddp("set");
+        myMessageBox::getInstance()->setMessage(tr("零位设置成功！"), BoxInfo);
         break;
     }
     default:
@@ -305,7 +309,50 @@ void Frm_parameterSettings::timerUpDate()
 }
 
 /*向XDDP发送数据*/
-void Frm_parameterSettings::writeToXddp()
+void Frm_parameterSettings::writeToXddp(QString operMode)
 {
-    qDebug()<<"------------------"<<"获取实时脉冲";
+    QJsonObject json;
+    json.insert("mesg_dir", "req");
+    QJsonObject jsContent;
+    if(!operMode.isEmpty())
+        jsContent.insert("operMode", operMode);
+
+    json.insert("mesg_type", "zeroing");
+
+    json.insert("content", jsContent);
+
+    // 构建 JSON 文档
+    QJsonDocument document;
+    document.setObject(json);
+    QByteArray byteArray = document.toJson(QJsonDocument::Indented);
+
+    emit xddpDataToScheduler(byteArray);
+}
+
+/*处理XDDP数据*/
+void Frm_parameterSettings::handleXddpData(QByteArray data)
+{
+    QJsonParseError jsonError;
+    QJsonDocument doucment = QJsonDocument::fromJson(data, &jsonError);  // 转化为 JSON 文档
+    if (!doucment.isNull() && (jsonError.error == QJsonParseError::NoError)) {
+        if (doucment.isObject()) {
+            QJsonObject object = doucment.object();
+            if (!object.contains("mesg_type") || object.value("mesg_dir").toString() != "ret") {
+                return;
+            }
+
+            QJsonValue strVal = object.value("content");
+            if(!strVal.isObject()) return;
+            QJsonObject obj = strVal.toObject();
+
+            if(object.value("mesg_type").toString() == "zeroing")
+            {
+
+                ui_pop.m_labPulse->setText(QString("%1").arg(obj.value("needle_no").toInt()));
+
+            }
+
+        }
+    }
+
 }

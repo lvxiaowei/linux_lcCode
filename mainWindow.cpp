@@ -33,6 +33,73 @@ void mainWindow::initData()
 
     g_pStackedWgt = ui->m_stackedWidget;
 
+    m_bitValveStates.resize(96);
+    m_bitValveStates.fill(false);
+
+    m_bitMacroState.resize(20);
+    m_bitMacroState.fill(true);
+    /*---------------------------------------------获取配置文件中各类气阀的阀号和名称等--------------------------------------------*/
+    QDomDocument document;
+    if(!getXmlConfig(document))
+        return;
+    QDomNodeList lstItem,node;
+    QJsonValue val;
+    /*******************************************cutter*******************************************/
+    node = document.elementsByTagName("cutter");
+    if(node.count()!=0)
+    {
+        lstItem = node.at(0).childNodes();
+    }
+    for(int i=0;i<lstItem.count();i++)
+    {
+        val = lstItem.at(i).toElement().attribute("airVaveNo").toInt();
+        m_arryCutter.append(val);
+    }
+    /********************************************YF*******************************************/
+    node = document.elementsByTagName("YF");
+    if(node.count()!=0)
+    {
+        lstItem = node.at(0).childNodes();
+    }
+    for(int i=0;i<lstItem.count();i++)
+    {
+        val = lstItem.at(i).toElement().attribute("airVaveNo").toInt();
+        m_arryYF.append(val);
+    }
+    /********************************************TakeDown*************************************/
+    node = document.elementsByTagName("TakeDown");
+    if(node.count()!=0)
+    {
+        lstItem = node.at(0).childNodes();
+    }
+    val = lstItem.at(0).toElement().attribute("airVaveNo").toInt();
+    m_arryTake.append(val);
+    /********************************************AirFeeder************************************/
+    node = document.elementsByTagName("AirFeeder");
+    if(node.count()!=0)
+    {
+        lstItem = node.at(0).childNodes();
+    }
+    val = lstItem.at(0).toElement().attribute("airVaveNo").toInt();
+    m_arryAirFeefer.append(val);
+    /********************************************Fan******************************************/
+    node = document.elementsByTagName("Fan");
+    if(node.count()!=0)
+    {
+        lstItem = node.at(0).childNodes();
+    }
+    val = lstItem.at(0).toElement().attribute("airVaveNo").toInt();
+    m_arryFan.append(val);
+    /********************************************Oiler****************************************/
+    node = document.elementsByTagName("Oiler");
+    if(node.count()!=0)
+    {
+        lstItem = node.at(0).childNodes();
+    }
+    val = lstItem.at(0).toElement().attribute("airVaveNo").toInt();
+    m_arryOiler.append(val);
+    /*---------------------------------------------获取配置文件中各类气阀的阀号和名称等--------------------------------------------*/
+
     /*初始化宏键和函数的映射关系*/
     m_mapFun[Key_Fun0]  = &mainWindow::macroFun_Reset;
     m_mapFun[Key_Fun1]  = &mainWindow::macroFun_YFALLOUT;
@@ -51,6 +118,9 @@ void mainWindow::initData()
     m_mapFun[Key_Fun14] = &mainWindow::macroFun_ParaMod;
     m_mapFun[Key_Fun15] = &mainWindow::macroFun_Oiler;
 
+    lst_segment.clear();
+    lst_segment << tr("START") << tr("WELT") <<("ELEATIC") <<tr("LEG") <<tr("HEEL_UP") <<tr("HELL_DOWN") <<tr("FOOT")
+                <<tr("PRE_TOE") <<tr("TOE_UP") <<tr("TOE_DOWN") <<tr("ROSSO") <<tr("TAKE OFF") <<tr("END");
     /*新建定时器*/
     m_timer = new QTimer(this);
 
@@ -84,8 +154,12 @@ void mainWindow::initIco()
     m_chain_11  = new QMovie(":/image/chain_11.gif");
     m_chain_12  = new QMovie(":/image/chain_12.gif");
 
+    lst_move <<m_chain_01 <<m_chain_02 <<m_chain_03 <<m_chain_04 <<m_chain_05 <<m_chain_06 <<m_chain_07 <<m_chain_08 <<m_chain_09
+            <<m_chain_10 <<m_chain_11 <<m_chain_12 <<m_chain_01;
+
     ui->m_gifKInt->setMovie(m_chain_01);
     m_chain_01->start();
+
 }
 
 /*系统时间控件定时刷新*/
@@ -162,26 +236,27 @@ void mainWindow::keyPressEvent(int key)
     case Key_Fun0:
     case Key_Fun1:
     case Key_Fun2:
-    case Key_Fun3:
     case Key_Fun4:
     case Key_Fun5:
     case Key_Fun6:
     case Key_Fun7:
-    case Key_Fun8:
-    case Key_Fun9:
-    case Key_Fun10:
-    case Key_Fun11:
     case Key_Fun12:
-    case Key_Fun13:
     case Key_Fun14:
-    case Key_Fun15:
     {
         if(m_isRunning)
         {
             myMessageBox::getInstance()->setMessage(tr("请先停止设备运行！"), BoxInfo);
             return;
         }
-
+    }
+    case Key_Fun3:
+    case Key_Fun8:
+    case Key_Fun9:
+    case Key_Fun10:
+    case Key_Fun11:
+    case Key_Fun13:
+    case Key_Fun15:
+    {
         if(m_mapFun.keys().contains(key))
             (this->*m_mapFun[key])();
         break;
@@ -197,7 +272,7 @@ void mainWindow::initShowFrmConfig()
 {
     ui->m_stackedWidget->setCurrentIndex(0);
     freshRightButtonContent(QStringList()<<tr("设置")<<tr("测试")<<tr("")<<tr("")<<tr("")<<tr("键盘锁定"));
-//        connect(m_timer,SIGNAL(timeout()),this,SLOT(writeToXddp()));
+    connect(m_timer,SIGNAL(timeout()),this,SLOT(writeToXddp()));
     m_bKeyLock = false;
     m_isRunning = false;
 }
@@ -217,6 +292,8 @@ void mainWindow::writeToXddp(const int operType, QString operMode)
     if(!operMode.isEmpty())
         jsContent.insert("operMode", operMode);
 
+    QJsonArray arrySet;
+
     switch (operType) {
     case runningState:
     {
@@ -226,24 +303,88 @@ void mainWindow::writeToXddp(const int operType, QString operMode)
     case macroFu_ManualCmd:
     {
         json.insert("mesg_type", "func_key");
-        jsContent.insert("key", macroFu_ManualCmd);
-        jsContent.insert("airVaveNo", ui_pop.m_tabAirValve->currentItem()->text().toInt());
+        jsContent.insert("key", operType);
+
+        arrySet.append(ui_pop.m_tabAirValve->currentItem()->text().toInt());
+        jsContent.insert("valve_set", arrySet);
         break;
     }
     case macroFu_CutterSet:
     {
         json.insert("mesg_type", "func_key");
-        jsContent.insert("key", macroFu_CutterSet);
-        jsContent.insert("airVaveNo", ui_pop.m_tabCut->item(ui_pop.m_tabCut->currentRow(), 3)->text().toInt());
+        jsContent.insert("key", operType);
+
+        if(operMode.isEmpty())
+        {
+            QLabel *m_labLed = dynamic_cast<QLabel*>(ui_pop.m_tabCut->cellWidget(ui_pop.m_tabCut->currentRow(),2));
+            setObjProperty(m_labLed, STATUS, m_labLed->property(STATUS)==STATUS_OUT ? STATUS_IN:STATUS_OUT);
+
+            arrySet.append(ui_pop.m_tabCut->item(ui_pop.m_tabCut->currentRow(), 3)->text().toInt());
+            jsContent.insert("valve_set", arrySet);
+        }
+        else {
+            jsContent.insert("valve_set", m_arryCutter);
+        }
+
         break;
     }
-    default:
+    case macroFu_YFALLOUT:
+    {
+        json.insert("mesg_type", "func_key");
+        jsContent.insert("key", operType);
+
+        jsContent.insert("valve_set", m_arryYF);
+        break;
+    }
+    case macroFu_TakeDown:
+    {
+        json.insert("mesg_type", "func_key");
+        jsContent.insert("key", operType);
+
+        jsContent.insert("valve_set", m_arryTake);
+        break;
+    }
+    case macroFu_AirFeeder:
+    {
+        json.insert("mesg_type", "func_key");
+        jsContent.insert("key", operType);
+
+        jsContent.insert("valve_set", m_arryAirFeefer);
+        break;
+    }
+    case macroFu_Oiler:
+    {
+        json.insert("mesg_type", "func_key");
+        jsContent.insert("key", operType);
+
+        jsContent.insert("valve_set", m_arryOiler);
+        break;
+    }
+    case macroFu_FanOnOff:
+    {
+        json.insert("mesg_type", "func_key");
+        jsContent.insert("key", operType);
+
+        jsContent.insert("valve_set", m_arryFan);
+        break;
+    }
+    case macroFu_PatSetStop:
+    case macroFu_ChainBlock:
+    case macroFu_Reset:
+    case macroFu_MiniCycle:
+    case macroFu_LowSpeed:
+    case macroFu_Zeroing:
+    case macroFu_EndCycle:
+    case macroFu_0:
     {
         json.insert("mesg_type", "func_key");
         jsContent.insert("key", operType);
         break;
     }
+    default:
+        break;
     }
+
     json.insert("content", jsContent);
     // 构建 JSON 文档
     QJsonDocument document;
@@ -260,31 +401,103 @@ void mainWindow::handleXddpData(QByteArray data)
     if (!doucment.isNull() && (jsonError.error == QJsonParseError::NoError)) {
         if (doucment.isObject()) {
             QJsonObject object = doucment.object();
-            if (object.contains("mesg_type")) {
-                if (object.value("mesg_type").toString() != "working_state"
-                        || object.value("mesg_dir").toString() != "ret") {
-                    return;
-                }
+            if (!object.contains("mesg_type") || object.value("mesg_dir").toString() != "ret") {
+                return;
             }
+
             QJsonValue strVal = object.value("content");
             if(!strVal.isObject()) return;
             QJsonObject obj = strVal.toObject();
 
-            ui->m_pngRunState->setPixmap(obj.value("state") == true ? *m_ON_status:*m_OFF_status);   //运行状态
-            ui->m_pngDirection->setPixmap(obj.value("dir") == true? *m_Forward:*m_Reversal);      //电机转动方向
-            ui->m_edtStep->setText(QString("%1/%2").arg(obj.value("step_no").toInt()).arg(obj.value("step_nr").toInt()));  //当前步号/总步数
-            ui->m_edtNeedle->setText(QString("%1").arg(obj.value("needle_no").toInt())); //当前针号
-            ui->m_edtCircle->setText(QString("%1/%2").arg(obj.value("rep_no").toInt()).arg(obj.value("rep_nr").toInt())); //当前圈数/总圈数
-            //            ui->m_labStepTotal->setText(QString("%1").arg(obj.value("rep_nr").toInt()));//总循环数
-            //            ui->m_labStepCurent->setText(QString("%1").arg(obj.value("rep_no").toInt()));//当前循环数
-            //            ui->m_labRowTotal->setText(QString("%1").arg(obj.value("pattern_line_nr").toInt()));//花形总行数
-            //            ui->m_labRowCrunt->setText(QString("%1").arg(obj.value("pattern_line_no").toInt()));//当前花形行号
-            ui->m_edtOutput->setText(QString("%1/%2").arg(obj.value("volume_no").toInt()).arg(obj.value("volume_nr").toInt()));
-            ui->m_edtChain->setText(QString("%1").arg(obj.value("chain_name").toString())); //当前激活链条名
-            ui->m_edtPattern->setText(QString("%1").arg(obj.value("pattern_name").toString())); //当前激活花型名
-            ui->m_edtSpeed->setText(QString("%1").arg(obj.value("speed").toInt())); //速度
+            if(object.value("mesg_type").toString() == "working_state")
+            {
+                ui->m_pngRunState->setPixmap(obj.value("state") == true ? *m_ON_status:*m_OFF_status);   //运行状态
+                ui->m_pngDirection->setPixmap(obj.value("dir") == true? *m_Forward:*m_Reversal);      //电机转动方向
+                ui->m_edtStep->setText(QString("%1/%2").arg(obj.value("step_no").toInt()).arg(obj.value("step_nr").toInt()));  //当前步号/总步数
+                ui->m_edtNeedle->setText(QString("%1").arg(obj.value("needle_no").toInt())); //当前针号
+                ui->m_edtCircle->setText(QString("%1/%2").arg(obj.value("rep_no").toInt()).arg(obj.value("rep_nr").toInt())); //当前圈数/总圈数
+                //            ui->m_labStepTotal->setText(QString("%1").arg(obj.value("rep_nr").toInt()));//总循环数
+                //            ui->m_labStepCurent->setText(QString("%1").arg(obj.value("rep_no").toInt()));//当前循环数
+                //            ui->m_labRowTotal->setText(QString("%1").arg(obj.value("pattern_line_nr").toInt()));//花形总行数
+                //            ui->m_labRowCrunt->setText(QString("%1").arg(obj.value("pattern_line_no").toInt()));//当前花形行号
+                ui->m_edtOutput->setText(QString("%1/%2").arg(obj.value("volume_no").toInt()).arg(obj.value("volume_nr").toInt()));
+                ui->m_edtChain->setText(QString("%1").arg(obj.value("chain_name").toString())); //当前激活链条名
+                ui->m_edtPattern->setText(QString("%1").arg(obj.value("pattern_name").toString())); //当前激活花型名
+                ui->m_edtSpeed->setText(QString("%1").arg(obj.value("speed").toInt())); //速度
+                ui->m_pngPart->setText(QString("%1").arg(lst_segment[obj.value("segment").toInt()]));
 
-            m_isRunning = (obj.value("state")==true ? true:false);
+                if(ui->m_gifKInt->movie() !=lst_move.at(obj.value("segment").toInt()))
+                {
+                    ui->m_gifKInt->movie()->stop();
+                    ui->m_gifKInt->setMovie(lst_move.at(obj.value("segment").toInt()));
+                    lst_move.at(obj.value("segment").toInt())->start();
+                }
+
+                m_isRunning = (obj.value("state")==true ? true:false);
+            }
+            else if(object.value("mesg_type").toString() == "func_key")
+            {
+                QJsonValue jsonBit = obj.value("valve_state");
+                if(jsonBit.isArray())
+                {
+                    QJsonArray array = jsonBit.toArray();
+                    m_bitValveStates.fill(false);
+                    for (int i = 0; i < array.size(); ++i) {
+                        m_bitValveStates.setBit(array.at(i).toInt(),true);
+                    }
+                }
+                switch (obj.value("key").toInt())
+                {
+                case macroFu_Reset:   //01 强制初始状态
+                    break;
+                case macroFu_YFALLOUT:   //02 梭子全出
+                    break;
+                case macroFu_CutterSet:   //03 剪刀抬起
+                    break;
+                case macroFu_PatSetStop:  //04 选针器停止
+                    break;
+                case macroFu_TakeDown:    //05 牵拉
+                    break;
+                case macroFu_AirFeeder:   //06 进线吹气
+                    break;
+                case macroFu_ManualCmd:   //07 气阀命令
+                case macroFu_0:
+                {
+                    for(int i=0;i<8;i++)
+                    {
+                        for(int j=0; j<12; ++j)
+                        {
+                            ui_pop.m_tabAirValve->setItem(j,i,new QTableWidgetItem(QIcon(":/image/out.png"),(QString::number(i+j*8))));
+                            ui_pop.m_tabAirValve->item(j,i)->setIcon(m_bitValveStates.at(i+j*8) ? QIcon(":/image/in.png"):QIcon(":/image/out.png"));
+                        }
+                    }
+                    break;
+                }
+                case macroFu_BackLight:   //08 背光
+                    break;
+                case macroFu_MiniCycle:   //09 快编
+                    break;
+                case macroFu_EndCycle:    //10 单只自停
+                    break;
+                case macroFu_LowSpeed:    //11 低速
+                    break;
+                case macroFu_ChainBlock:  //12 空转
+                    break;
+                case macroFu_Zeroing:     //13 归零
+                    break;
+                case macroFu_FanOnOff:    //14 吸风马达
+
+                    break;
+                case macroFu_ParaMod:     //15 密度/速度/圈数
+
+                    break;
+                case macroFu_Oiler:        //16 加油
+
+                    break;
+                default:
+                    break;
+                }
+            }
         }
     }
 }
@@ -361,7 +574,11 @@ void mainWindow::keyPressEventPopSet_cut(int key)
         break;
     }
     case Key_Fun2:
+    case Key_Esc:
     {
+        m_bitMacroState.setBit(macroFu_CutterSet, !m_bitMacroState.at(macroFu_CutterSet));
+        ui->btnMacro_3->setChecked(!m_bitMacroState.at(macroFu_CutterSet));
+
         writeToXddp(macroFu_CutterSet, "out");
         w->hide();
     }
@@ -405,8 +622,8 @@ void mainWindow::keyPressEventPopSet_airValve(int key)
         break;
     }
     case Key_Fun6:
+    case Key_Esc:
     {
-        writeToXddp(macroFu_ManualCmd, "out");
         w->hide();
     }
 
@@ -426,16 +643,12 @@ void mainWindow::macroFun_Reset()
 //02 梭子全出
 void mainWindow::macroFun_YFALLOUT()
 {
+    m_bitMacroState.setBit(macroFu_YFALLOUT, !m_bitMacroState.at(macroFu_YFALLOUT));
 
-    if(m_mapEnable.keys().contains(macroFu_YFALLOUT))
-    {
-        m_mapEnable[macroFu_YFALLOUT] = !m_mapEnable[macroFu_YFALLOUT];
-    }
-    else {
-        m_mapEnable[macroFu_YFALLOUT] = true;
-    }
 
-    writeToXddp(macroFu_YFALLOUT, m_mapEnable[macroFu_YFALLOUT] ? "true":"false");
+    writeToXddp(macroFu_YFALLOUT, m_bitMacroState.at(macroFu_YFALLOUT) ? "out":"in");
+
+    ui->btnMacro_2->setChecked(!m_bitMacroState.at(macroFu_YFALLOUT));
 
     qDebug()<<"-------------------------"<<"梭子全出";
 }
@@ -443,6 +656,8 @@ void mainWindow::macroFun_YFALLOUT()
 //03 剪刀抬起
 void mainWindow::macroFun_CutterSet()
 {
+    m_bitMacroState.setBit(macroFu_CutterSet, !m_bitMacroState.at(macroFu_CutterSet));
+    ui->btnMacro_3->setChecked(!m_bitMacroState.at(macroFu_CutterSet));
     /*初始化剪刀弹出表格*/
     QDomDocument document;
     if(!getXmlConfig(document))
@@ -493,7 +708,7 @@ void mainWindow::macroFun_CutterSet()
         QLabel *m_labLed = new QLabel;
         m_labLed->setAlignment(Qt::AlignCenter);
         m_labLed->setObjectName(QStringLiteral("m_labLed"));
-        m_labLed->setProperty(STATUS,STATUS_OUT);
+        m_labLed->setProperty(STATUS,STATUS_IN);
         m_labLed->setScaledContents(true);
         ui_pop.m_tabCut->setCellWidget(i,2,m_labLed);
     }
@@ -508,15 +723,9 @@ void mainWindow::macroFun_CutterSet()
 //04 选针器停止
 void mainWindow::macroFun_PatSetStop()
 {
-    if(m_mapEnable.keys().contains(macroFu_PatSetStop))
-    {
-        m_mapEnable[macroFu_PatSetStop] = !m_mapEnable[macroFu_PatSetStop];
-    }
-    else {
-        m_mapEnable[macroFu_PatSetStop] = true;
-    }
+    m_bitMacroState.setBit(macroFu_PatSetStop, !m_bitMacroState.at(macroFu_PatSetStop));
 
-    writeToXddp(macroFu_PatSetStop, m_mapEnable[macroFu_PatSetStop] ? "true":"false");
+    writeToXddp(macroFu_PatSetStop, m_bitMacroState.at(macroFu_PatSetStop) ? "false":"true");
 
 
     qDebug()<<"-------------------------"<<"选针器停止";
@@ -525,27 +734,25 @@ void mainWindow::macroFun_PatSetStop()
 //05 牵拉
 void mainWindow::macroFun_TakeDown()
 {
-    if(m_mapEnable.keys().contains(macroFu_TakeDown))
-    {
-        m_mapEnable[macroFu_TakeDown] = !m_mapEnable[macroFu_TakeDown];
-    }
-    else {
-        m_mapEnable[macroFu_TakeDown] = true;
-    }
+    m_bitMacroState.setBit(macroFu_TakeDown, !m_bitMacroState.at(macroFu_TakeDown));
 
-    writeToXddp(macroFu_TakeDown, m_mapEnable[macroFu_TakeDown] ? "true":"false");
+    writeToXddp(macroFu_TakeDown);
     qDebug()<<"-------------------------"<<"牵拉";
 }
 
 //06 进线吹气
 void mainWindow::macroFun_AirFeeder()
 {
+    m_bitMacroState.setBit(macroFu_AirFeeder, !m_bitMacroState.at(macroFu_AirFeeder));
+
+    writeToXddp(macroFu_AirFeeder);
     qDebug()<<"-------------------------"<<"进线吹气";
 }
 
 //07 气阀命令
 void mainWindow::macroFun_ManualCmd()
 {
+    writeToXddp(macroFu_0);
     /*读气阀的配置文件*/
     if(!readAirValveConfig())
     {
@@ -569,8 +776,6 @@ void mainWindow::macroFun_ManualCmd()
     connect(ui_pop.m_tabAirValve, SIGNAL(itemSelectionChanged()), this, SLOT(focusAirValveChanged()));
     ui_pop.m_tabAirValve->setCurrentCell(0,0);
 
-    writeToXddp(macroFu_ManualCmd, "in");
-
     ui_pop.stackedWidget->setCurrentIndex(1);
     w->show();
 
@@ -586,15 +791,11 @@ void mainWindow::macroFun_BackLight()
 //09 快编
 void mainWindow::macroFun_MiniCycle()
 {
-    if(m_mapEnable.keys().contains(macroFu_MiniCycle))
-    {
-        m_mapEnable[macroFu_MiniCycle] = !m_mapEnable[macroFu_MiniCycle];
-    }
-    else {
-        m_mapEnable[macroFu_MiniCycle] = true;
-    }
+    m_bitMacroState.setBit(macroFu_MiniCycle, !m_bitMacroState.at(macroFu_MiniCycle));
 
-    writeToXddp(macroFu_MiniCycle, m_mapEnable[macroFu_MiniCycle] ? "true":"false");
+    ui->btnMacro_9->setChecked(!m_bitMacroState.at(macroFu_MiniCycle));
+
+    writeToXddp(macroFu_MiniCycle, m_bitMacroState.at(macroFu_MiniCycle)? "false":"true");
 
     qDebug()<<"-------------------------"<<"快编";
 }
@@ -602,15 +803,11 @@ void mainWindow::macroFun_MiniCycle()
 //10 单只自停
 void mainWindow::macroFun_EndCycle()
 {
-    if(m_mapEnable.keys().contains(macroFu_EndCycle))
-    {
-        m_mapEnable[macroFu_EndCycle] = !m_mapEnable[macroFu_EndCycle];
-    }
-    else {
-        m_mapEnable[macroFu_EndCycle] = true;
-    }
+    m_bitMacroState.setBit(macroFu_EndCycle, !m_bitMacroState.at(macroFu_EndCycle));
 
-    writeToXddp(macroFu_EndCycle, m_mapEnable[macroFu_EndCycle] ? "true":"false");
+    ui->btnMacro_10->setChecked(!m_bitMacroState.at(macroFu_EndCycle));
+
+    writeToXddp(macroFu_EndCycle, m_bitMacroState.at(macroFu_EndCycle)? "false":"true");
 
     qDebug()<<"-------------------------"<<"单只自停";
 }
@@ -618,15 +815,11 @@ void mainWindow::macroFun_EndCycle()
 //11 低速
 void mainWindow::macroFun_LowSpeed()
 {
-    if(m_mapEnable.keys().contains(macroFu_LowSpeed))
-    {
-        m_mapEnable[macroFu_LowSpeed] = !m_mapEnable[macroFu_LowSpeed];
-    }
-    else {
-        m_mapEnable[macroFu_LowSpeed] = true;
-    }
+    m_bitMacroState.setBit(macroFu_LowSpeed, !m_bitMacroState.at(macroFu_LowSpeed));
 
-    writeToXddp(macroFu_LowSpeed, m_mapEnable[macroFu_LowSpeed] ? "true":"false");
+    ui->btnMacro_11->setChecked(!m_bitMacroState.at(macroFu_LowSpeed));
+
+    writeToXddp(macroFu_LowSpeed, m_bitMacroState.at(macroFu_LowSpeed)? "false":"true");
 
     qDebug()<<"-------------------------"<<"低速";
 }
@@ -634,15 +827,11 @@ void mainWindow::macroFun_LowSpeed()
 //12 空转
 void mainWindow::macroFun_ChainBlock()
 {
-    if(m_mapEnable.keys().contains(macroFu_ChainBlock))
-    {
-        m_mapEnable[macroFu_ChainBlock] = !m_mapEnable[macroFu_ChainBlock];
-    }
-    else {
-        m_mapEnable[macroFu_ChainBlock] = true;
-    }
+    m_bitMacroState.setBit(macroFu_ChainBlock, !m_bitMacroState.at(macroFu_ChainBlock));
 
-    writeToXddp(macroFu_ChainBlock, m_mapEnable[macroFu_ChainBlock] ? "true":"false");
+    ui->btnMacro_12->setChecked(!m_bitMacroState.at(macroFu_ChainBlock));
+
+    writeToXddp(macroFu_ChainBlock, m_bitMacroState.at(macroFu_ChainBlock)? "false":"true");
 
     qDebug()<<"-------------------------"<<"空转";
 }
@@ -650,15 +839,9 @@ void mainWindow::macroFun_ChainBlock()
 //13 归零
 void mainWindow::macroFun_Zeroing()
 {
-    if(m_mapEnable.keys().contains(macroFu_Zeroing))
-    {
-        m_mapEnable[macroFu_Zeroing] = !m_mapEnable[macroFu_Zeroing];
-    }
-    else {
-        m_mapEnable[macroFu_Zeroing] = true;
-    }
+    m_bitMacroState.setBit(macroFu_Zeroing, !m_bitMacroState.at(macroFu_Zeroing));
 
-    writeToXddp(macroFu_Zeroing, m_mapEnable[macroFu_Zeroing] ? "true":"false");
+    writeToXddp(macroFu_Zeroing, m_bitMacroState.at(macroFu_Zeroing)? "false":"true");
 
     qDebug()<<"-------------------------"<<"归零";
 }
@@ -666,15 +849,10 @@ void mainWindow::macroFun_Zeroing()
 //14 吸风马达
 void mainWindow::macroFun_FanOnOff()
 {
-    if(m_mapEnable.keys().contains(macroFu_FanOnOff))
-    {
-        m_mapEnable[macroFu_FanOnOff] = !m_mapEnable[macroFu_FanOnOff];
-    }
-    else {
-        m_mapEnable[macroFu_FanOnOff] = true;
-    }
+    m_bitMacroState.setBit(macroFu_FanOnOff, !m_bitMacroState.at(macroFu_FanOnOff));
 
-    writeToXddp(macroFu_FanOnOff, m_mapEnable[macroFu_FanOnOff] ? "true":"false");
+    writeToXddp(macroFu_FanOnOff);
+
     qDebug()<<"-------------------------"<<"吸风马达";
 }
 

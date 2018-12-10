@@ -348,7 +348,10 @@ background-color: rgb(255, 255, 255);</string>
              <string notr="true">color: rgb(239, 41, 41);</string>
             </property>
             <property name="text">
-             <string>100</string>
+             <string>0</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>

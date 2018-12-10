@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>1024</width>
-    <height>634</height>
+    <height>600</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -1609,7 +1609,7 @@ p, li { white-space: pre-wrap; }
               <number>0</number>
              </property>
              <item row="1" column="0">
-              <widget class="QPushButton" name="m_btnF0">
+              <widget class="QPushButton" name="btnMacro_9">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -1636,17 +1636,19 @@ p, li { white-space: pre-wrap; }
                 </font>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(114, 159, 207);
-color: rgb(255, 255, 255);</string>
+                <string notr="true"/>
                </property>
                <property name="text">
                 <string>Mini
 Cycle</string>
                </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
              <item row="0" column="5">
-              <widget class="QPushButton" name="pushButton_13">
+              <widget class="QPushButton" name="btnMacro_6">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -1673,17 +1675,19 @@ Cycle</string>
                 </font>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(114, 159, 207);
-color: rgb(255, 255, 255);</string>
+                <string notr="true"/>
                </property>
                <property name="text">
                 <string>Air
 Feeder</string>
                </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
              <item row="1" column="4">
-              <widget class="QPushButton" name="pushButton_18">
+              <widget class="QPushButton" name="btnMacro_13">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -1710,16 +1714,18 @@ Feeder</string>
                 </font>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(114, 159, 207);
-color: rgb(255, 255, 255);</string>
+                <string notr="true"/>
                </property>
                <property name="text">
                 <string>Zeroing</string>
                </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
              <item row="0" column="4">
-              <widget class="QPushButton" name="pushButton_12">
+              <widget class="QPushButton" name="btnMacro_5">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -1746,17 +1752,19 @@ color: rgb(255, 255, 255);</string>
                 </font>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(114, 159, 207);
-color: rgb(255, 255, 255);</string>
+                <string notr="true"/>
                </property>
                <property name="text">
                 <string>Take
 Down</string>
                </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
              <item row="1" column="6">
-              <widget class="QPushButton" name="pushButton_15">
+              <widget class="QPushButton" name="btnMacro_15">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -1783,17 +1791,19 @@ Down</string>
                 </font>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(114, 159, 207);
-color: rgb(255, 255, 255);</string>
+                <string notr="true"/>
                </property>
                <property name="text">
                 <string>PARA
 MOD</string>
                </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QPushButton" name="pushButton_9">
+              <widget class="QPushButton" name="btnMacro_2">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -1820,17 +1830,22 @@ MOD</string>
                 </font>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(114, 159, 207);
-color: rgb(255, 255, 255);</string>
+                <string notr="true"/>
                </property>
                <property name="text">
                 <string>Y.F.ALL
 OUT</string>
                </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+               <property name="checked">
+                <bool>false</bool>
+               </property>
               </widget>
              </item>
              <item row="1" column="2">
-              <widget class="QPushButton" name="pushButton_16">
+              <widget class="QPushButton" name="btnMacro_11">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -1857,17 +1872,19 @@ OUT</string>
                 </font>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(114, 159, 207);
-color: rgb(255, 255, 255);</string>
+                <string notr="true"/>
                </property>
                <property name="text">
                 <string>Low
 Speed</string>
                </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
              <item row="1" column="5">
-              <widget class="QPushButton" name="pushButton_21">
+              <widget class="QPushButton" name="btnMacro_14">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -1894,17 +1911,19 @@ Speed</string>
                 </font>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(114, 159, 207);
-color: rgb(255, 255, 255);</string>
+                <string notr="true"/>
                </property>
                <property name="text">
                 <string>Fan
 ON/OFF</string>
                </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
              <item row="1" column="1">
-              <widget class="QPushButton" name="pushButton_20">
+              <widget class="QPushButton" name="btnMacro_10">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -1931,17 +1950,19 @@ ON/OFF</string>
                 </font>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(114, 159, 207);
-color: rgb(255, 255, 255);</string>
+                <string notr="true"/>
                </property>
                <property name="text">
                 <string>End
 Cycle</string>
                </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
              <item row="0" column="3">
-              <widget class="QPushButton" name="pushButton_11">
+              <widget class="QPushButton" name="btnMacro_4">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -1968,17 +1989,19 @@ Cycle</string>
                 </font>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(114, 159, 207);
-color: rgb(255, 255, 255);</string>
+                <string notr="true"/>
                </property>
                <property name="text">
                 <string>PAT.SET
 Stop</string>
                </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
              <item row="0" column="2">
-              <widget class="QPushButton" name="pushButton_10">
+              <widget class="QPushButton" name="btnMacro_3">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -2005,17 +2028,19 @@ Stop</string>
                 </font>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(114, 159, 207);
-color: rgb(255, 255, 255);</string>
+                <string notr="true"/>
                </property>
                <property name="text">
                 <string>Cutter
 Set</string>
                </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
              <item row="1" column="3">
-              <widget class="QPushButton" name="pushButton_17">
+              <widget class="QPushButton" name="btnMacro_12">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -2042,17 +2067,19 @@ Set</string>
                 </font>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(114, 159, 207);
-color: rgb(255, 255, 255);</string>
+                <string notr="true"/>
                </property>
                <property name="text">
                 <string>Chain
 Block</string>
                </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
              <item row="0" column="0">
-              <widget class="QPushButton" name="pushButton_8">
+              <widget class="QPushButton" name="btnMacro_1">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -2079,16 +2106,18 @@ Block</string>
                 </font>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(114, 159, 207);
-color: rgb(255, 255, 255);</string>
+                <string notr="true"/>
                </property>
                <property name="text">
                 <string>Reset</string>
                </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
              <item row="0" column="6">
-              <widget class="QPushButton" name="pushButton_14">
+              <widget class="QPushButton" name="btnMacro_7">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
                  <horstretch>0</horstretch>
@@ -2115,17 +2144,19 @@ color: rgb(255, 255, 255);</string>
                 </font>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(114, 159, 207);
-color: rgb(255, 255, 255);</string>
+                <string notr="true"/>
                </property>
                <property name="text">
                 <string>Manual
 Cmd</string>
                </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
              <item row="0" column="7">
-              <widget class="QPushButton" name="pushButton_36">
+              <widget class="QPushButton" name="btnMacro_8">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
                  <horstretch>0</horstretch>
@@ -2140,17 +2171,19 @@ Cmd</string>
                 </font>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(114, 159, 207);
-color: rgb(255, 255, 255);</string>
+                <string notr="true"/>
                </property>
                <property name="text">
                 <string>Back
 Light</string>
                </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
              <item row="1" column="7">
-              <widget class="QPushButton" name="pushButton_37">
+              <widget class="QPushButton" name="btnMacro_16">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
                  <horstretch>0</horstretch>
@@ -2165,11 +2198,13 @@ Light</string>
                 </font>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(114, 159, 207);
-color: rgb(255, 255, 255);</string>
+                <string notr="true"/>
                </property>
                <property name="text">
                 <string>Oiler</string>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
                </property>
               </widget>
              </item>

@@ -166,6 +166,7 @@ enum CMD_OPER_TYPE
 /*键盘上面宏键相关的操作类型*/
 enum macroFun
 {
+    macroFu_0 = 0,       //Key == 0的时候，只作为获取当前气阀状态获取使用
     macroFu_Reset = 1,   //01 强制初始状态
     macroFu_YFALLOUT,    //02 梭子全出
     macroFu_CutterSet,   //03 剪刀抬起

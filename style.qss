@@ -4,3 +4,12 @@ qproperty-pixmap: url(:/image/in_1.png);
 #m_labLed[states=OUT]{
 qproperty-pixmap: url(:/image/out_1.png);
 }
+
+#btnMacro_1,#btnMacro_2,#btnMacro_3,#btnMacro_4,#btnMacro_5,#btnMacro_6,#btnMacro_7,#btnMacro_8,#btnMacro_9,#btnMacro_10,#btnMacro_11,#btnMacro_12,#btnMacro_13,#btnMacro_14,#btnMacro_15,#btnMacro_16{
+background-color: rgb(114, 159, 207);
+color: rgb(255, 255, 255);
+}
+
+#btnMacro_1::checked,#btnMacro_2::checked,#btnMacro_3::checked,#btnMacro_4::checked,#btnMacro_5::checked,#btnMacro_6::checked,#btnMacro_7::checked,#btnMacro_8::checked,#btnMacro_9::checked,#btnMacro_10::checked,#btnMacro_11::checked,#btnMacro_12::checked,#btnMacro_13::checked,#btnMacro_14::checked,#btnMacro_15::checked,#btnMacro_16::checked {
+background-color: rgb(62, 155, 38);
+}
