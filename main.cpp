@@ -7,15 +7,20 @@
 #include "api/myhelper.h"
 
 /*加载qss文件*/
-QString getQssContent()
+void setQssContent()
 {
-    QFile styleSheet(":style.qss");
-    if(!styleSheet.open(QIODevice::ReadOnly))
+    QFile file(":style.qss");
+    if(!file.open(QIODevice::ReadOnly))
     {
         qWarning("Can't open the style sheet file.");
-        return "";
+        return;
     }
-    return styleSheet.readAll();
+
+    QString qss = file.readAll();
+    QString paletteColor = qss.mid(20, 7);
+    qApp->setPalette(QPalette(QColor(paletteColor)));
+    qApp->setStyleSheet(qss);
+    file.close();
 }
 
 int main(int argc, char *argv[])
@@ -42,6 +47,6 @@ int main(int argc, char *argv[])
     QObject::connect(&w,SIGNAL(toXddpData(QByteArray)),&xddp_comm,SLOT(writeToXddp(QByteArray)));
     QObject::connect(&xddp_comm,SIGNAL(sendXddpData(QByteArray)),&w,SLOT(handleXddpData(QByteArray)));
 
-    a.setStyleSheet(getQssContent());
+    setQssContent();
     return a.exec();
 }

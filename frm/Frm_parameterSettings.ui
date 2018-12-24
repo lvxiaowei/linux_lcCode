@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>696</width>
-    <height>524</height>
+    <width>677</width>
+    <height>530</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(173, 127, 168);</string>
+   <string notr="true"/>
   </property>
   <layout class="QGridLayout" name="gridLayout" rowstretch="0,1">
    <property name="leftMargin">
@@ -32,16 +32,31 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <item row="1" column="0" colspan="2">
-    <widget class="QFrame" name="frame">
+   <item row="0" column="0" colspan="2">
+    <widget class="QLabel" name="label">
+     <property name="font">
+      <font>
+       <pointsize>15</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">color: rgb(255, 255, 255);</string>
      </property>
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+     <property name="text">
+      <string>参数设置:</string>
      </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QWidget" name="widget" native="true">
+     <property name="styleSheet">
+      <string notr="true">QLineEdit:focus,QComboBox:focus, QPushButton:focus, QDoubleSpinBox:focus{
+border-width:4px;
+border-radius:10px;
+border-color: rgb(222, 89, 89);
+}</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <property name="leftMargin">
@@ -62,8 +77,8 @@
       <property name="verticalSpacing">
        <number>0</number>
       </property>
-      <item row="3" column="4">
-       <widget class="QLineEdit" name="m_edtMaxSpeed">
+      <item row="7" column="4">
+       <widget class="QLineEdit" name="m_edtOutput">
         <property name="font">
          <font>
           <pointsize>13</pointsize>
@@ -72,75 +87,35 @@
          </font>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(255, 255, 255);</string>
+         <string notr="true">background-color: rgb(85, 87, 83);</string>
         </property>
         <property name="text">
-         <string>200</string>
+         <string>10000</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
-      <item row="3" column="3">
-       <widget class="QLabel" name="label_22">
-        <property name="font">
-         <font>
-          <pointsize>14</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
+      <item row="3" column="1">
+       <widget class="QComboBox" name="m_edtOilMode">
         <property name="styleSheet">
-         <string notr="true">color: rgb(238, 238, 236);</string>
-        </property>
-        <property name="text">
-         <string>最大速度</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <widget class="QLabel" name="label_19">
-        <property name="font">
-         <font>
-          <pointsize>14</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: rgb(238, 238, 236);</string>
-        </property>
-        <property name="text">
-         <string>系统时间设置</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="m_edtOilEnable">
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgb(255, 255, 255);</string>
+         <string notr="true">background-color: rgb(85, 87, 83);</string>
         </property>
         <item>
          <property name="text">
-          <string>开</string>
+          <string>产量</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>关</string>
+          <string>时间</string>
          </property>
         </item>
        </widget>
       </item>
-      <item row="5" column="1">
-       <widget class="QLineEdit" name="m_edtScreen">
+      <item row="7" column="1">
+       <widget class="QLineEdit" name="m_edtOilKeep">
         <property name="font">
          <font>
           <pointsize>13</pointsize>
@@ -149,18 +124,18 @@
          </font>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(255, 255, 255);</string>
+         <string notr="true">background-color: rgb(85, 87, 83);</string>
         </property>
         <property name="text">
-         <string>10</string>
+         <string>2</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
-      <item row="2" column="3">
-       <widget class="QLabel" name="label_21">
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_10">
         <property name="font">
          <font>
           <pointsize>14</pointsize>
@@ -172,11 +147,11 @@
          <string notr="true">color: rgb(238, 238, 236);</string>
         </property>
         <property name="text">
-         <string>点动速度</string>
+         <string>加油间隔</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="3">
+      <item row="6" column="3">
        <widget class="QLabel" name="label_24">
         <property name="font">
          <font>
@@ -193,37 +168,7 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="3">
-       <widget class="QLabel" name="label_16">
-        <property name="font">
-         <font>
-          <pointsize>14</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: rgb(238, 238, 236);</string>
-        </property>
-        <property name="text">
-         <string>语言设置</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="2" column="0">
+      <item row="4" column="0">
        <widget class="QLabel" name="label_7">
         <property name="font">
          <font>
@@ -240,7 +185,20 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
+      <item row="0" column="2">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="2" column="1">
        <widget class="QLineEdit" name="m_edtNeedl">
         <property name="font">
          <font>
@@ -250,7 +208,7 @@
          </font>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(255, 255, 255);</string>
+         <string notr="true">background-color: rgb(85, 87, 83);</string>
         </property>
         <property name="text">
          <string>168</string>
@@ -260,21 +218,27 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_4">
+      <item row="4" column="1">
+       <widget class="QComboBox" name="m_edtOilEnable">
         <property name="font">
          <font>
-          <pointsize>14</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
         <property name="styleSheet">
-         <string notr="true">color: rgb(238, 238, 236);</string>
+         <string notr="true">background-color: rgb(85, 87, 83);</string>
         </property>
-        <property name="text">
-         <string>针筒总针数</string>
-        </property>
+        <item>
+         <property name="text">
+          <string>开</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>关</string>
+         </property>
+        </item>
        </widget>
       </item>
       <item row="0" column="4">
@@ -286,7 +250,7 @@
          </font>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(255, 255, 255);</string>
+         <string notr="true">background-color: rgb(85, 87, 83);</string>
         </property>
         <item>
          <property name="text">
@@ -300,121 +264,7 @@
         </item>
        </widget>
       </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="label_12">
-        <property name="font">
-         <font>
-          <pointsize>14</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: rgb(238, 238, 236);</string>
-        </property>
-        <property name="text">
-         <string>加油保持(秒)</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="4">
-       <widget class="QLineEdit" name="m_edtSysTime">
-        <property name="font">
-         <font>
-          <pointsize>13</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgb(255, 255, 255);</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="font">
-         <font>
-          <pointsize>14</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: rgb(238, 238, 236);</string>
-        </property>
-        <property name="text">
-         <string>零针位</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QLineEdit" name="m_edtOilKeep">
-        <property name="font">
-         <font>
-          <pointsize>13</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgb(255, 255, 255);</string>
-        </property>
-        <property name="text">
-         <string>2</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QLineEdit" name="m_edtOilFre">
-        <property name="font">
-         <font>
-          <pointsize>13</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgb(255, 255, 255);</string>
-        </property>
-        <property name="text">
-         <string>100</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="4">
-       <widget class="QLineEdit" name="m_edtJog">
-        <property name="font">
-         <font>
-          <pointsize>13</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgb(255, 255, 255);</string>
-        </property>
-        <property name="text">
-         <string>25</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="4">
+      <item row="6" column="4">
        <widget class="QComboBox" name="m_edtSize">
         <property name="font">
          <font>
@@ -423,7 +273,7 @@
          </font>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(255, 255, 255);</string>
+         <string notr="true">background-color: rgb(85, 87, 83);</string>
         </property>
         <item>
          <property name="text">
@@ -467,7 +317,61 @@
         </item>
        </widget>
       </item>
-      <item row="5" column="0">
+      <item row="2" column="4">
+       <widget class="QLineEdit" name="m_edtSysTime">
+        <property name="font">
+         <font>
+          <pointsize>13</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(85, 87, 83);</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="3">
+       <widget class="QLabel" name="label_21">
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(238, 238, 236);</string>
+        </property>
+        <property name="text">
+         <string>点动速度</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLabel" name="label_16">
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(238, 238, 236);</string>
+        </property>
+        <property name="text">
+         <string>语言设置</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
        <widget class="QLabel" name="label_14">
         <property name="font">
          <font>
@@ -480,12 +384,12 @@
          <string notr="true">color: rgb(238, 238, 236);</string>
         </property>
         <property name="text">
-         <string>屏幕保护(分钟)</string>
+         <string>加油模式：</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_10">
+      <item row="2" column="3">
+       <widget class="QLabel" name="label_19">
         <property name="font">
          <font>
           <pointsize>14</pointsize>
@@ -497,11 +401,139 @@
          <string notr="true">color: rgb(238, 238, 236);</string>
         </property>
         <property name="text">
-         <string>加油间隔</string>
+         <string>系统时间设置</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="3">
+      <item row="6" column="1">
+       <widget class="QLineEdit" name="m_edtOilFre">
+        <property name="font">
+         <font>
+          <pointsize>13</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(85, 87, 83);</string>
+        </property>
+        <property name="text">
+         <string>100</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(238, 238, 236);</string>
+        </property>
+        <property name="text">
+         <string>零针位</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="label_12">
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(238, 238, 236);</string>
+        </property>
+        <property name="text">
+         <string>加油保持(秒)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(238, 238, 236);</string>
+        </property>
+        <property name="text">
+         <string>针筒总针数</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="3">
+       <widget class="QLabel" name="label_22">
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(238, 238, 236);</string>
+        </property>
+        <property name="text">
+         <string>最大速度</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="4">
+       <widget class="QLineEdit" name="m_edtJog">
+        <property name="font">
+         <font>
+          <pointsize>13</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(85, 87, 83);</string>
+        </property>
+        <property name="text">
+         <string>25</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="4">
+       <widget class="QLineEdit" name="m_edtMaxSpeed">
+        <property name="font">
+         <font>
+          <pointsize>13</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(85, 87, 83);</string>
+        </property>
+        <property name="text">
+         <string>200</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="3">
        <widget class="QLabel" name="label_26">
         <property name="font">
          <font>
@@ -518,66 +550,14 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="4">
-       <widget class="QLineEdit" name="m_edtOutput">
-        <property name="font">
-         <font>
-          <pointsize>13</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgb(255, 255, 255);</string>
-        </property>
-        <property name="text">
-         <string>10000</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="1">
-       <widget class="QPushButton" name="m_edtZeroing">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
+       <widget class="QLineEdit" name="m_edtZeroing">
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(239, 41, 41);</string>
-        </property>
-        <property name="text">
-         <string>零位设置</string>
+         <string notr="true">background-color: rgb(85, 87, 83);</string>
         </property>
        </widget>
       </item>
      </layout>
-    </widget>
-   </item>
-   <item row="0" column="0" colspan="2">
-    <widget class="QLabel" name="label">
-     <property name="font">
-      <font>
-       <pointsize>15</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">color: rgb(255, 255, 255);</string>
-     </property>
-     <property name="text">
-      <string>参数设置:</string>
-     </property>
     </widget>
    </item>
   </layout>

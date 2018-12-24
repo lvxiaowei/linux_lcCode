@@ -231,7 +231,7 @@ void Frm_chainProcessingClass::dealPg2_1(int key)
     switch (key) {
     case Key_F0:
         ui->stackedWidget->setCurrentIndex(0);
-        freshRightButtonContent(QStringList()<<tr("返回")<<tr("从U盘\n输入")<<tr("输出到\nU盘")<<tr("删除")<<tr("编辑本地\n选中链条")<<tr("工作链条\n设定"));
+        freshRightButtonContent(QStringList()<<tr("返回")<<tr("从U盘\n输入")<<tr("输出到\nU盘")<<tr("删除")<<tr("编辑\n工作链条")<<tr("工作链条\n设定"));
         break;
     case Key_F1:
     {
@@ -414,7 +414,7 @@ void Frm_chainProcessingClass::initShowFrmConfig()
 {
     m_cpItem =NULL;
     ui->m_labCurentOperForder->setText(tr("本地"));
-    freshRightButtonContent(QStringList()<<tr("返回")<<tr("从U盘\n输入")<<tr("输出到\nU盘")<<tr("删除")<<tr("编辑本地\n选中链条")<<tr("工作链条\n设定"));
+    freshRightButtonContent(QStringList()<<tr("返回")<<tr("从U盘\n输入")<<tr("输出到\nU盘")<<tr("删除")<<tr("编辑\n工作链条")<<tr("工作链条\n设定"));
 
     /*初始化链条管理窗口*/
     initChainManageTable();

@@ -14,7 +14,7 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(173, 127, 168);</string>
+   <string notr="true"/>
   </property>
   <layout class="QGridLayout" name="m_layYf">
    <property name="leftMargin">
@@ -479,7 +479,11 @@
         <number>0</number>
        </property>
        <item row="0" column="0">
-        <widget class="QTabWidget" name="m_tabYF"/>
+        <widget class="QTabWidget" name="m_tabYF">
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>

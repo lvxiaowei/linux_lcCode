@@ -10,7 +10,7 @@ myMessageBox::myMessageBox(QWidget *parent) :
     ui->setupUi(this);
     //设置窗体标题栏隐藏
     this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinimizeButtonHint);
-    setGeometry(347,235,350,130);
+    setGeometry(300,200,400,220);
 }
 
 myMessageBox::~myMessageBox()

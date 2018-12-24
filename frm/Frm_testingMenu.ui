@@ -13,18 +13,21 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
     <number>0</number>
    </property>
    <property name="topMargin">
-    <number>0</number>
+    <number>5</number>
    </property>
    <property name="rightMargin">
     <number>0</number>
    </property>
    <property name="bottomMargin">
-    <number>0</number>
+    <number>5</number>
    </property>
    <property name="spacing">
     <number>0</number>
@@ -32,41 +35,16 @@
    <item row="0" column="0">
     <widget class="QStackedWidget" name="m_stackWgt">
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(114, 159, 207);</string>
+      <string notr="true"/>
      </property>
      <property name="currentIndex">
-      <number>4</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="page">
-      <widget class="QLabel" name="label">
-       <property name="geometry">
-        <rect>
-         <x>160</x>
-         <y>30</y>
-         <width>211</width>
-         <height>91</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>20</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">color: rgb(245, 121, 0);</string>
-       </property>
-       <property name="text">
-        <string>测试主界面</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </widget>
-     <widget class="QWidget" name="page_2">
-      <layout class="QGridLayout" name="gridLayout_2">
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_10">
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -83,10 +61,58 @@
         <number>0</number>
        </property>
        <item row="0" column="0">
-        <widget class="QLabel" name="label_2">
+        <widget class="QLabel" name="label">
          <property name="font">
           <font>
-           <pointsize>12</pointsize>
+           <pointsize>20</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border-image: url(:/image/bakground3.jpeg);</string>
+         </property>
+         <property name="text">
+          <string>测试主界面</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="page_2">
+      <layout class="QGridLayout" name="gridLayout_2">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <property name="horizontalSpacing">
+        <number>0</number>
+       </property>
+       <property name="verticalSpacing">
+        <number>3</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>13</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -111,6 +137,12 @@
        </item>
        <item row="1" column="0" colspan="2">
         <widget class="QTableWidget" name="m_tabAirValve">
+         <property name="styleSheet">
+          <string notr="true">border-image: url(:/image/bakground3.jpeg);</string>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>false</bool>
+         </property>
          <property name="gridStyle">
           <enum>Qt::SolidLine</enum>
          </property>
@@ -246,12 +278,18 @@
          <x>9</x>
          <y>9</y>
          <width>131</width>
-         <height>22</height>
+         <height>30</height>
         </rect>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>30</height>
+        </size>
        </property>
        <property name="font">
         <font>
-         <pointsize>12</pointsize>
+         <pointsize>13</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
@@ -431,9 +469,15 @@
        </property>
        <item row="0" column="0">
         <widget class="QLabel" name="label_7">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
          <property name="font">
           <font>
-           <pointsize>12</pointsize>
+           <pointsize>13</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -477,8 +521,11 @@
           <property name="bottomMargin">
            <number>5</number>
           </property>
-          <property name="spacing">
+          <property name="horizontalSpacing">
            <number>0</number>
+          </property>
+          <property name="verticalSpacing">
+           <number>3</number>
           </property>
           <item row="1" column="1" rowspan="2">
            <spacer name="verticalSpacer">
@@ -718,9 +765,15 @@
        </property>
        <item row="0" column="0">
         <widget class="QLabel" name="label_11">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
          <property name="font">
           <font>
-           <pointsize>12</pointsize>
+           <pointsize>13</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>

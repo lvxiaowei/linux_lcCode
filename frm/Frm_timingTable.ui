@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <layout class="QGridLayout" name="gridLayout" rowstretch="7,2">
    <property name="leftMargin">
     <number>0</number>
@@ -53,9 +56,7 @@
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">#m_grpAssist{color: rgb(245, 121, 0); background-color: rgb(114, 159, 207);}
-
-</string>
+      <string notr="true"/>
      </property>
      <property name="title">
       <string>辅助设置：</string>

@@ -21,6 +21,7 @@ mainWindow::~mainWindow()
 //初始化
 void mainWindow::init()
 {
+    ui->m_wgtTitle->setProperty("form", "title");
     initIco();
     initData();
 }
@@ -138,7 +139,8 @@ void mainWindow::initIco()
     m_OFF_status = new QPixmap(":/image/stop.png");              //停止状态；
     m_Forward    = new QPixmap(":/image/RotationReversal.png");  //正转；
     m_Reversal   = new QPixmap(":/image/RotationForward.png");   //反转；
-    ui->m_pngRunState->setPixmap(*m_OFF_status);
+    //    ui->m_pngRunState->setPixmap(*m_OFF_status);
+    ui->m_pngRunState->setProperty("state", "stop");
     ui->m_pngDirection->setPixmap(*m_Reversal);
     /*编织位置的显示图片*/
     m_chain_01  = new QMovie(":/image/chain_01.gif");
@@ -188,7 +190,11 @@ void mainWindow::keyPressEvent(int key)
     qDebug()<<"当前正在运行界面,key="<<key;
 
     /*键盘锁定不允许操作*/
-    if(m_bKeyLock && key != Key_F5) return;
+    if(m_bKeyLock && key != Key_F5)
+    {
+        myMessageBox::getInstance()->setMessage(tr("键盘已锁定，请先解锁！"), BoxInfo);
+        return;
+    }
 
     /*处理确认的弹出框窗口信息*/
     if(myMessageBox::getInstance()->isVisible())
@@ -205,34 +211,24 @@ void mainWindow::keyPressEvent(int key)
     }
     switch (key) {
     case Key_F0:
-    {
-        myMessageBox::getInstance()->setMessage(tr("确定转到设置界面么?"), BoxQuesion);
-        m_iIndex=pop_settting;
-        break;
-    }
     case Key_F1:
     {
-        myMessageBox::getInstance()->setMessage(tr("确定转到测试界面么?"), BoxQuesion);
-        m_iIndex=pop_testing;
+        if(m_isRunning)
+        {
+            myMessageBox::getInstance()->setMessage(tr("请先停止设备运行！"), BoxInfo);
+            return;
+        }
+        myMessageBox::getInstance()->setMessage(key == Key_F0 ?tr("确定转到设置界面么?"):tr("确定转到测试界面么?"), BoxQuesion);
+        m_iIndex=(key == Key_F0 ? pop_settting:pop_testing);
         break;
     }
-    case Key_F2:
-
-        break;
-    case Key_F3:
-
-        break;
-    case Key_F4:
-
-        break;
     case Key_F5:
     {
         m_bKeyLock = !m_bKeyLock;
-        ui->m_btnKeyLock->setEnabled(m_bKeyLock);
+        m_bKeyLock ? ui->m_btnKeyLock->show():ui->m_btnKeyLock->hide();
         g_lstRightButton.at(5)->setText(m_bKeyLock ? tr("键盘解锁"):tr("键盘锁定"));
         break;
     }
-
     case Key_Fun0:
     case Key_Fun1:
     case Key_Fun2:
@@ -274,6 +270,7 @@ void mainWindow::initShowFrmConfig()
     freshRightButtonContent(QStringList()<<tr("设置")<<tr("测试")<<tr("")<<tr("")<<tr("")<<tr("键盘锁定"));
     connect(m_timer,SIGNAL(timeout()),this,SLOT(writeToXddp()));
     m_bKeyLock = false;
+    ui->m_btnKeyLock->hide();
     m_isRunning = false;
 }
 
@@ -411,7 +408,11 @@ void mainWindow::handleXddpData(QByteArray data)
 
             if(object.value("mesg_type").toString() == "working_state")
             {
-                ui->m_pngRunState->setPixmap(obj.value("state") == true ? *m_ON_status:*m_OFF_status);   //运行状态
+                //                ui->m_pngRunState->setPixmap(obj.value("state") == true ? *m_ON_status:*m_OFF_status);   //运行状态
+                //                ui->m_pngRunState->setProperty("state", obj.value("state") == true ? "run":"stop");
+                ui->m_pngRunState->setText(QString("%1").arg(obj.value("state") == true ? "RUN":"STOP"));
+                setObjProperty(ui->m_pngRunState, "state", obj.value("state") == true ? "run":"stop");
+                ui->m_edtTitle->setText(QString("%1").arg(obj.value("chain_name").toString()));
                 ui->m_pngDirection->setPixmap(obj.value("dir") == true? *m_Forward:*m_Reversal);      //电机转动方向
                 ui->m_edtStep->setText(QString("%1/%2").arg(obj.value("step_no").toInt()).arg(obj.value("step_nr").toInt()));  //当前步号/总步数
                 ui->m_edtNeedle->setText(QString("%1").arg(obj.value("needle_no").toInt())); //当前针号
@@ -421,7 +422,7 @@ void mainWindow::handleXddpData(QByteArray data)
                 //            ui->m_labRowTotal->setText(QString("%1").arg(obj.value("pattern_line_nr").toInt()));//花形总行数
                 //            ui->m_labRowCrunt->setText(QString("%1").arg(obj.value("pattern_line_no").toInt()));//当前花形行号
                 ui->m_edtOutput->setText(QString("%1/%2").arg(obj.value("volume_no").toInt()).arg(obj.value("volume_nr").toInt()));
-                ui->m_edtChain->setText(QString("%1").arg(obj.value("chain_name").toString())); //当前激活链条名
+                //                ui->m_edtChain->setText(QString("%1").arg(obj.value("chain_name").toString())); //当前激活链条名
                 ui->m_edtPattern->setText(QString("%1").arg(obj.value("pattern_name").toString())); //当前激活花型名
                 ui->m_edtSpeed->setText(QString("%1").arg(obj.value("speed").toInt())); //速度
                 ui->m_pngPart->setText(QString("%1").arg(lst_segment[obj.value("segment").toInt()]));
@@ -624,6 +625,8 @@ void mainWindow::keyPressEventPopSet_airValve(int key)
     case Key_Fun6:
     case Key_Esc:
     {
+        m_bitMacroState.setBit(macroFu_ManualCmd, !m_bitMacroState.at(macroFu_ManualCmd));
+        ui->btnMacro_7->setChecked(!m_bitMacroState.at(macroFu_ManualCmd));
         w->hide();
     }
 
@@ -752,12 +755,18 @@ void mainWindow::macroFun_AirFeeder()
 //07 气阀命令
 void mainWindow::macroFun_ManualCmd()
 {
-    writeToXddp(macroFu_0);
     /*读气阀的配置文件*/
     if(!readAirValveConfig())
     {
         myMessageBox::getInstance()->setMessage(tr("读取气阀配置文件失败！"), BoxInfo);
+        return;
     }
+
+    writeToXddp(macroFu_0);
+
+    m_bitMacroState.setBit(macroFu_ManualCmd, !m_bitMacroState.at(macroFu_ManualCmd));
+    ui->btnMacro_7->setChecked(!m_bitMacroState.at(macroFu_ManualCmd));
+
     /*初始化表格数据*/
     ui_pop.m_tabAirValve->clearContents();
     ui_pop.m_tabAirValve->setRowCount(0);

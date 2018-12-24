@@ -11,10 +11,11 @@ Frm_parameterSettings::Frm_parameterSettings(QWidget *parent) :
     ui_pop.setupUi(w);
 
     setTabOrder(ui->m_edtZeroing,ui->m_edtNeedl);
-    setTabOrder(ui->m_edtNeedl, ui->m_edtOilEnable);
+    setTabOrder(ui->m_edtNeedl, ui->m_edtOilMode);
+    setTabOrder(ui->m_edtOilMode, ui->m_edtOilEnable);
     setTabOrder(ui->m_edtOilEnable,ui->m_edtOilFre);
     setTabOrder(ui->m_edtOilFre,ui->m_edtOilKeep);
-    setTabOrder(ui->m_edtOilKeep,ui->m_edtScreen);
+    setTabOrder(ui->m_edtOilKeep,ui->m_edtLanguage);
     setTabOrder(ui->m_edtLanguage,ui->m_edtSysTime);
     setTabOrder(ui->m_edtSysTime,ui->m_edtJog);
     setTabOrder(ui->m_edtJog,ui->m_edtMaxSpeed);
@@ -207,28 +208,28 @@ void Frm_parameterSettings::keyPressEventPopSet_zeroingSet(int key)
 void Frm_parameterSettings::keyPressEventPopSet_systimeSet(int key)
 {
     switch (key) {
-    case Key_0:
-    case Key_1:
-    case Key_2:
-    case Key_3:
-    case Key_4:
-    case Key_5:
-    case Key_6:
-    case Key_7:
-    case Key_8:
-    case Key_9:
+    case Key_Up:
     {
-        QString strInputValue = QString("%1").arg(m_mapNoKeyToValue[key]);
-        QString strCurentValue = ui_pop.m_edtTime->text() + strInputValue;
-        ui_pop.m_edtTime->setText(strCurentValue.trimmed());
-
-    }
+        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
+        QCoreApplication::sendEvent(ui_pop.dateTimeEdit, &keyPress);
         break;
-    case Key_minus:
+    }
+    case Key_Down:
     {
-        QString strCurentValue = ui_pop.m_edtTime->text();
-        strCurentValue = strCurentValue.left(strCurentValue.length() - 1);
-        ui_pop.m_edtTime->setText(strCurentValue);
+        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier, QString());
+        QCoreApplication::sendEvent(ui_pop.dateTimeEdit, &keyPress);
+        break;
+    }
+    case Key_Left:
+    {
+        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Left, Qt::NoModifier, QString());
+        QCoreApplication::sendEvent(ui_pop.dateTimeEdit, &keyPress);
+        break;
+    }
+    case Key_Right:
+    {
+        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier, QString());
+        QCoreApplication::sendEvent(ui_pop.dateTimeEdit, &keyPress);
         break;
     }
 
@@ -240,19 +241,12 @@ void Frm_parameterSettings::keyPressEventPopSet_systimeSet(int key)
     }
     case Key_Set:
     {
-        QString strValue = ui_pop.m_edtTime->text();
-        if(strValue.length()!=12 || ((strValue.mid(0,2).toInt()>12)||(strValue.mid(2,2).toInt()>31)||(strValue.mid(4,2).toInt()>24)
-                                     ||(strValue.mid(6,2).toInt()>59)||(strValue.mid(8,2).toInt()>20)||(strValue.mid(10,2).toInt()>37)))
-        {
-            myMessageBox::getInstance()->setMessage(tr("时间格式不正确！"), BoxInfo);
-        }
-        else {
-            QString str="date "+strValue;
-            QProcess::execute(str); //用进程调用linux的命令:date
-            QProcess::execute("hwclock -w");        //-w:将系统时钟同步到硬件时钟；-s:将硬件时钟同步到系统时钟；
-            QProcess::execute("sync");              //sync命令：可用来强制将内存缓冲区中的数据写入磁盘中；
-            myMessageBox::getInstance()->setMessage(tr("系统时间修改成功！"), BoxInfo);
-        }
+        QString str="date "+ui_pop.dateTimeEdit->dateTime().toString("MMddhhmmyyyy");
+
+        QProcess::execute(str); //用进程调用linux的命令:date
+        QProcess::execute("hwclock -w");        //-w:将系统时钟同步到硬件时钟；-s:将硬件时钟同步到系统时钟；
+        QProcess::execute("sync");              //sync命令：可用来强制将内存缓冲区中的数据写入磁盘中；
+        myMessageBox::getInstance()->setMessage(tr("系统时间修改成功！"), BoxInfo);
         break;
     }
     default:
@@ -288,7 +282,8 @@ void Frm_parameterSettings::dealPressKeyEvent()
     else if(focusWidget() == ui->m_edtSysTime)
     {
         ui_pop.stackedWidget->setCurrentIndex(2);
-        ui_pop.m_edtTime->setFocus();
+        ui_pop.dateTimeEdit->setDateTime(QDateTime::currentDateTime());
+        ui_pop.dateTimeEdit->setFocus();
         w->show();
     }
 }

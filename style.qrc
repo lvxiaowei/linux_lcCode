@@ -72,5 +72,31 @@
         <file>image/machinset_setzero.png</file>
         <file>image/button_cancel.png</file>
         <file>image/button_ok.png</file>
+        <file>image/bakground1.jpeg</file>
+        <file>image/bakground2.jpeg</file>
+        <file>image/bakground3.jpeg</file>
+        <file>image/bakground4.jpeg</file>
+        <file>image/btn_01.png</file>
+        <file>image/btn_02.png</file>
+        <file>image/btn_03.png</file>
+        <file>image/bakground5.jpeg</file>
+        <file>qss/image/add_bottom.png</file>
+        <file>qss/image/add_left.png</file>
+        <file>qss/image/add_right.png</file>
+        <file>qss/image/add_top.png</file>
+        <file>qss/image/branch_close.png</file>
+        <file>qss/image/branch_open.png</file>
+        <file>qss/image/calendar_nextmonth.png</file>
+        <file>qss/image/calendar_prevmonth.png</file>
+        <file>qss/image/checkbox_checked.png</file>
+        <file>qss/image/checkbox_checked_disable.png</file>
+        <file>qss/image/checkbox_parcial.png</file>
+        <file>qss/image/checkbox_parcial_disable.png</file>
+        <file>qss/image/checkbox_unchecked.png</file>
+        <file>qss/image/checkbox_unchecked_disable.png</file>
+        <file>qss/image/radiobutton_checked.png</file>
+        <file>qss/image/radiobutton_checked_disable.png</file>
+        <file>qss/image/radiobutton_unchecked.png</file>
+        <file>qss/image/radiobutton_unchecked_disable.png</file>
     </qresource>
 </RCC>

@@ -20,7 +20,7 @@ public:
     {
         /*规定程序所用到的字体*/
         QFont font;
-        font.setPointSize(10);
+        font.setPointSize(15);
         font.setFamily(name);
         font.setBold(false);
         QApplication::setFont(font);
