@@ -465,7 +465,7 @@ void Frm_testingMenu::initAirValve()
     /*读气阀的配置文件*/
     if(!readAirValveConfig())
     {
-        myMessageBox::getInstance()->setMessage(tr("读取气阀配置文件失败！"), BoxInfo);
+        myHelper::showMessageBoxInfo(tr("读取气阀配置文件失败！"), 1);
     }
     /*初始化表格数据*/
     ui->m_tabAirValve->clearContents();

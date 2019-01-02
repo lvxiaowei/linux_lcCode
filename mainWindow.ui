@@ -153,9 +153,9 @@
               <widget class="QLabel" name="m_labSysTime">
                <property name="font">
                 <font>
-                 <pointsize>12</pointsize>
-                 <weight>50</weight>
-                 <bold>false</bold>
+                 <pointsize>18</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
                 </font>
                </property>
                <property name="styleSheet">
@@ -524,7 +524,7 @@ color: rgb(239, 41, 41);}</string>
 </string>
                </property>
                <property name="text">
-                <string>34/168</string>
+                <string/>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -588,7 +588,7 @@ color: rgb(239, 41, 41);}</string>
 color: #ffffff;</string>
                </property>
                <property name="text">
-                <string>xxx</string>
+                <string/>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -657,7 +657,7 @@ color: #ffffff;</string>
                 <string notr="true">background-color: rgb(136, 138, 133);</string>
                </property>
                <property name="text">
-                <string>234/300</string>
+                <string/>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -721,7 +721,7 @@ color: #ffffff;</string>
 color: #ffffff;</string>
                </property>
                <property name="text">
-                <string>23/70</string>
+                <string/>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -772,7 +772,7 @@ color: #ffffff;</string>
               </widget>
              </item>
              <item row="2" column="5">
-              <widget class="QLineEdit" name="lineEdit_9">
+              <widget class="QLineEdit" name="m_edtTime">
                <property name="font">
                 <font>
                  <pointsize>17</pointsize>
@@ -785,7 +785,7 @@ color: #ffffff;</string>
 color: #ffffff;</string>
                </property>
                <property name="text">
-                <string>2:40/12:39:60</string>
+                <string/>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -849,7 +849,7 @@ color: #ffffff;</string>
 color: #ffffff;</string>
                </property>
                <property name="text">
-                <string>1</string>
+                <string/>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -913,7 +913,7 @@ color: #ffffff;</string>
 color: #ffffff;</string>
                </property>
                <property name="text">
-                <string>67/1000</string>
+                <string/>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -964,7 +964,7 @@ color: #ffffff;</string>
               </widget>
              </item>
              <item row="1" column="5">
-              <widget class="QLineEdit" name="lineEdit_3">
+              <widget class="QLineEdit" name="m_edtMotor">
                <property name="font">
                 <font>
                  <pointsize>17</pointsize>
@@ -977,7 +977,7 @@ color: #ffffff;</string>
 color: #ffffff;</string>
                </property>
                <property name="text">
-                <string>0/0/0</string>
+                <string/>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -2262,6 +2262,14 @@ MOD</string>
       <string notr="true">QPushButton{
 border-image: url(:/image/btn_02.png);
 border-radius:10px;
+}
+#m_wgtRightBtn QAbstractButton[states=lock]{
+border-style:none;
+border:1px solid #C0DCF2;
+color:#FFFFFF;
+padding:5px;
+min-height:15px;
+border-image: url(:/image/btn_01.png);
 }</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">

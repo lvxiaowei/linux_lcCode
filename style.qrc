@@ -98,5 +98,6 @@
         <file>qss/image/radiobutton_checked_disable.png</file>
         <file>qss/image/radiobutton_unchecked.png</file>
         <file>qss/image/radiobutton_unchecked_disable.png</file>
+        <file>image/fontawesome-webfont.ttf</file>
     </qresource>
 </RCC>

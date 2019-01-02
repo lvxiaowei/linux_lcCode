@@ -6,9 +6,9 @@
 /*sta----------------------------------设备各类配置文件的路径------------------------------------*/
 /*Chain File*/
 #define PATH_CHAIN_FILE_LOCAL   "/home/root/dualcylind/sta/"
-#define PATH_CHAIN_ACTIVE_FILE  "/home/root/dualcylind/lxw/21212.db"
+#define PATH_CHAIN_ACTIVE_FILE  "/home/root/dualcylind/sta/20181123_s200.sta"
 /*配置文件*/
-#define COMMCONFIG_FILE_PATH  "/home/root/dualcylind/lxw/commonConfig.xml"
+#define COMMCONFIG_FILE_PATH  "/home/root/dualcylind/commonConfig.xml"
 /*usb path*/
 #define USB_PATH "/media/sda1"
 /*airValve config*/
@@ -18,7 +18,7 @@
 #define SINGANCONFIG_EN         "/home/root/dualcylind/config_STA/Inputsignal_en.txt"
 #define SINGANCONFIG_CH         "/home/root/dualcylind/config_STA/Inputsignal_zh.txt"
 /*pattern file*/
-#define PATTERN_FILE_LOCAL_PATH "/home/root/dualcylind/lxw/pattern"
+#define PATTERN_FILE_LOCAL_PATH "/home/root/dualcylind/sta"
 
 #define CONFIG_FILE_XML_PATH        "/home/root/dualcylind/MachineConfig.xml"
 /*背光设置路径*/
@@ -72,8 +72,9 @@ typedef struct machineTypePro
 /*记录命令模块相关数据的结构体*/
 typedef struct cmdSettingPro
 {
+    int      index;  /*索引*/
     QString  NO;    /*记录相关的编号，编号与阀号一一对应*/
-    QString  name;  /*命令的名字*/
+    QStringList  name;  /*命令的名字*/
     QString  ico;   /*命令的图案*/
     QString  cmdType;   /*当前命令对应的弹出框编号*/
 }cmdSettingPro;
@@ -191,6 +192,13 @@ enum PromptWindowIndex
     pop_settting = macroFu_Oiler+1,  //切换到设置界面的提示窗口的索引
     pop_testing,                     //切换到测试界面的提示窗口的索引
     runningState,                    //主界面运行的索引
+};
+
+
+enum messageType
+{
+    oper_ChainChange=0,
+    oper_MachineParaChange,
 };
 
 struct PatternFile_Head

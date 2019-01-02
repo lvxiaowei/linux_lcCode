@@ -50,6 +50,7 @@ void Frm_parameterSettings::keyPressEvent(int key)
         setNextDealWgt(PAGE_SETTING);
         break;
     case Key_F1:
+        saveParaToFile();
         break;
     case Key_F2:
         break;
@@ -60,6 +61,41 @@ void Frm_parameterSettings::keyPressEvent(int key)
     case Key_F5:
         break;
 
+    case Key_0:
+    case Key_1:
+    case Key_2:
+    case Key_3:
+    case Key_4:
+    case Key_5:
+    case Key_6:
+    case Key_7:
+    case Key_8:
+    case Key_9:
+    {
+        /*对有下拉框的QComboBox控件做差异处理*/
+        QLineEdit *pCurrentFocusWgt =dynamic_cast<QLineEdit*>(focusWidget());
+        if(pCurrentFocusWgt!=NULL)
+        {
+            bool ok;
+            QString strInputValue = QString("%1").arg(m_mapNoKeyToValue[key]);
+            QString strCurentValue = pCurrentFocusWgt->text() + strInputValue;
+            pCurrentFocusWgt->setText(QString::number((strCurentValue.trimmed()).toInt(&ok,10)));
+        }
+    }
+        break;
+    case Key_minus:
+    {
+        /*对有下拉框的QComboBox控件做差异处理*/
+        QLineEdit *pCurrentFocusWgt =dynamic_cast<QLineEdit*>(focusWidget());
+        if(pCurrentFocusWgt!=NULL)
+        {
+            bool ok;
+            QString strCurentValue = pCurrentFocusWgt->text();
+            strCurentValue = strCurentValue.left(strCurentValue.length() - 1);
+            pCurrentFocusWgt->setText(QString::number((strCurentValue.trimmed()).toInt(&ok,10)));
+        }
+        break;
+    }
 
     case Key_Up:
     case Key_Down:
@@ -156,6 +192,7 @@ void Frm_parameterSettings::keyPressEventPopSet_paswd(int key)
         ui_pop.m_edtPasWd->setText(strCurentValue);
         break;
     }
+    case Key_F0:
     case Key_Esc:
     {
         w->hide();
@@ -167,12 +204,12 @@ void Frm_parameterSettings::keyPressEventPopSet_paswd(int key)
         if(ui_pop.m_edtPasWd->text() == "123456")
         {
             ui_pop.stackedWidget->setCurrentIndex(1);
-            myMessageBox::getInstance()->setMessage(tr("登录成功!"), BoxInfo);
+            myHelper::showMessageBoxInfo(tr("登录成功!"), 1);
             writeToXddp("in");
             connect(m_timer,SIGNAL(timeout()),this,SLOT(writeToXddp()));
         }
         else {
-            myMessageBox::getInstance()->setMessage(tr("密码错误!"), BoxInfo);
+            myHelper::showMessageBoxInfo(tr("密码错误!"), 1);
         }
         break;
     }
@@ -185,6 +222,7 @@ void Frm_parameterSettings::keyPressEventPopSet_paswd(int key)
 void Frm_parameterSettings::keyPressEventPopSet_zeroingSet(int key)
 {
     switch (key) {
+    case Key_F0:
     case Key_Esc:
     {
         w->hide();
@@ -196,7 +234,7 @@ void Frm_parameterSettings::keyPressEventPopSet_zeroingSet(int key)
     case Key_Set:
     {
         writeToXddp("set");
-        myMessageBox::getInstance()->setMessage(tr("零位设置成功！"), BoxInfo);
+        myHelper::showMessageBoxInfo(tr("零位设置成功！"), 1);
         break;
     }
     default:
@@ -246,7 +284,7 @@ void Frm_parameterSettings::keyPressEventPopSet_systimeSet(int key)
         QProcess::execute(str); //用进程调用linux的命令:date
         QProcess::execute("hwclock -w");        //-w:将系统时钟同步到硬件时钟；-s:将硬件时钟同步到系统时钟；
         QProcess::execute("sync");              //sync命令：可用来强制将内存缓冲区中的数据写入磁盘中；
-        myMessageBox::getInstance()->setMessage(tr("系统时间修改成功！"), BoxInfo);
+        myHelper::showMessageBoxInfo(tr("系统时间修改成功！"), 1);
         break;
     }
     default:
@@ -260,6 +298,7 @@ void Frm_parameterSettings::initShowFrmConfig()
     freshRightButtonContent(QStringList()<<tr("返回")<<tr("保存设置")<<tr("")<<tr("")<<tr("")<<tr(""));
 
     ui->m_edtZeroing->setFocus();
+    readParaFromFile();
 }
 
 /*处理set键相关的事件*/
@@ -286,6 +325,73 @@ void Frm_parameterSettings::dealPressKeyEvent()
         ui_pop.dateTimeEdit->setFocus();
         w->show();
     }
+}
+
+/*从配置文件读取配置*/
+void Frm_parameterSettings::readParaFromFile()
+{
+    /*获取当前正在运行的链条名字*/
+    QDomDocument document;
+    if(!getXmlConfig(document))
+        return;
+
+    /*针筒总针数*/
+    ui->m_edtNeedl->setText(document.elementsByTagName("needle").at(0).toElement().attribute("val"));
+    /*加油模式*/
+    ui->m_edtOilMode->setCurrentIndex(document.elementsByTagName("oil").at(0).toElement().attribute("mode").toInt());
+    /*自动加油*/
+    ui->m_edtOilEnable->setCurrentIndex(document.elementsByTagName("oil").at(0).toElement().attribute("enable").toInt());
+    /*加油间隔*/
+    ui->m_edtOilFre->setText(document.elementsByTagName("oil").at(0).toElement().attribute("frequency"));
+    /*加油保持(秒)*/
+    ui->m_edtOilKeep->setText(document.elementsByTagName("oil").at(0).toElement().attribute("keep"));
+    /*语言设置*/
+    ui->m_edtLanguage->setCurrentIndex(document.elementsByTagName("language").at(0).toElement().attribute("val").toInt());
+    /*点动速度*/
+    ui->m_edtJog->setText(document.elementsByTagName("speed").at(0).toElement().attribute("jog"));
+    /*最大速度*/
+    ui->m_edtJog->setText(document.elementsByTagName("speed").at(0).toElement().attribute("max"));
+    /*尺寸设置*/
+    ui->m_edtSize->setCurrentIndex(document.elementsByTagName("size").at(0).toElement().attribute("val").toInt()-1);
+    /*目标产量*/
+    ui->m_edtOutput->setText(document.elementsByTagName("targetYield").at(0).toElement().attribute("val"));
+}
+
+/*保存配置到配置文件*/
+void Frm_parameterSettings::saveParaToFile()
+{
+    QDomDocument document;
+    if(!getXmlConfig(document))
+        return;
+
+    /*针筒总针数*/
+    document.elementsByTagName("needle").at(0).toElement().setAttribute("val", ui->m_edtNeedl->text());
+    /*加油模式*/
+    document.elementsByTagName("oil").at(0).toElement().setAttribute("mode", ui->m_edtOilMode->currentIndex());
+    /*自动加油*/
+    document.elementsByTagName("oil").at(0).toElement().setAttribute("enable", ui->m_edtOilEnable->currentIndex());
+    /*加油间隔*/
+    document.elementsByTagName("oil").at(0).toElement().setAttribute("frequency", ui->m_edtOilFre->text());
+    /*加油保持(秒)*/
+    document.elementsByTagName("oil").at(0).toElement().setAttribute("keep", ui->m_edtOilKeep->text());
+    /*语言设置*/
+    document.elementsByTagName("language").at(0).toElement().setAttribute("val", ui->m_edtLanguage->currentIndex());
+    /*点动速度*/
+    document.elementsByTagName("speed").at(0).toElement().setAttribute("jog", ui->m_edtJog->text());
+    /*最大速度*/
+    document.elementsByTagName("speed").at(0).toElement().setAttribute("max", ui->m_edtJog->text());
+    /*尺寸设置*/
+    document.elementsByTagName("size").at(0).toElement().setAttribute("val", ui->m_edtSize->currentIndex()+1);
+    /*目标产量*/
+    document.elementsByTagName("targetYield").at(0).toElement().setAttribute("val", ui->m_edtOutput->text());
+
+    QFile file(CONFIG_FILE_XML_PATH);
+    file.open(QIODevice::WriteOnly|QFile::Truncate);
+    QTextStream stream(&file);
+    document.save(stream, 4);
+    file.close();
+
+    myHelper::showMessageBoxInfo(tr("保存成功！"), 2);
 }
 
 /*系统时间控件定时刷新*/

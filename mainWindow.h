@@ -3,7 +3,6 @@
 
 #include <baseClassWgt.h>
 #include <QMovie>
-#include <api/myMessageBox.h>
 #include "ui_mainWindowPop.h"
 
 namespace Ui {
@@ -36,10 +35,13 @@ private:
     void initData();
     void initSystemTime();
     void processingPopup(int key);
+    void keyPressEventInputBox(int key);
     void keyPressEventPopSet(int key);
     void keyPressEventPopSet_cut(int key);
     void keyPressEventPopSet_airValve(int key);
     bool readAirValveConfig();
+    void initCutterTable();
+    void initManualTable();
 
     void writeToXddp(const int operType, QString operMode="");  /*向XDDP发送数据*/
     /*16个宏处理的函数*/

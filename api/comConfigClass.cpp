@@ -1,7 +1,9 @@
 #include "comConfigClass.h"
-
+#include <QDebug>
 /*start********************************************************ComConfigClass*********************************************/
 ComConfigClass* ComConfigClass::m_comCfgClass = NULL;
+int ComConfigClass::m_iLanguage=0;
+
 ComConfigClass::ComConfigClass()
 {
     QString path;
@@ -40,6 +42,20 @@ void ComConfigClass::parseCfgFile()
         return;
     }
 
+    /********************************语言类型映射数据解析******************************************/
+    QDomNodeList lstLanguage = document.elementsByTagName("language");
+    QStringList lstLanguageType;
+    if(lstLanguage.count()==0)
+    {
+        //如果配置文件中没有语言相关选项，默认是中文处理
+        m_iLanguage=0;
+        lstLanguageType<<"CN";
+    }
+    else {
+        m_iLanguage = lstLanguage.at(0).toElement().attribute("index").toInt();
+        lstLanguageType = lstLanguage.at(0).toElement().attribute("content").split(";");
+    }
+
     /********************************命令模块数据解析******************************************/
     QDomNodeList lstCmdModel = document.elementsByTagName("cmdModel");
     if(!lstCmdModel.isEmpty())
@@ -51,25 +67,43 @@ void ComConfigClass::parseCfgFile()
         QDomElement nodeChildElt;
         cmdSettingPro cmdPro;
         QList<cmdSettingPro> lstCmdPro;
+        int index;
+        bool ok;
+        QStringList lstCmdModelLge;
         for(int i=0; i<lstNode.count(); ++i)
         {
             node = lstNode.item(i);
-            strName = node.toElement().attributeNode("name").value();
+            strName = node.toElement().attributeNode("index").value();
 
             if(strName.isEmpty()) continue;
+            index=strName.toInt(&ok,16);
+
+            //保存parameter的多语言map
+            lstCmdModelLge.clear();
+            for(int z=0; z<lstLanguageType.count(); ++z)
+            {
+                lstCmdModelLge <<node.toElement().attributeNode(lstLanguageType.at(z)).value();
+            }
+            m_cmdModelType[index] = lstCmdModelLge;
 
             lstNodeChild = node.childNodes();
             for(int j=0; j<lstNodeChild.count(); ++j)
             {
                 nodeChildElt= lstNodeChild.at(j).toElement();
                 cmdPro.NO = nodeChildElt.attributeNode("NO").value();
-                cmdPro.name = nodeChildElt.attributeNode("name").value();
                 cmdPro.ico = nodeChildElt.attributeNode("ico").value();
                 cmdPro.cmdType = nodeChildElt.attributeNode("cmdType").value();
+                cmdPro.index = nodeChildElt.attributeNode("index").value().toInt(&ok,16);
+
+                cmdPro.name.clear();
+                for(int z=0; z<lstLanguageType.count(); ++z)
+                {
+                    cmdPro.name <<nodeChildElt.attributeNode(lstLanguageType.at(z)).value();
+                }
                 lstCmdPro.append(cmdPro);
-                m_mapCmdContentToCmdType[cmdPro.name] = cmdPro;
+                m_mapCmdContentToCmdType[cmdPro.index] = cmdPro;
             }
-            m_cmdModel[strName] = lstCmdPro;
+            m_cmdModel[index] = lstCmdPro;
             lstCmdPro.clear();
         }
     }
@@ -217,6 +251,18 @@ QList<cmdSettingPro> ComConfigClass::getSpecificModuleType(int index)
     else {
         return m_cmdModel[m_cmdModel.keys().at(index-1)];
     }
+}
+
+/*返回命令模块的命令类型lst*/
+QStringList ComConfigClass::getCmdModelTypes()
+{
+    QStringList lstCmdModelTypes;
+    lstCmdModelTypes<<QObject::tr("所有");
+    for(int i=0; i<m_cmdModelType.count(); ++i)
+    {
+        lstCmdModelTypes << m_cmdModelType.values().at(i).at(m_iLanguage);
+    }
+    return lstCmdModelTypes;
 }
 
 /*end********************************************************ComConfigClass*********************************************/

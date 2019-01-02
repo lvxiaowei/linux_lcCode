@@ -3,6 +3,7 @@
 
 #include <QRadioButton>
 #include <QSpinBox>
+#include <QFileSystemModel>
 #include "baseClassWgt.h"
 #include "api/myMessageBox.h"
 
@@ -109,9 +110,13 @@ private:
     void initPatManageTabl();
     void initTimingsTable();
     void saveTimingsDataToConfigFile();
+    bool isFileExist(QString fileFullName);
     patternTableWgt *  m_pattrenTable;
     YFTableWgt *       m_YFTable;
     int m_iScale;    //图案放大系数
+    QFileSystemModel *m_treeFileModel;
+    bool bIsUExit;
+    QString m_sourceFile,m_destFile,m_delFile; //进行文件拷贝时候的源文件和目的文件
     QStringList m_lstYF;
     Ui::Frm_patternManage *ui;
 };

@@ -347,5 +347,5 @@ void Frm_timingTable::saveConfigFile()
     document.save(stream, 4);
     file.close();
 
-    myMessageBox::getInstance()->setMessage(tr("保存修改成功！"), BoxInfo);
+    myHelper::showMessageBoxInfo(tr("保存修改成功！"), 1);
 }

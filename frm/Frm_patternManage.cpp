@@ -36,6 +36,32 @@ void Frm_patternManage::keyPressEvent(int key)
 /*处理串口数据-page1*/
 void Frm_patternManage::dealPg1(int key)
 {
+    if(myHelper::isMessageBoxShow())
+    {
+        switch (key) {
+        case Key_Set:
+        {
+            if(myHelper::getMessageInfo().contains(QString(tr("确定要删除"))))
+            {
+                QFile file(m_delFile);
+                file.remove();
+            }
+            else {
+                QFile file(m_destFile);
+                file.remove();
+                QFile::copy(m_sourceFile, m_destFile);
+            }
+            initPatManageTabl();
+            QUIMessageBox::Instance()->hide();
+            break;
+        }
+        case Key_Esc:
+            QUIMessageBox::Instance()->hide();
+        default:
+            break;
+        }
+    }
+
     switch (key) {
     case Key_F0:
     {
@@ -49,33 +75,81 @@ void Frm_patternManage::dealPg1(int key)
     }
     case Key_F2:
     {
+        m_sourceFile = m_treeFileModel->filePath(ui->m_treeFile->currentIndex());
+        m_destFile =  QString("%1/%2").arg(PATH_CHAIN_FILE_LOCAL).arg(m_treeFileModel->fileName(ui->m_treeFile->currentIndex()));
+        /*判断本地是否有同名文件*/
+        if(isFileExist(m_destFile))
+        {
+            myHelper::showMessageBoxQuestion(tr("本地有同名文件，是否覆盖？"));
+        }
+        else {
+            QFile::copy(m_sourceFile, m_destFile);
+            initPatManageTabl();
+            myHelper::showMessageBoxInfo(tr("从U盘拷贝到本地成功！"), 1);
+        }
         break;
     }
     case Key_F3:
     {
+        m_sourceFile = ui->m_tabPatManage->item(ui->m_tabPatManage->currentRow(),2)->text();
+        m_destFile = QString("%1/%2").arg(USB_PATH).arg(ui->m_tabPatManage->item(ui->m_tabPatManage->currentRow(),3)->text());
+        /*判断本地是否有同名文件*/
+        if(isFileExist(m_destFile))
+        {
+            myHelper::showMessageBoxQuestion(tr("U盘有同名文件，是否覆盖？"));
+        }
+        else {
+            QFile::copy(m_sourceFile, m_destFile);
+            myHelper::showMessageBoxInfo(tr("从本地拷贝到U盘成功！"), 1);
+        }
         break;
     }
     case Key_F4:
+    {
+        QString fileName;
+        if( ui->m_tabPatManage->hasFocus())
+        {
+            m_delFile = ui->m_tabPatManage->item(ui->m_tabPatManage->currentRow(),2)->text();
+            fileName = ui->m_tabPatManage->item(ui->m_tabPatManage->currentRow(),3)->text();
+        }
+        else {
+            m_delFile = m_treeFileModel->filePath(ui->m_treeFile->currentIndex());
+            fileName = m_treeFileModel->fileName(ui->m_treeFile->currentIndex());
+        }
+        myHelper::showMessageBoxQuestion(QString(tr("确定要删除%1文件%2吗？")).arg(ui->m_labCurentOperForder->text()).arg(fileName));
         break;
+    }
     case Key_F5:
     {
         initPatternProcesPage();
         break;
     }
 
-
     case Key_Up:
     {
         QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui->m_tabPatManage, &keyPress);
+        ui->m_tabPatManage->hasFocus() ? QCoreApplication::sendEvent(ui->m_tabPatManage, &keyPress):QCoreApplication::sendEvent(ui->m_treeFile, &keyPress);
         break;
     }
     case Key_Down:
     {
         QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui->m_tabPatManage, &keyPress);
+        ui->m_tabPatManage->hasFocus() ? QCoreApplication::sendEvent(ui->m_tabPatManage, &keyPress):QCoreApplication::sendEvent(ui->m_treeFile, &keyPress);
         break;
     }
+    case Key_Left:
+    {
+        ui->m_tabPatManage->setFocus();
+        ui->m_labCurentOperForder->setText(tr("本地"));
+        break;
+    }
+    case Key_Right:
+    {
+        ui->m_treeFile->setFocus();
+        ui->m_labCurentOperForder->setText(tr("U盘"));
+        break;
+    }
+
     default:
         break;
     }
@@ -134,7 +208,7 @@ void Frm_patternManage::dealPg2_menu(int key)
     {
         ui->m_stackPat->setCurrentIndex(0);
         ui->m_title->setText(tr("[花型管理]"));
-        freshRightButtonContent(QStringList()<<tr("返回")<<tr("时序设置")<<tr("")<<tr("")<<tr("")<<tr("编辑"));
+        freshRightButtonContent(QStringList()<<tr("返回")<<tr("时序设置")<<tr("从U盘\n输入")<<tr("输出到\nU盘")<<tr("删除")<<tr("编辑"));
         delete m_pattrenTable;
         delete m_YFTable;
         m_pattrenTable = NULL;
@@ -419,9 +493,44 @@ void Frm_patternManage::initShowFrmConfig()
 {
     ui->m_stackPat->setCurrentIndex(0);
     ui->m_title->setText(tr("[花型管理]"));
-    freshRightButtonContent(QStringList()<<tr("返回")<<tr("时序设置")<<tr("")<<tr("")<<tr("")<<tr("编辑"));
+    freshRightButtonContent(QStringList()<<tr("返回")<<tr("时序设置")<<tr("从U盘\n输入")<<tr("输出到\nU盘")<<tr("删除")<<tr("编辑"));
     initPatManageTabl();
     ui->m_frmYFSet->hide();
+
+    /*初始化usb窗口*/
+    QDir dir(USB_PATH);
+    bIsUExit = dir.exists();
+    if(bIsUExit)
+    {
+        m_treeFileModel = new QFileSystemModel();
+        m_treeFileModel->setRootPath(USB_PATH);
+
+        QStringList nameFilter;
+        nameFilter << "*.dis";
+        m_treeFileModel->setNameFilterDisables(false);
+        m_treeFileModel->setNameFilters(nameFilter);
+        ui->m_treeFile->setModel(m_treeFileModel);
+        ui->m_treeFile->setRootIndex(m_treeFileModel->index(USB_PATH));
+        ui->m_treeFile->setColumnHidden(1,true);
+        ui->m_treeFile->setColumnHidden(2,true);
+        ui->m_treeFile->setColumnHidden(3,true);
+
+        ui->m_treeFile->setCurrentIndex(m_treeFileModel->index(0,0));
+    }
+
+    QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
+    myHelper::sleep(10);
+    QCoreApplication::sendEvent(ui->m_treeFile, &keyPress);
+}
+
+bool Frm_patternManage::isFileExist(QString fileFullName)
+{
+    QFileInfo fileInfo(fileFullName);
+    if(fileInfo.isFile())
+    {
+        return true;
+    }
+    return false;
 }
 
 /*初始化花型编辑界面*/
@@ -436,7 +545,7 @@ void Frm_patternManage::initPatternProcesPage()
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly))
     {
-        myMessageBox::getInstance()->setMessage(tr("文件打开失败!"), BoxInfo);
+        myHelper::showMessageBoxInfo(tr("文件打开失败!"), 1);
         return;
     }
     QByteArray bt = file.readAll();
@@ -529,7 +638,7 @@ void Frm_patternManage::initPatManageTabl()
     ui->m_tabPatManage->setRowCount(0);
     ui->m_tabPatManage->setColumnCount(4); //设置总列数；
     ui->m_tabPatManage->setColumnWidth(0,50);
-    ui->m_tabPatManage->setColumnWidth(1,90);
+    ui->m_tabPatManage->setColumnWidth(1,120);
     ui->m_tabPatManage->setColumnWidth(2,0);
 
     ui->m_tabPatManage->setHorizontalHeaderLabels(QStringList()<<tr("序号")<<tr("文件大小")<<tr("文件路径")<<tr("花型文件")); //设置表头名称；
@@ -705,7 +814,7 @@ void Frm_patternManage::saveTimingsDataToConfigFile()
     document.save(stream, 4);
     file.close();
 
-    myMessageBox::getInstance()->setMessage(tr("保存修改成功！"), BoxInfo);
+    myHelper::showMessageBoxInfo(tr("保存修改成功！"), 1);
 }
 
 /*START*****************************************************paletteBoard******************************************************************************/
@@ -1004,12 +1113,12 @@ bool YFTableWgt::setYF(int column, int star, int end, bool set)
 {
     if(column>columnCount() || column<1)
     {
-        myMessageBox::getInstance()->setMessage(tr("纱嘴设置范围不正确，请重新设置！"), BoxInfo);
+        myHelper::showMessageBoxInfo(tr("纱嘴设置范围不正确，请重新设置！"), 1);
         return false;
     }
     if(star>end || end>rowCount())
     {
-        myMessageBox::getInstance()->setMessage(tr("起始行/结束行设置的值不正确！"), BoxInfo);
+        myHelper::showMessageBoxInfo(tr("起始行/结束行设置的值不正确！"), 1);
         return false;
     }
     QColor color = (set ? QColor(255, 0, 0) : QColor(255,255,255));

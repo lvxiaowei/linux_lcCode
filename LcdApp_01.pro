@@ -42,7 +42,8 @@ SOURCES += \
     frm/Frm_testingMenu.cpp \
     frm/Frm_patternManage.cpp \
     frm/Frm_timingTable.cpp \
-    frm/Frm_parameterSettings.cpp
+    frm/Frm_parameterSettings.cpp \
+    api/myhelper.cpp
 
 HEADERS += \
     schedule.h \

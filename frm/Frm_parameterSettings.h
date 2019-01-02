@@ -36,6 +36,9 @@ private:
     void keyPressEventPopSet_paswd(int key);
     void keyPressEventPopSet_zeroingSet(int key);
     void keyPressEventPopSet_systimeSet(int key);
+
+    void readParaFromFile();
+    void saveParaToFile();
 };
 
 #endif // FRM_PARAMETERSETTINGS_H

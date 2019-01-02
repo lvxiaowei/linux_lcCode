@@ -659,6 +659,15 @@ min-height:15px;
 border-image: url(:/image/btn_02.png);
 }
 
+#m_wgtRightBtn QAbstractButton[states=lock]{
+border-style:none;
+border:1px solid #C0DCF2;
+color:#FFFFFF;
+padding:5px;
+min-height:15px;
+border-image: url(:/image/btn_01.png);
+}
+
 #m_wgtMacro QAbstractButton:checked{
 color: rgb(255, 255, 255);
 border-image: url(:/image/btn_03.png);

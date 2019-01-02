@@ -9,7 +9,6 @@ mainWindow::mainWindow(QWidget *parent) :
     ui->setupUi(this);
     w = new QDialog(this);
     ui_pop.setupUi(w);
-
     init();
 }
 
@@ -120,13 +119,18 @@ void mainWindow::initData()
     m_mapFun[Key_Fun15] = &mainWindow::macroFun_Oiler;
 
     lst_segment.clear();
-    lst_segment << tr("START") << tr("WELT") <<("ELEATIC") <<tr("LEG") <<tr("HEEL_UP") <<tr("HELL_DOWN") <<tr("FOOT")
-                <<tr("PRE_TOE") <<tr("TOE_UP") <<tr("TOE_DOWN") <<tr("ROSSO") <<tr("TAKE OFF") <<tr("END");
+    lst_segment<<tr("开始") <<tr("包口") <<tr("橡筋") <<tr("上统") <<tr("袜跟上") <<tr("袜跟下") <<tr("下统")
+              <<tr("过桥") <<tr("袜头上") <<tr("袜头下") <<tr("缝头线") <<tr("机头线") <<tr("结束");
+    /*<< tr("START") << tr("WELT") <<("ELASTIC") <<tr("LEG") <<tr("HEEL_UP") <<tr("HELL_DOWN") <<tr("FOOT")
+                <<tr("PRE_TOE") <<tr("TOE_UP") <<tr("TOE_DOWN") <<tr("ROSSO") <<tr("TAKE OFF") <<tr("END")*/
     /*新建定时器*/
     m_timer = new QTimer(this);
 
     /*设置系统时间控件*/
     initSystemTime();
+
+    /*初始化剪刀表格*/
+    initCutterTable();
 
     setNextDealWgt(PAGE_RUNNING);
 
@@ -192,14 +196,21 @@ void mainWindow::keyPressEvent(int key)
     /*键盘锁定不允许操作*/
     if(m_bKeyLock && key != Key_F5)
     {
-        myMessageBox::getInstance()->setMessage(tr("键盘已锁定，请先解锁！"), BoxInfo);
+        myHelper::showMessageBoxInfo(tr("键盘已锁定，请先解锁！"), 1);
         return;
     }
 
     /*处理确认的弹出框窗口信息*/
-    if(myMessageBox::getInstance()->isVisible())
+    if(myHelper::isMessageBoxShow())
     {
         processingPopup(key);
+        return;
+    }
+
+    /*处理输入密码的弹出框*/
+    if(myHelper::isInputBoxShow())
+    {
+        keyPressEventInputBox(key);
         return;
     }
 
@@ -215,10 +226,10 @@ void mainWindow::keyPressEvent(int key)
     {
         if(m_isRunning)
         {
-            myMessageBox::getInstance()->setMessage(tr("请先停止设备运行！"), BoxInfo);
+            myHelper::showMessageBoxInfo(tr("请先停止设备运行！"), 1);
             return;
         }
-        myMessageBox::getInstance()->setMessage(key == Key_F0 ?tr("确定转到设置界面么?"):tr("确定转到测试界面么?"), BoxQuesion);
+        myHelper::showMessageBoxQuestion(key == Key_F0 ?tr("确定转到设置界面么?"):tr("确定转到测试界面么?"));
         m_iIndex=(key == Key_F0 ? pop_settting:pop_testing);
         break;
     }
@@ -226,7 +237,8 @@ void mainWindow::keyPressEvent(int key)
     {
         m_bKeyLock = !m_bKeyLock;
         m_bKeyLock ? ui->m_btnKeyLock->show():ui->m_btnKeyLock->hide();
-        g_lstRightButton.at(5)->setText(m_bKeyLock ? tr("键盘解锁"):tr("键盘锁定"));
+        g_lstRightButton.at(5)->setText(m_bKeyLock ? tr(""):tr("键盘锁定"));
+        setObjProperty(g_lstRightButton.at(5), STATUS, m_bKeyLock ? "lock":"unlock");
         break;
     }
     case Key_Fun0:
@@ -241,7 +253,7 @@ void mainWindow::keyPressEvent(int key)
     {
         if(m_isRunning)
         {
-            myMessageBox::getInstance()->setMessage(tr("请先停止设备运行！"), BoxInfo);
+            myHelper::showMessageBoxInfo(tr("请先停止设备运行！"), 1);
             return;
         }
     }
@@ -408,8 +420,6 @@ void mainWindow::handleXddpData(QByteArray data)
 
             if(object.value("mesg_type").toString() == "working_state")
             {
-                //                ui->m_pngRunState->setPixmap(obj.value("state") == true ? *m_ON_status:*m_OFF_status);   //运行状态
-                //                ui->m_pngRunState->setProperty("state", obj.value("state") == true ? "run":"stop");
                 ui->m_pngRunState->setText(QString("%1").arg(obj.value("state") == true ? "RUN":"STOP"));
                 setObjProperty(ui->m_pngRunState, "state", obj.value("state") == true ? "run":"stop");
                 ui->m_edtTitle->setText(QString("%1").arg(obj.value("chain_name").toString()));
@@ -417,15 +427,13 @@ void mainWindow::handleXddpData(QByteArray data)
                 ui->m_edtStep->setText(QString("%1/%2").arg(obj.value("step_no").toInt()).arg(obj.value("step_nr").toInt()));  //当前步号/总步数
                 ui->m_edtNeedle->setText(QString("%1").arg(obj.value("needle_no").toInt())); //当前针号
                 ui->m_edtCircle->setText(QString("%1/%2").arg(obj.value("rep_no").toInt()).arg(obj.value("rep_nr").toInt())); //当前圈数/总圈数
-                //            ui->m_labStepTotal->setText(QString("%1").arg(obj.value("rep_nr").toInt()));//总循环数
-                //            ui->m_labStepCurent->setText(QString("%1").arg(obj.value("rep_no").toInt()));//当前循环数
-                //            ui->m_labRowTotal->setText(QString("%1").arg(obj.value("pattern_line_nr").toInt()));//花形总行数
-                //            ui->m_labRowCrunt->setText(QString("%1").arg(obj.value("pattern_line_no").toInt()));//当前花形行号
+
                 ui->m_edtOutput->setText(QString("%1/%2").arg(obj.value("volume_no").toInt()).arg(obj.value("volume_nr").toInt()));
-                //                ui->m_edtChain->setText(QString("%1").arg(obj.value("chain_name").toString())); //当前激活链条名
                 ui->m_edtPattern->setText(QString("%1").arg(obj.value("pattern_name").toString())); //当前激活花型名
                 ui->m_edtSpeed->setText(QString("%1").arg(obj.value("speed").toInt())); //速度
                 ui->m_pngPart->setText(QString("%1").arg(lst_segment[obj.value("segment").toInt()]));
+                ui->m_edtTime->setText(QString("%1").arg(obj.value("time").toString()));
+                ui->m_edtMotor->setText(QString("%1").arg(obj.value("motor").toString()));
 
                 if(ui->m_gifKInt->movie() !=lst_move.at(obj.value("segment").toInt()))
                 {
@@ -454,7 +462,18 @@ void mainWindow::handleXddpData(QByteArray data)
                 case macroFu_YFALLOUT:   //02 梭子全出
                     break;
                 case macroFu_CutterSet:   //03 剪刀抬起
+                {
+                    for(int i=0; i<ui_pop.m_tabCut->rowCount(); ++i)
+                    {
+                        int index = ui_pop.m_tabCut->item(i,3)->text().toInt();
+                        QLabel * lab=dynamic_cast<QLabel*>(ui_pop.m_tabCut->cellWidget(i,2));
+                        if(lab != NULL)
+                        {
+                            setObjProperty(lab, STATUS, m_bitValveStates.at(index) ? STATUS_IN:STATUS_OUT);
+                        }
+                    }
                     break;
+                }
                 case macroFu_PatSetStop:  //04 选针器停止
                     break;
                 case macroFu_TakeDown:    //05 牵拉
@@ -509,7 +528,7 @@ void mainWindow::processingPopup(int key)
     switch (key) {
     case Key_Set:
     {
-        myMessageBox::getInstance()->hide();
+        myHelper::messageBoxHide();
         switch (m_iIndex) {
         case pop_settting:
             setNextDealWgt(PAGE_SETTING);
@@ -531,11 +550,96 @@ void mainWindow::processingPopup(int key)
         break;
     }
     case Key_Esc:
-        myMessageBox::getInstance()->hide();
+        myHelper::messageBoxHide();
     default:
         break;
     }
 }
+
+/*处理输入密码的弹出框*/
+void mainWindow::keyPressEventInputBox(int key)
+{
+    QLineEdit* p = myHelper::getInputPoint();
+    if(p==NULL) return;
+
+    switch (key) {
+    case Key_0:
+    case Key_1:
+    case Key_2:
+    case Key_3:
+    case Key_4:
+    case Key_5:
+    case Key_6:
+    case Key_7:
+    case Key_8:
+    case Key_9:
+    {
+        QString strInputValue = QString("%1").arg(m_mapNoKeyToValue[key]);
+        QString strCurentValue = p->text() + strInputValue;
+        p->setText(strCurentValue);
+
+    }
+        break;
+    case Key_minus:
+    {
+        QString strCurentValue = p->text();
+        strCurentValue = strCurentValue.left(strCurentValue.length() - 1);
+        p->setText(strCurentValue);
+        break;
+    }
+    case Key_Set:
+    {
+        if(p->text()=="000000")
+        {
+            /*读气阀的配置文件*/
+            if(!readAirValveConfig())
+            {
+                myHelper::showMessageBoxInfo(tr("读取气阀配置文件失败！"), 1);
+                return;
+            }
+
+            writeToXddp(macroFu_0);
+
+            m_bitMacroState.setBit(macroFu_ManualCmd, !m_bitMacroState.at(macroFu_ManualCmd));
+            ui->btnMacro_7->setChecked(!m_bitMacroState.at(macroFu_ManualCmd));
+
+            /*初始化表格数据*/
+            ui_pop.m_tabAirValve->clearContents();
+            ui_pop.m_tabAirValve->setRowCount(0);
+            ui_pop.m_tabAirValve->setColumnCount(8); //设置总列数；
+            ui_pop.m_tabAirValve->setRowCount(12);   //初始化总行数；
+            ui_pop.m_tabAirValve->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);//均分列
+            ui_pop.m_tabAirValve->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);//均分行
+            ui_pop.m_tabAirValve->setIconSize(QSize(32,32));
+            for(int i=0;i<8;i++)
+            {
+                for(int j=0; j<12; ++j)
+                {
+                    ui_pop.m_tabAirValve->setItem(j,i,new QTableWidgetItem(QIcon(":/image/out.png"),(QString::number(i+j*8))));
+                }
+            }
+            connect(ui_pop.m_tabAirValve, SIGNAL(itemSelectionChanged()), this, SLOT(focusAirValveChanged()));
+            ui_pop.m_tabAirValve->setCurrentCell(0,0);
+
+            ui_pop.stackedWidget->setCurrentIndex(1);
+            w->show();
+        }
+        else {
+            myHelper::showMessageBoxInfo(tr("密码错误！"), 1);
+            break;
+        }
+    }
+    case Key_Esc:
+    {
+        myHelper::inputBoxHIde();
+        break;
+    }
+    default:
+        break;
+    }
+    qDebug()<<"=========================="<<p->text();
+}
+
 
 /*二级弹出框处理，包括剪刀设置等*/
 void mainWindow::keyPressEventPopSet(int key)
@@ -574,6 +678,7 @@ void mainWindow::keyPressEventPopSet_cut(int key)
         writeToXddp(macroFu_CutterSet);
         break;
     }
+    case Key_F0:
     case Key_Fun2:
     case Key_Esc:
     {
@@ -638,7 +743,7 @@ void mainWindow::keyPressEventPopSet_airValve(int key)
 //01 强制初始状态
 void mainWindow::macroFun_Reset()
 {
-    myMessageBox::getInstance()->setMessage(tr("确定强制恢复初始状态么?"), BoxQuesion);
+    myHelper::showMessageBoxQuestion(tr("确定强制恢复初始状态么?"));
     m_iIndex = macroFu_Reset;
     qDebug()<<"-------------------------"<<"强制初始状态";
 }
@@ -661,60 +766,6 @@ void mainWindow::macroFun_CutterSet()
 {
     m_bitMacroState.setBit(macroFu_CutterSet, !m_bitMacroState.at(macroFu_CutterSet));
     ui->btnMacro_3->setChecked(!m_bitMacroState.at(macroFu_CutterSet));
-    /*初始化剪刀弹出表格*/
-    QDomDocument document;
-    if(!getXmlConfig(document))
-        return;
-    QDomNodeList nodeCut = document.elementsByTagName("cutter");
-    QDomNodeList lstItem;
-    if(nodeCut.count()!=0)
-    {
-        lstItem = nodeCut.at(0).childNodes();
-    }
-
-    /*初始化表格数据*/
-    ui_pop.m_tabCut ->setRowCount(0);
-    ui_pop.m_tabCut->clearContents();
-    ui_pop.m_tabCut->setColumnCount(4); //设置总列数；
-    ui_pop.m_tabCut->setRowCount(lstItem.count());//初始化总行数；
-    ui_pop.m_tabCut->setColumnWidth(0,50); //设置第1列宽度；
-    ui_pop.m_tabCut->setColumnWidth(1,477); //设置第2列宽度；
-    ui_pop.m_tabCut->setColumnWidth(2,145); //设置第3列宽度；
-    ui_pop.m_tabCut->setColumnWidth(3,0); //设置第4列宽度；
-    ui_pop.m_tabCut->setHorizontalHeaderLabels(QStringList()<<tr("编号")<<tr("剪刀名称")<<tr("动作状态")<<""); //设置表头名称；
-
-    QFont font=ui_pop.m_tabCut->horizontalHeader()->font();  //设置表头的字体为粗体；
-    font.setBold(true);
-    font.setPixelSize(20);
-    ui_pop.m_tabCut->horizontalHeader()->setFont(font);
-
-    ui_pop.m_tabCut->horizontalHeaderItem(0)->setTextColor(QColor(0,85,0));
-    ui_pop.m_tabCut->horizontalHeaderItem(1)->setTextColor(QColor(0,85,0));
-    ui_pop.m_tabCut->horizontalHeaderItem(2)->setTextColor(QColor(0,85,0));
-
-    QFont fontContent;
-    fontContent.setPointSize(12);
-    ui_pop.m_tabCut->setFont(fontContent);
-
-    ui_pop.m_tabCut->hasFocus();   //设置具有焦点；
-    ui_pop.m_tabCut->selectRow(0); //设置默认选择行为第1行；
-
-    for(int i=0;i<lstItem.count();i++)
-    {
-        ui_pop.m_tabCut->setItem(i,0,new QTableWidgetItem((QString::number(i))));
-        ui_pop.m_tabCut->item(i,0)->setTextAlignment(Qt::AlignCenter);         //对齐方式；
-
-        ui_pop.m_tabCut->setItem(i,1,new QTableWidgetItem(QString("  %1 %2").arg(tr("剪刀")).arg(lstItem.at(i).toElement().attribute("name"))));
-        ui_pop.m_tabCut->setItem(i,3,new QTableWidgetItem(QString("%1").arg(lstItem.at(i).toElement().attribute("airVaveNo"))));
-        ui_pop.m_tabCut->setRowHeight(i,51);                                   //每行的高度；
-
-        QLabel *m_labLed = new QLabel;
-        m_labLed->setAlignment(Qt::AlignCenter);
-        m_labLed->setObjectName(QStringLiteral("m_labLed"));
-        m_labLed->setProperty(STATUS,STATUS_IN);
-        m_labLed->setScaledContents(true);
-        ui_pop.m_tabCut->setCellWidget(i,2,m_labLed);
-    }
 
     writeToXddp(macroFu_CutterSet, "in");
 
@@ -755,38 +806,7 @@ void mainWindow::macroFun_AirFeeder()
 //07 气阀命令
 void mainWindow::macroFun_ManualCmd()
 {
-    /*读气阀的配置文件*/
-    if(!readAirValveConfig())
-    {
-        myMessageBox::getInstance()->setMessage(tr("读取气阀配置文件失败！"), BoxInfo);
-        return;
-    }
-
-    writeToXddp(macroFu_0);
-
-    m_bitMacroState.setBit(macroFu_ManualCmd, !m_bitMacroState.at(macroFu_ManualCmd));
-    ui->btnMacro_7->setChecked(!m_bitMacroState.at(macroFu_ManualCmd));
-
-    /*初始化表格数据*/
-    ui_pop.m_tabAirValve->clearContents();
-    ui_pop.m_tabAirValve->setRowCount(0);
-    ui_pop.m_tabAirValve->setColumnCount(8); //设置总列数；
-    ui_pop.m_tabAirValve->setRowCount(12);   //初始化总行数；
-    ui_pop.m_tabAirValve->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);//均分列
-    ui_pop.m_tabAirValve->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);//均分行
-    ui_pop.m_tabAirValve->setIconSize(QSize(32,32));
-    for(int i=0;i<8;i++)
-    {
-        for(int j=0; j<12; ++j)
-        {
-            ui_pop.m_tabAirValve->setItem(j,i,new QTableWidgetItem(QIcon(":/image/out.png"),(QString::number(i+j*8))));
-        }
-    }
-    connect(ui_pop.m_tabAirValve, SIGNAL(itemSelectionChanged()), this, SLOT(focusAirValveChanged()));
-    ui_pop.m_tabAirValve->setCurrentCell(0,0);
-
-    ui_pop.stackedWidget->setCurrentIndex(1);
-    w->show();
+    myHelper::showInputBox("请输入密码:", 0, 0, "登录气阀测试界面密码", true);
 
     qDebug()<<"-------------------------"<<"气阀命令";
 }
@@ -877,6 +897,72 @@ void mainWindow::macroFun_Oiler()
     writeToXddp(macroFu_Oiler);
 
     qDebug()<<"-------------------------"<<"加油";
+}
+
+/*初始化剪刀表格*/
+void mainWindow::initCutterTable()
+{
+    /*初始化剪刀弹出表格*/
+    QDomDocument document;
+    if(!getXmlConfig(document))
+        return;
+    QDomNodeList nodeCut = document.elementsByTagName("cutter");
+    QDomNodeList lstItem;
+    if(nodeCut.count()!=0)
+    {
+        lstItem = nodeCut.at(0).childNodes();
+    }
+
+    /*初始化表格数据*/
+    ui_pop.m_tabCut ->setRowCount(0);
+    ui_pop.m_tabCut->clearContents();
+    ui_pop.m_tabCut->setColumnCount(4); //设置总列数；
+    ui_pop.m_tabCut->setRowCount(lstItem.count());//初始化总行数；
+    ui_pop.m_tabCut->setColumnWidth(0,50); //设置第1列宽度；
+    ui_pop.m_tabCut->setColumnWidth(1,477); //设置第2列宽度；
+    ui_pop.m_tabCut->setColumnWidth(2,145); //设置第3列宽度；
+    ui_pop.m_tabCut->setColumnWidth(3,0); //设置第4列宽度；
+    ui_pop.m_tabCut->setHorizontalHeaderLabels(QStringList()<<tr("编号")<<tr("剪刀名称")<<tr("动作状态")<<"气阀编号"); //设置表头名称；
+
+    QFont font=ui_pop.m_tabCut->horizontalHeader()->font();  //设置表头的字体为粗体；
+    font.setBold(true);
+    font.setPixelSize(20);
+    ui_pop.m_tabCut->horizontalHeader()->setFont(font);
+
+    ui_pop.m_tabCut->horizontalHeaderItem(0)->setTextColor(QColor(0,85,0));
+    ui_pop.m_tabCut->horizontalHeaderItem(1)->setTextColor(QColor(0,85,0));
+    ui_pop.m_tabCut->horizontalHeaderItem(2)->setTextColor(QColor(0,85,0));
+
+    QFont fontContent;
+    fontContent.setPointSize(12);
+    ui_pop.m_tabCut->setFont(fontContent);
+
+    ui_pop.m_tabCut->hasFocus();   //设置具有焦点；
+    ui_pop.m_tabCut->selectRow(0); //设置默认选择行为第1行；
+
+    for(int i=0;i<lstItem.count();i++)
+    {
+        ui_pop.m_tabCut->setItem(i,0,new QTableWidgetItem((QString::number(i))));
+        ui_pop.m_tabCut->item(i,0)->setTextAlignment(Qt::AlignCenter);         //对齐方式；
+
+        ui_pop.m_tabCut->setItem(i,1,new QTableWidgetItem(QString("  %1 %2").arg(tr("剪刀")).arg(lstItem.at(i).toElement().attribute("name"))));
+        ui_pop.m_tabCut->setItem(i,3,new QTableWidgetItem(QString("%1").arg(lstItem.at(i).toElement().attribute("airVaveNo"))));
+        ui_pop.m_tabCut->item(i,3)->setTextAlignment(Qt::AlignCenter);
+        ui_pop.m_tabCut->setRowHeight(i,51);                                   //每行的高度；
+
+        QLabel *m_labLed = new QLabel;
+        m_labLed->setAlignment(Qt::AlignCenter);
+        m_labLed->setObjectName(QStringLiteral("m_labLed"));
+        m_labLed->setProperty(STATUS,STATUS_IN);
+        m_labLed->setScaledContents(true);
+        ui_pop.m_tabCut->setCellWidget(i,2,m_labLed);
+    }
+}
+
+/*初始化气阀表格*/
+void mainWindow::initManualTable()
+{
+
 }
 
 /*读气阀的配置文件*/

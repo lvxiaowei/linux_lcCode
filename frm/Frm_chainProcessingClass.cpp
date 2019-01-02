@@ -8,6 +8,10 @@ Frm_chainProcessingClass::Frm_chainProcessingClass(QWidget *parent) :
 {
     g_mapIndexToWgt[PAGE_CHAINPROCESSING]= this;
     ui->setupUi(this);
+
+    /*增加编辑位置的二级菜单*/
+    m_lstFirstNodeName <<tr("开始") <<tr("包口") <<tr("橡筋") <<tr("上统") <<tr("袜跟上") <<tr("袜跟下") <<tr("下统")
+                      <<tr("过桥") <<tr("袜头上") <<tr("袜头下") <<tr("缝头线") <<tr("机头线") <<tr("结束");
 }
 
 Frm_chainProcessingClass::~Frm_chainProcessingClass()
@@ -39,12 +43,12 @@ void Frm_chainProcessingClass::keyPressEvent(int key)
 /*处理串口数据-page1*/
 void Frm_chainProcessingClass::dealPg1(int key)
 {
-    if(myMessageBox::getInstance()->isVisible())
+    if(myHelper::isMessageBoxShow())
     {
         switch (key) {
         case Key_Set:
         {
-            if(myMessageBox::getInstance()->getMessage().contains(QString(tr("确定要删除"))))
+            if(myHelper::getMessageInfo().contains(QString(tr("确定要删除"))))
             {
                 QFile file(m_delFile);
                 file.remove();
@@ -55,11 +59,12 @@ void Frm_chainProcessingClass::dealPg1(int key)
                 QFile::copy(m_sourceFile, m_destFile);
             }
             initChainManageTable();
-            myMessageBox::getInstance()->hide();
+            QUIMessageBox::Instance()->hide();
             break;
         }
         case Key_Esc:
-            myMessageBox::getInstance()->hide();
+            QUIMessageBox::Instance()->hide();
+            break;
         default:
             break;
         }
@@ -76,12 +81,12 @@ void Frm_chainProcessingClass::dealPg1(int key)
         /*判断本地是否有同名文件*/
         if(isFileExist(m_destFile))
         {
-            myMessageBox::getInstance()->setMessage(tr("本地有同名文件，是否覆盖？"), BoxQuesion);
+            myHelper::showMessageBoxQuestion(tr("本地有同名文件，是否覆盖？"));
         }
         else {
             QFile::copy(m_sourceFile, m_destFile);
             initChainManageTable();
-            myMessageBox::getInstance()->setMessage(tr("从U盘拷贝到本地成功！"), BoxInfo);
+            myHelper::showMessageBoxInfo(tr("从U盘拷贝到本地成功！"), 1);
         }
         break;
     }
@@ -92,18 +97,18 @@ void Frm_chainProcessingClass::dealPg1(int key)
         /*判断本地是否有同名文件*/
         if(isFileExist(m_destFile))
         {
-            myMessageBox::getInstance()->setMessage(tr("U盘有同名文件，是否覆盖？"), BoxQuesion);
+            myHelper::showMessageBoxQuestion(tr("U盘有同名文件，是否覆盖？"));
         }
         else {
             QFile::copy(m_sourceFile, m_destFile);
-            myMessageBox::getInstance()->setMessage(tr("从本地拷贝到U盘成功！"), BoxInfo);
+            myHelper::showMessageBoxInfo(tr("从本地拷贝到U盘成功！"), 1);
         }
         break;
     }
     case Key_F3:
     {
         QString fileName;
-        if( ui->m_labCurentOperForder->text()==tr("本地"))
+        if( ui->m_tabChainManage->hasFocus())
         {
             m_delFile = ui->m_tabChainManage->item(ui->m_tabChainManage->currentRow(),2)->text();
             fileName = ui->m_tabChainManage->item(ui->m_tabChainManage->currentRow(),3)->text();
@@ -111,7 +116,7 @@ void Frm_chainProcessingClass::dealPg1(int key)
             /*如果是正在运行的链条，不可以删除*/
             if(fileName == ui->m_labWorkChain->text())
             {
-                myMessageBox::getInstance()->setMessage(tr("不可以删除当前正在工作的链条！"), BoxInfo);
+                myHelper::showMessageBoxInfo(tr("不可以删除当前正在工作的链条！"), 1);
                 return;
             }
         }
@@ -119,7 +124,7 @@ void Frm_chainProcessingClass::dealPg1(int key)
             m_delFile = m_treeFileModel->filePath(ui->m_treeFile->currentIndex());
             fileName = m_treeFileModel->fileName(ui->m_treeFile->currentIndex());
         }
-        myMessageBox::getInstance()->setMessage(QString(tr("确定要删除%1文件%2吗？")).arg(ui->m_labCurentOperForder->text()).arg(fileName), BoxQuesion);
+        myHelper::showMessageBoxQuestion(QString(tr("确定要删除%1文件%2吗？")).arg(ui->m_labCurentOperForder->text()).arg(fileName));
         break;
     }
     case Key_F4:
@@ -151,13 +156,15 @@ void Frm_chainProcessingClass::dealPg1(int key)
         document.save(stream, 4);
         file.close();
 
-        myMessageBox::getInstance()->setMessage(tr("运行链条设置成功!"), BoxInfo);
+        myHelper::showMessageBoxInfo(tr("运行链条设置成功!"), 1);
+
+        writeToXddp();
         break;
     }
 
     case Key_Set:
     {
-        if(ui->m_labCurentOperForder->text()==tr("本地")) return;
+        if(ui->m_tabChainManage->hasFocus()) return;
 
         QModelIndex index = ui->m_treeFile->currentIndex();
 
@@ -168,23 +175,25 @@ void Frm_chainProcessingClass::dealPg1(int key)
     case Key_Up:
     {
         QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
-        ui->m_labCurentOperForder->text()==tr("本地") ? QCoreApplication::sendEvent(ui->m_tabChainManage, &keyPress):QCoreApplication::sendEvent(ui->m_treeFile, &keyPress);
+        ui->m_tabChainManage->hasFocus() ? QCoreApplication::sendEvent(ui->m_tabChainManage, &keyPress):QCoreApplication::sendEvent(ui->m_treeFile, &keyPress);
         break;
     }
     case Key_Down:
     {
         QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier, QString());
-        ui->m_labCurentOperForder->text()==tr("本地") ? QCoreApplication::sendEvent(ui->m_tabChainManage, &keyPress):QCoreApplication::sendEvent(ui->m_treeFile, &keyPress);
+        ui->m_tabChainManage->hasFocus() ? QCoreApplication::sendEvent(ui->m_tabChainManage, &keyPress):QCoreApplication::sendEvent(ui->m_treeFile, &keyPress);
         break;
     }
     case Key_Left:
     {
+        ui->m_tabChainManage->setFocus();
         ui->m_labCurentOperForder->setText(tr("本地"));
         break;
     }
     case Key_Right:
     {
-        ui->m_labCurentOperForder->setText(tr("u盘"));
+        ui->m_treeFile->setFocus();
+        ui->m_labCurentOperForder->setText(tr("U盘"));
         break;
     }
 
@@ -196,7 +205,7 @@ void Frm_chainProcessingClass::dealPg1(int key)
 /*处理串口数据-page2*/
 void Frm_chainProcessingClass::dealPg2(int key)
 {
-    if(myMessageBox::getInstance()->isVisible())
+    if(QUIMessageBox::Instance()->isVisible())
     {
         switch (key) {
         case Key_Set:
@@ -205,11 +214,11 @@ void Frm_chainProcessingClass::dealPg2(int key)
             delete item;
             item =NULL;
             secendLevelNodeSort();
-            myMessageBox::getInstance()->hide();
+            QUIMessageBox::Instance()->hide();
             break;
         }
         case Key_Esc:
-            myMessageBox::getInstance()->hide();
+            QUIMessageBox::Instance()->hide();
         default:
             break;
         }
@@ -237,7 +246,7 @@ void Frm_chainProcessingClass::dealPg2_1(int key)
     {
         if(ui->m_chainTree->currentItem()->type()==FIRST_LEVEL_NODE)
         {
-            myMessageBox::getInstance()->setMessage(tr("请选择具体需要新增的步骤！"), BoxInfo);
+            myHelper::showMessageBoxInfo(tr("请选择具体需要新增的步骤！"), 1);
             return;
         }
         initCmdEdit();
@@ -248,7 +257,7 @@ void Frm_chainProcessingClass::dealPg2_1(int key)
     }
     case Key_F2:
     {
-        myMessageBox::getInstance()->setMessage(tr("确认要删除当前步骤及步骤内的所有内容吗？"), BoxQuesion);
+        myHelper::showMessageBoxQuestion(tr("确认要删除当前步骤及步骤内的所有内容吗？"));
         break;
     }
     case Key_F3:
@@ -275,6 +284,12 @@ void Frm_chainProcessingClass::dealPg2_1(int key)
         QCoreApplication::sendEvent(ui->m_chainTree, &keyPress);
         break;
     }
+    case Key_Set:
+    {
+        QTreeWidgetItem * item = ui->m_chainTree->currentItem();
+        if(item!=NULL)
+            item->setExpanded(!item->isExpanded());
+    }
     default:
         break;
     }
@@ -288,10 +303,10 @@ void Frm_chainProcessingClass::dealPg2_2(int key)
     {
         if(ui->m_chainTree->currentItem()->type()==THIRD_LEVEL_NODE){
             m_cpItem = ui->m_chainTree->currentItem()->clone();
-            myMessageBox::getInstance()->setMessage(tr("复制成功！"), BoxInfo);
+            myHelper::showMessageBoxInfo(tr("复制成功！"),1);
         }
         else {
-            myMessageBox::getInstance()->setMessage(tr("只能复制步骤下面的具体动作！"), BoxInfo);
+            myHelper::showMessageBoxInfo(tr("只能复制步骤下面的具体动作！"), 1);
         }
         break;
     }
@@ -299,16 +314,16 @@ void Frm_chainProcessingClass::dealPg2_2(int key)
     {
         if(!m_cpItem)
         {
-            myMessageBox::getInstance()->setMessage(tr("当前没有复制操作!"), BoxInfo);
+            myHelper::showMessageBoxInfo(tr("当前没有复制操作!"), 1);
         }
         else if(ui->m_chainTree->currentItem()->type()==FIRST_LEVEL_NODE) {
-            myMessageBox::getInstance()->setMessage(tr("请选择具体需要粘贴的步骤！"), BoxInfo);
+            myHelper::showMessageBoxInfo(tr("请选择具体需要粘贴的步骤！"), 1);
         }
         else {
             QTreeWidgetItem* itemLv2 = (ui->m_chainTree->currentItem()->type()==SECEND_LEVEL_NODE ?ui->m_chainTree->currentItem():ui->m_chainTree->currentItem()->parent());
             QTreeWidgetItem* itemLv3  = new QTreeWidgetItem(itemLv2,QStringList()<<m_cpItem->text(0),THIRD_LEVEL_NODE);
-            itemLv3->setIcon(0, QIcon(ComConfigClass::GetInstance()->getCmdIcoPathByName(itemLv3->text(0).split(" [").at(0))));
-            myMessageBox::getInstance()->setMessage(tr("粘贴成功！"), BoxInfo);
+            //            itemLv3->setIcon(0, QIcon(ComConfigClass::GetInstance()->getCmdIcoPathByName(itemLv3->text(0).split(" [").at(0))));
+            myHelper::showMessageBoxInfo(tr("粘贴成功！"),1);
         }
         break;
     }
@@ -431,20 +446,25 @@ void Frm_chainProcessingClass::initShowFrmConfig()
     }
 
     /*初始化usb窗口*/
-    m_treeFileModel = new QFileSystemModel();
-    m_treeFileModel->setRootPath(USB_PATH);
+    QDir dir(USB_PATH);
+    bIsUExit = dir.exists();
+    if(bIsUExit)
+    {
+        m_treeFileModel = new QFileSystemModel();
+        m_treeFileModel->setRootPath(USB_PATH);
 
-    QStringList nameFilter;
-    nameFilter << "*.sta" << "*.dis";
-    m_treeFileModel->setNameFilterDisables(false);
-    m_treeFileModel->setNameFilters(nameFilter);
-    ui->m_treeFile->setModel(m_treeFileModel);
-    ui->m_treeFile->setRootIndex(m_treeFileModel->index(USB_PATH));
-    ui->m_treeFile->setColumnHidden(1,true);
-    ui->m_treeFile->setColumnHidden(2,true);
-    ui->m_treeFile->setColumnHidden(3,true);
+        QStringList nameFilter;
+        nameFilter << "*.sta";
+        m_treeFileModel->setNameFilterDisables(false);
+        m_treeFileModel->setNameFilters(nameFilter);
+        ui->m_treeFile->setModel(m_treeFileModel);
+        ui->m_treeFile->setRootIndex(m_treeFileModel->index(USB_PATH));
+        ui->m_treeFile->setColumnHidden(1,true);
+        ui->m_treeFile->setColumnHidden(2,true);
+        ui->m_treeFile->setColumnHidden(3,true);
 
-    ui->m_treeFile->setCurrentIndex(m_treeFileModel->index(0,0));
+        ui->m_treeFile->setCurrentIndex(m_treeFileModel->index(0,0));
+    }
 
     QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
     myHelper::sleep(10);
@@ -456,56 +476,39 @@ void Frm_chainProcessingClass::initChainTree()
 {
     ui->m_chainTree->clear();
 
-    DBProcessingClass::GetInstance()->openDB(PATH_CHAIN_ACTIVE_FILE);
+    QString filePath = QString("%1/%2").arg(PATH_CHAIN_FILE_LOCAL).arg(ui->m_labWorkChain->text());
+    QFile file(filePath);
+    file.open(QIODevice::ReadOnly);
+    QDomDocument document;
+    document.setContent(&file);
+    file.close();
 
-    //初始化主链条一级节点
-    QString select_sql = "select distinct weavingPosition from mainChainTable order by step";
     QTreeWidgetItem* itemLv1,* itemLv2,* itemLv3;
-    QSqlQuery sql_query;
-    sql_query.prepare(select_sql);
-    if(sql_query.exec())
+    QDomNodeList lstCmdLv1 = document.elementsByTagName("phase");
+    if(!lstCmdLv1.isEmpty())
     {
-        while(sql_query.next())
+        for(int i=0; i<lstCmdLv1.count(); ++i)
         {
-            itemLv1  = new QTreeWidgetItem(ui->m_chainTree,QStringList()<<sql_query.value(0).toString(),FIRST_LEVEL_NODE);
+            itemLv1  = new QTreeWidgetItem(ui->m_chainTree,QStringList()<<m_lstFirstNodeName[lstCmdLv1.at(i).toElement().attribute("val").toInt()] ,FIRST_LEVEL_NODE);
             itemLv1->setIcon(0, QIcon(":/image/socks.png"));
-        }
-    }
-    //初始化主链条二级节点
-    for(int i=0; i<ui->m_chainTree->topLevelItemCount(); ++i)
-    {
-        QString strLve1 = ui->m_chainTree->topLevelItem(i)->text(0);
-        select_sql = QString("select distinct step from mainChainTable where weavingPosition = \"%1\" order by step").arg(strLve1);
-        sql_query.prepare(select_sql);
-        if(sql_query.exec())
-        {
-            while(sql_query.next())
-            {
-                itemLv2  = new QTreeWidgetItem(ui->m_chainTree->topLevelItem(i),QStringList()<<sql_query.value(0).toString(),SECEND_LEVEL_NODE);
-                itemLv2->setIcon(0, QIcon(":/image/right_arrow.png"));
-            }
-        }
-    }
-    //初始化主链条三级节点
-    for(int i=0; i<ui->m_chainTree->topLevelItemCount(); ++i)
-    {
-        itemLv1 = ui->m_chainTree->topLevelItem(i);
-        for(int j=0; j<itemLv1->childCount(); ++j)
-        {
-            itemLv2 = itemLv1->child(j);
-            select_sql = QString("select  cmdContent from mainChainTable where weavingPosition = \"%1\" and step = %2").arg(itemLv1->text(0)).arg(itemLv2->text(0).toInt());
-            sql_query.prepare(select_sql);
-            if(sql_query.exec())
-            {
-                while(sql_query.next())
-                {
-                    itemLv3  = new QTreeWidgetItem(itemLv2,QStringList()<<sql_query.value(0).toString(),THIRD_LEVEL_NODE);
-                    itemLv3->setIcon(0, QIcon(ComConfigClass::GetInstance()->getCmdIcoPathByName(itemLv3->text(0).split(" [").at(0))));
 
+            QDomNodeList lstCmdLv2 = lstCmdLv1.at(i).childNodes();
+            for(int j=0;j<lstCmdLv2.count(); ++j)
+            {
+                itemLv2  = new QTreeWidgetItem(itemLv1,QStringList()<<lstCmdLv2.at(j).toElement().attribute("number") ,SECEND_LEVEL_NODE);
+                itemLv2->setIcon(0, QIcon(":/image/right_arrow.png"));
+
+
+                QDomNodeList lstCmdLv3 = lstCmdLv2.at(j).childNodes();
+                for(int z=0;z<lstCmdLv3.count(); ++z)
+                {
+                    itemLv3  = new QTreeWidgetItem(itemLv2,QString("%1").arg(lstCmdLv3.at(z).toElement().attribute("content")).split(";"),THIRD_LEVEL_NODE);
+                    itemLv3->setIcon(0, QIcon(ComConfigClass::GetInstance()->getCmdIcoPathByName(itemLv3->text(1).toInt())));
                 }
             }
         }
     }
+
     ui->m_chainTree->expandAll();
     if(ui->m_chainTree->columnCount()>0)
     {
@@ -513,7 +516,24 @@ void Frm_chainProcessingClass::initChainTree()
     }
     secendLevelNodeSort();
 
-    DBProcessingClass::GetInstance()->closeDB();
+}
+
+/*向XDDP发送数据*/
+void Frm_chainProcessingClass::writeToXddp()
+{
+    QJsonObject json;
+    json.insert("mesg_type", "parameter_set");
+    json.insert("mesg_dir", "req");
+    QJsonObject jsContent;
+
+    jsContent.insert("index", oper_ChainChange);
+    json.insert("content", jsContent);
+
+    // 构建 JSON 文档
+    QJsonDocument document;
+    document.setObject(json);
+    QByteArray byteArray = document.toJson(QJsonDocument::Indented);
+    emit xddpDataToScheduler(byteArray);
 }
 
 /*初始化链条管理表格*/
@@ -525,7 +545,7 @@ void Frm_chainProcessingClass::initChainManageTable()
     ui->m_tabChainManage->setRowCount(0);
     ui->m_tabChainManage->setColumnCount(4); //设置总列数；
     ui->m_tabChainManage->setColumnWidth(0,50);
-    ui->m_tabChainManage->setColumnWidth(1,90);
+    ui->m_tabChainManage->setColumnWidth(1,120);
     ui->m_tabChainManage->setColumnWidth(2,0);
 
     ui->m_tabChainManage->setHorizontalHeaderLabels(QStringList()<<tr("序号")<<tr("文件大小")<<tr("文件路径")<<tr("链条文件")); //设置表头名称；
@@ -551,7 +571,7 @@ void Frm_chainProcessingClass::initChainManageTable()
     else
     {
         QStringList filters;     //定义过滤变量；
-        filters<< QString("*.sta")<< QString("*.dis");
+        filters<< QString("*.sta");
         QDirIterator dir_iterator(PATH_CHAIN_FILE_LOCAL,filters,QDir::Files | QDir::NoSymLinks,QDirIterator::Subdirectories);//定义迭代器并设置过滤器；
         QString fileName_str,fileSize_str; //定义文件名称，文件的大小；
         while(dir_iterator.hasNext())
@@ -651,7 +671,7 @@ void Frm_chainProcessingClass::freshCmdFormData(int index)
     {
         cmdSettingPro cmdPro = lstSelectedModels.at(i);
 
-        ui->m_wgtCmdContent->setItem(i, 0, new QTableWidgetItem(QIcon(QString(":/image/%1").arg(cmdPro.ico)), QString("   %1").arg(cmdPro.name)));
+        ui->m_wgtCmdContent->setItem(i, 0, new QTableWidgetItem(QIcon(QString(":/image/%1").arg(cmdPro.ico)), QString("   %1").arg(cmdPro.name.at(ComConfigClass::m_iLanguage))));
     }
     ui->m_wgtCmdContent->setCurrentCell(0,0);
     ui->m_wgtCmdContent->setIconSize(QSize(30,30));
@@ -660,7 +680,6 @@ void Frm_chainProcessingClass::freshCmdFormData(int index)
 void Frm_chainProcessingClass::freshCmdContent()
 {
     int i = ui->m_wgtCmdName->currentRow();
-    qDebug()<<"-------------------"<<i;
     freshCmdFormData(i);
 }
 

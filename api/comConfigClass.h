@@ -29,6 +29,8 @@ public:
         }
         return ComConfigClass::m_comCfgClass;
     }
+
+    static int m_iLanguage; /*配置文件中的语言索引*/
 private:
     explicit ComConfigClass();
     ~ComConfigClass();
@@ -36,7 +38,7 @@ private:
     static ComConfigClass *m_comCfgClass;
 
 public:
-    QStringList getCmdModelTypes(){return QStringList()<<QObject::tr("所有")<<m_cmdModel.keys();}
+    QStringList getCmdModelTypes();
     QList<cmdSettingPro> getSpecificModuleType(int index);
     QMap<QString, QList<QList<proNameAndIco>>> getMacroModel(){return m_macroModel;}
     QStringList getMacList(){return m_lstMac;}
@@ -45,16 +47,16 @@ public:
     QMap<QString, QList<motorPro>> getMotoPro(){return m_mapMotorPro;}
     int getCmdModelIndex(const QString & str){return m_mapModuleNumberTOVal[str];}
     QString getModuleVal(const int i){return m_mapModuleNumberTOVal.key(i);}
-    int getCmdTypeByName(const QString & str){return m_mapModuleNumberTOVal[m_mapCmdContentToCmdType[str].cmdType];}
-    QString getCmdIcoPathByName(const QString & str){return ":/image/"+m_mapCmdContentToCmdType[str].ico;}
+    QString getCmdIcoPathByName(const int & str){return ":/image/"+m_mapCmdContentToCmdType[str].ico;}
 private:
-    QMap<QString, QList<cmdSettingPro>> m_cmdModel;             /*命令模块数据保存*/
+    QMap<int, QStringList> m_cmdModelType;                      /*命令模块数据保存（多语言）--命令名字，如所有、剪刀、吹气、归零的多语言保存*/
+    QMap<int, QList<cmdSettingPro>> m_cmdModel;             /*命令模块数据保存*/
     QMap<QString, QList<QList<proNameAndIco>>> m_macroModel;    /*宏文件数据保存*/
     QStringList m_lstMac;                                       /*保存宏名字*/
     QMap<QString, machineTypePro> m_machineTypeModel;           /*机器类型数据保存*/
     QMap<QString, QList<motorPro>> m_mapMotorPro;               /*密度设置点击属性*/
     QMap<QString, int> m_mapModuleNumberTOVal;                  /*数据格式映射表*/
-    QMap<QString, cmdSettingPro> m_mapCmdContentToCmdType;      /*命令模块name和属性的映射关系*/
+    QMap<int, cmdSettingPro> m_mapCmdContentToCmdType;      /*命令模块name和属性的映射关系*/
     void parseCfgFile();
     void initMachineDataMapping();
 };

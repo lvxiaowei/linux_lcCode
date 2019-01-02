@@ -61,7 +61,7 @@ bool baseClassWgt::getXmlConfig(QDomDocument& document)
     QFile file(CONFIG_FILE_XML_PATH);
     if (!file.open(QIODevice::ReadOnly))
     {
-        myMessageBox::getInstance()->setMessage(tr("配置文件打开失败！"), BoxInfo);
+        myHelper::showMessageBoxInfo(tr("配置文件打开失败！"), 1);
         file.close();
         return false;
     }

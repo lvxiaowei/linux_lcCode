@@ -4,7 +4,7 @@
 #include <baseClassWgt.h>
 #include <QTreeWidgetItem>
 #include <QFileSystemModel>
-#include "api/myMessageBox.h"
+//#include "api/myMessageBox.h"
 
 namespace Ui {
 class Frm_chainProcessingClass;
@@ -23,6 +23,7 @@ public:
 public slots:
     void freshCmdContent();
 private:
+    void writeToXddp();
     void initChainTree();
     void initChainManageTable();
     void secendLevelNodeSort();
@@ -34,7 +35,9 @@ private:
     void dealPg2_1(int key);
     void dealPg2_2(int key);
     void dealPg3(int key);
+    QStringList m_lstFirstNodeName;
     int m_iCmdPagePos;    //用来记录新增命令窗口页左右键操作的时候当前处于那一列控件
+    bool bIsUExit; //U盘是否插入
     QTreeWidgetItem* m_cpItem;
     QFileSystemModel *m_treeFileModel;
     Ui::Frm_chainProcessingClass *ui;
