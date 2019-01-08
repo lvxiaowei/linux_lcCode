@@ -24,6 +24,7 @@ public:
 public slots:
     void writeToXddp();
     void timerUpDate();
+    void marqueeTitle();
     void focusAirValveChanged();
 private:
     Ui::mainWindow *ui;
@@ -70,6 +71,7 @@ private:
     bool m_bKeyLock;
     bool m_isRunning;
     QStringList m_lstAirValve;              //配置文件的气阀名称；
+    QString m_strTitle;
     QTimer *m_timer;
 
     QJsonArray m_arryYF, m_arryTake, m_arryAirFeefer, m_arryFan, m_arryOiler, m_arryCutter;

@@ -171,7 +171,6 @@ void mainWindow::initIco()
 /*系统时间控件定时刷新*/
 void mainWindow::initSystemTime()
 {
-    connect(m_timer,SIGNAL(timeout()),this,SLOT(timerUpDate()));
     m_timer->start(100);
 }
 
@@ -181,6 +180,12 @@ void mainWindow::timerUpDate()
     QDateTime QDateCurentTime= QDateTime::currentDateTime();//获取系统现在的时间
     QString strCurentTime = QDateCurentTime.toString("yyyy-MM-dd hh:mm:ss"); //设置显示格式
     ui->m_labSysTime->setText(strCurentTime);//在标签上显示时间
+}
+
+/*标题栏滚动效果*/
+void mainWindow::marqueeTitle()
+{
+    ui->m_wgtTitle->update();
 }
 
 void mainWindow::addChildWgt(QWidget *w)
@@ -229,8 +234,10 @@ void mainWindow::keyPressEvent(int key)
             myHelper::showMessageBoxInfo(tr("请先停止设备运行！"), 1);
             return;
         }
-        myHelper::showMessageBoxQuestion(key == Key_F0 ?tr("确定转到设置界面么?"):tr("确定转到测试界面么?"));
-        m_iIndex=(key == Key_F0 ? pop_settting:pop_testing);
+        setNextDealWgt(key==Key_F0 ?  PAGE_SETTING:PAGE_TESTINGMENU);
+        disconnect(m_timer,SIGNAL(timeout()),this,SLOT(writeToXddp()));
+        disconnect(m_timer,SIGNAL(timeout()),this,SLOT(timerUpDate()));
+        disconnect(m_timer,SIGNAL(timeout()),this,SLOT(writeToXddp()));
         break;
     }
     case Key_F5:
@@ -245,7 +252,6 @@ void mainWindow::keyPressEvent(int key)
     case Key_Fun1:
     case Key_Fun2:
     case Key_Fun4:
-    case Key_Fun5:
     case Key_Fun6:
     case Key_Fun7:
     case Key_Fun12:
@@ -258,6 +264,7 @@ void mainWindow::keyPressEvent(int key)
         }
     }
     case Key_Fun3:
+    case Key_Fun5:
     case Key_Fun8:
     case Key_Fun9:
     case Key_Fun10:
@@ -280,6 +287,8 @@ void mainWindow::initShowFrmConfig()
 {
     ui->m_stackedWidget->setCurrentIndex(0);
     freshRightButtonContent(QStringList()<<tr("设置")<<tr("测试")<<tr("")<<tr("")<<tr("")<<tr("键盘锁定"));
+    connect(m_timer,SIGNAL(timeout()),this,SLOT(marqueeTitle()));
+    connect(m_timer,SIGNAL(timeout()),this,SLOT(timerUpDate()));
     connect(m_timer,SIGNAL(timeout()),this,SLOT(writeToXddp()));
     m_bKeyLock = false;
     ui->m_btnKeyLock->hide();
@@ -530,14 +539,6 @@ void mainWindow::processingPopup(int key)
     {
         myHelper::messageBoxHide();
         switch (m_iIndex) {
-        case pop_settting:
-            setNextDealWgt(PAGE_SETTING);
-            disconnect(m_timer,SIGNAL(timeout()),this,SLOT(writeToXddp()));
-            break;
-        case pop_testing:
-            setNextDealWgt(PAGE_TESTINGMENU);
-            disconnect(m_timer,SIGNAL(timeout()),this,SLOT(writeToXddp()));
-            break;
         case macroFu_Reset:
         {
             writeToXddp(macroFu_Reset);
@@ -790,6 +791,8 @@ void mainWindow::macroFun_TakeDown()
 {
     m_bitMacroState.setBit(macroFu_TakeDown, !m_bitMacroState.at(macroFu_TakeDown));
 
+    ui->btnMacro_5->setChecked(!m_bitMacroState.at(macroFu_TakeDown));
+
     writeToXddp(macroFu_TakeDown);
     qDebug()<<"-------------------------"<<"牵拉";
 }
@@ -798,6 +801,8 @@ void mainWindow::macroFun_TakeDown()
 void mainWindow::macroFun_AirFeeder()
 {
     m_bitMacroState.setBit(macroFu_AirFeeder, !m_bitMacroState.at(macroFu_AirFeeder));
+
+    ui->btnMacro_6->setChecked(!m_bitMacroState.at(macroFu_AirFeeder));
 
     writeToXddp(macroFu_AirFeeder);
     qDebug()<<"-------------------------"<<"进线吹气";

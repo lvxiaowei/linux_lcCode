@@ -489,6 +489,11 @@ background:rgb(222, 89, 89);
               </property>
               <item row="0" column="0">
                <widget class="QTableWidget" name="m_tabLoop">
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                 </font>
+                </property>
                 <attribute name="horizontalHeaderHighlightSections">
                  <bool>false</bool>
                 </attribute>

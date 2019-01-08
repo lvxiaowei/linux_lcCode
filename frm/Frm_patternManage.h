@@ -70,6 +70,9 @@ public:
     explicit YFTableWgt(QMap<QString, int> m_mapYF, QWidget *parent = 0, int scale = 5, int row = 200, QByteArray bt=0);
 
     bool setYF(int column, int star, int end, bool set);
+    void saveYFData(QByteArray &bt);
+
+    QMap<QString, int> m_mapYF;
 };
 
 /*用来画刷子和重复选择表格中间的空白*/
@@ -109,6 +112,7 @@ private:
     void initPatternProcesPage();
     void initPatManageTabl();
     void initTimingsTable();
+    void savePatternDataToFile();
     void saveTimingsDataToConfigFile();
     bool isFileExist(QString fileFullName);
     patternTableWgt *  m_pattrenTable;

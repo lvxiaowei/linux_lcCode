@@ -183,13 +183,13 @@ void Frm_patternManage::dealPg2(int key)
     }
 
     switch (key) {
-    case Key_Set:
+    case Key_plus:
     {
         m_pattrenTable->zoomOut();
         m_YFTable->zoomOut();
         break;
     }
-    case Key_Esc:
+    case Key_minus:
     {
         m_pattrenTable->zoomIn();
         m_YFTable->zoomIn();
@@ -228,7 +228,10 @@ void Frm_patternManage::dealPg2_menu(int key)
         break;
     }
     case Key_F5:
+    {
+        savePatternDataToFile();
         break;
+    }
     default:
         break;
     }
@@ -540,8 +543,9 @@ void Frm_patternManage::initPatternProcesPage()
     ui->m_stackPat->setCurrentIndex(1);
 
     QString filePath = ui->m_tabPatManage->item(ui->m_tabPatManage->currentRow(),2)->text();
-    ui->m_title->setText(QString(tr("[花型编辑] %1")).arg(filePath));
     QString fileName = ui->m_tabPatManage->item(ui->m_tabPatManage->currentRow(),3)->text();
+    ui->m_title->setText(QString(tr("[花型编辑] %1")).arg(fileName));
+
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly))
     {
@@ -580,10 +584,10 @@ void Frm_patternManage::initPatternProcesPage()
     ui->m_tabLoop->setRowCount(20);
     ui->m_tabLoop->setColumnCount(4); //设置总列数；
     ui->m_tabLoop->setColumnWidth(0,40);
-    ui->m_tabLoop->setColumnWidth(1,50);
-    ui->m_tabLoop->setColumnWidth(2,50);
+    ui->m_tabLoop->setColumnWidth(1,60);
+    ui->m_tabLoop->setColumnWidth(2,60);
     ui->m_tabLoop->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    ui->m_tabLoop->setHorizontalHeaderLabels(QStringList()<<tr("序号")<<tr("起始")<<tr("结束")<<tr("编织行数"));
+    ui->m_tabLoop->setHorizontalHeaderLabels(QStringList()<<tr("序号")<<tr("起始")<<tr("结束")<<tr("行数"));
     QFont font=ui->m_tabLoop->horizontalHeader()->font();  //设置表头的字体为粗体；
     font.setBold(true);
     font.setPixelSize(20);
@@ -596,9 +600,9 @@ void Frm_patternManage::initPatternProcesPage()
     int m,n,j;
     for(int i=0; i<20; ++i)
     {
-        m = ((quint8)bt.at(fileHead->REP_InfoPos+i*6)+ (quint8)bt.at(fileHead->REP_InfoPos+i*6+1)*256);
-        n = ((quint8)bt.at(fileHead->REP_InfoPos+i*6+2)+ (quint8)bt.at(fileHead->REP_InfoPos+i*6+3)*256);
-        j = ((quint8)bt.at(fileHead->REP_InfoPos+i*6+4)+ (quint8)bt.at(fileHead->REP_InfoPos+i*6+5)*256);
+        m = (quint8)bt.at(fileHead->REP_InfoPos+i*6)+(quint8)bt.at(fileHead->REP_InfoPos+i*6+1)*256;
+        n = (quint8)bt.at(fileHead->REP_InfoPos+i*6+2)+(quint8)bt.at(fileHead->REP_InfoPos+i*6+2+1)*256;
+        j = (quint8)bt.at(fileHead->REP_InfoPos+i*6+4)+(quint8)bt.at(fileHead->REP_InfoPos+i*6+4+1)*256;
 
         ui->m_tabLoop->setItem(i,0,new QTableWidgetItem(QString("%1").arg(i)));
         ui->m_tabLoop->setItem(i,1,new QTableWidgetItem(QString("%1").arg(m)));
@@ -769,6 +773,45 @@ void Frm_patternManage::initTimingsTable()
     }
 }
 
+//保存花型数据到文件
+void Frm_patternManage::savePatternDataToFile()
+{
+    QString filePath = ui->m_tabPatManage->item(ui->m_tabPatManage->currentRow(),2)->text();
+
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        myHelper::showMessageBoxInfo(tr("文件保存失败!"), 1);
+        return;
+    }
+    QByteArray bt = file.readAll();
+    file.close();
+    qDebug()<<bt;
+    PatternFile_Head *fileHead = (PatternFile_Head*)bt.data();
+
+    /*保存循环设置值*/
+    for(int i=0; i<20; ++i)
+    {
+        bt[fileHead->REP_InfoPos+i*6]  =(ui->m_tabLoop->item(i,1)->text().toInt())%256;
+        bt[fileHead->REP_InfoPos+i*6+1]=(ui->m_tabLoop->item(i,1)->text().toInt())/256;
+
+        bt[fileHead->REP_InfoPos+i*6+2]=(ui->m_tabLoop->item(i,2)->text().toInt())%256;
+        bt[fileHead->REP_InfoPos+i*6+3]=(ui->m_tabLoop->item(i,2)->text().toInt())/256;
+
+        bt[fileHead->REP_InfoPos+i*6+4]=(ui->m_tabLoop->item(i,3)->text().toInt())%256;
+        bt[fileHead->REP_InfoPos+i*6+5]=(ui->m_tabLoop->item(i,3)->text().toInt())/256;
+    }
+    qDebug()<<bt.size()<<"before";
+    m_YFTable->saveYFData(bt);
+    qDebug()<<bt.size()<<"after";
+    QFile file_save(filePath);
+    file_save.open(QIODevice::WriteOnly);
+    file_save.write(bt);
+    file_save.close();
+
+    myHelper::showMessageBoxInfo(tr("文件保存成功!"), 1);
+}
+
 //保存数据到配置文件
 void Frm_patternManage::saveTimingsDataToConfigFile()
 {
@@ -891,7 +934,7 @@ patternTableWgt::patternTableWgt(QWidget *parent, int colum, QString fileType, i
 
     /*设置左上角0,0格子颜色和刻度尺保持一致*/
     QTableWidgetItem *item =new QTableWidgetItem();
-    item->setBackground(QBrush(QColor(255, 195, 0)));
+    item->setBackground(QBrush(QColor(0, 0, 0)));
     item->setFlags(item->flags() & (~Qt::ItemIsEditable));
     setItem(0,0,item);
 }
@@ -1001,12 +1044,13 @@ void patternTableWgt::zoomIn()
 /*END******************************************************patternTableWgt*********************************************/
 
 /*start*****************************************************YFTableWgt******************************************************************************/
-YFTableWgt::YFTableWgt(QMap<QString, int> m_mapYF, QWidget *parent, int scale, int row, QByteArray bt) :
-    cMyTableWIdget(parent)
+YFTableWgt::YFTableWgt(QMap<QString, int> mapYF, QWidget *parent, int scale, int row, QByteArray bt) :
+    cMyTableWIdget(parent),
+    m_mapYF(mapYF)
 {
     /*算一下需要的列数，包含间隔的空格*/
-    int count =(m_mapYF.count())*2;
-    foreach (int i, m_mapYF.values()) {
+    int count =(mapYF.count())*2;
+    foreach (int i, mapYF.values()) {
         count +=i;
     }
 
@@ -1024,19 +1068,19 @@ YFTableWgt::YFTableWgt(QMap<QString, int> m_mapYF, QWidget *parent, int scale, i
     setMouseTracking(true);
     /*设置第一行表头*/
     int num=0;
-    QBrush brush(QColor(144, 214, 106));
+    QBrush brush(QColor(0, 0, 0));
     brush.setStyle(Qt::SolidPattern);
-    for(int i=0; i<m_mapYF.count(); ++i)
+    for(int i=0; i<mapYF.count(); ++i)
     {
         m_lstColumfixed<<num;
-        setSpan(0,num,1,m_mapYF.values().at(i)+2);
+        setSpan(0,num,1,mapYF.values().at(i)+2);
         QTableWidgetItem *item =new QTableWidgetItem();
-        item->setText(m_mapYF.keys().at(i));
+        item->setText(mapYF.keys().at(i));
         item->setTextAlignment(Qt::AlignCenter);
         item->setBackground(brush);
         item->setFlags(Qt::ItemIsEnabled);
         setItem(0,num,item);
-        num += m_mapYF.values().at(i)+2;
+        num += mapYF.values().at(i)+2;
         m_lstColumfixed<<num-1;
     }
 
@@ -1074,9 +1118,9 @@ YFTableWgt::YFTableWgt(QMap<QString, int> m_mapYF, QWidget *parent, int scale, i
     PatternFile_Head *fileHead = (PatternFile_Head*)bt.data();
     //获取总列数
     int iCount(0);
-    for(int i=0; i<m_mapYF.count(); ++i)
+    for(int i=0; i<mapYF.count(); ++i)
     {
-        iCount+=m_mapYF.values().at(i);
+        iCount+=mapYF.values().at(i);
     }
     QStringList lstArry;
     QString arry;
@@ -1092,9 +1136,9 @@ YFTableWgt::YFTableWgt(QMap<QString, int> m_mapYF, QWidget *parent, int scale, i
 
     int iColum=1;
     num=0;
-    for(int i=0; i<m_mapYF.count(); ++i)
+    for(int i=0; i<mapYF.count(); ++i)
     {
-        for(int j=0; j<m_mapYF.values().at(i); ++j)
+        for(int j=0; j<mapYF.values().at(i); ++j)
         {
             for(int z=0; z<fileHead->rows; ++z)
             {
@@ -1128,6 +1172,48 @@ bool YFTableWgt::setYF(int column, int star, int end, bool set)
         item(i, column)->setBackground(QBrush(color));
     }
     return true;
+}
+
+void YFTableWgt::saveYFData(QByteArray &bt)
+{
+    PatternFile_Head *fileHead = (PatternFile_Head*)bt.data();
+
+    int iColum=1,num=0;
+
+    QStringList lstArry;
+    QString arry;
+    for(int i=0; i<m_mapYF.count(); ++i)
+    {
+        for(int j=0; j<m_mapYF.values().at(i); ++j)
+        {
+            arry.clear();
+            for(int z=0; z<fileHead->rows; ++z)
+            {
+                arry.append(QString("%1").arg(item(z+1, iColum)->backgroundColor()==QColor(255, 0, 0) ? 1:0));
+            }
+            lstArry<<arry;
+            num++;
+            iColum++;
+        }
+        iColum+=2;
+    }
+
+    //获取总列数
+    int iCount(0);
+    for(int i=0; i<m_mapYF.count(); ++i)
+    {
+        iCount+=m_mapYF.values().at(i);
+    }
+
+    for(int i=0; i<iCount; ++i)
+    {
+        arry.clear();
+        for(int j=0; j<fileHead->rows; ++j)
+        {
+            bt[fileHead->YF_SelectInfoPos+i*fileHead->rows+j]=lstArry.at(i).mid(j,1).toInt();
+            arry.append(QString("%1").arg((quint8)bt.at(fileHead->YF_SelectInfoPos+i*fileHead->rows+j)));
+        }
+    }
 }
 
 /*end*****************************************************YFTableWgt******************************************************************************/

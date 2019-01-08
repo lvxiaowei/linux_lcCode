@@ -25,7 +25,7 @@ border-style:none;
 border-radius:0px;
 padding:5px;
 color:#DCDCDC;
-background:qlineargradient(spread:pad,x1:0,y1:0,x2:0,y2:1,stop:0 #204A87,stop:1 #204A87);
+background:rgb(104, 164, 239);
 }
 
 QWidget[nav="top"] QAbstractButton:hover,QWidget[nav="top"] QAbstractButton:pressed,QWidget[nav="top"] QAbstractButton:checked{

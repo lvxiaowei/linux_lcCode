@@ -118,25 +118,16 @@
               <number>0</number>
              </property>
              <item>
-              <widget class="QLabel" name="m_edtTitle">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
+              <widget class="TTKMarqueeWidget" name="m_edtTitle" native="true">
                <property name="minimumSize">
                 <size>
                  <width>0</width>
-                 <height>30</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>40</height>
+                 <height>0</height>
                 </size>
                </property>
                <property name="font">
                 <font>
-                 <pointsize>20</pointsize>
+                 <pointsize>16</pointsize>
                  <weight>75</weight>
                  <bold>true</bold>
                 </font>
@@ -144,16 +135,13 @@
                <property name="styleSheet">
                 <string notr="true">background-color: rgb(104, 164, 239);</string>
                </property>
-               <property name="text">
-                <string/>
-               </property>
               </widget>
              </item>
              <item>
               <widget class="QLabel" name="m_labSysTime">
                <property name="font">
                 <font>
-                 <pointsize>18</pointsize>
+                 <pointsize>15</pointsize>
                  <weight>75</weight>
                  <bold>true</bold>
                 </font>
@@ -2452,6 +2440,14 @@ border-image: url(:/image/btn_01.png);
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TTKMarqueeWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">ttkmarqueewidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="style.qrc"/>
  </resources>

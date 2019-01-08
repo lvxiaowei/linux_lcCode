@@ -43,7 +43,8 @@ SOURCES += \
     frm/Frm_patternManage.cpp \
     frm/Frm_timingTable.cpp \
     frm/Frm_parameterSettings.cpp \
-    api/myhelper.cpp
+    api/myhelper.cpp \
+    ttkmarqueewidget.cpp
 
 HEADERS += \
     schedule.h \
@@ -61,7 +62,8 @@ HEADERS += \
     frm/Frm_testingMenu.h \
     frm/Frm_patternManage.h \
     frm/Frm_timingTable.h \
-    frm/Frm_parameterSettings.h
+    frm/Frm_parameterSettings.h \
+    ttkmarqueewidget.h
 
 FORMS += \
     mainWindow.ui \

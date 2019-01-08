@@ -296,7 +296,7 @@ void paintScallBar::paintEvent(QPaintEvent *event)
     Q_UNUSED(event);
     QPainter painter1(this);
     QRect rulerRect = rect();
-    painter1.fillRect(rulerRect,QColor(255, 195, 0));
+    painter1.fillRect(rulerRect,QColor(0, 0, 0));
 
     QPainter painter_size10(this);
     QFont font10;
