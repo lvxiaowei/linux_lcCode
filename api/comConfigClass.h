@@ -48,6 +48,8 @@ public:
     int getCmdModelIndex(const QString & str){return m_mapModuleNumberTOVal[str];}
     QString getModuleVal(const int i){return m_mapModuleNumberTOVal.key(i);}
     QString getCmdIcoPathByName(const int & str){return ":/image/"+m_mapCmdContentToCmdType[str].ico;}
+    cmdSettingPro getCmdProByIndex(const int & index){return m_mapCmdContentToCmdType[index];}
+    int getCmdTypeByIndex(const int & index){return m_mapModuleNumberTOVal[m_mapCmdContentToCmdType[index].cmdType];}
 private:
     QMap<int, QStringList> m_cmdModelType;                      /*命令模块数据保存（多语言）--命令名字，如所有、剪刀、吹气、归零的多语言保存*/
     QMap<int, QList<cmdSettingPro>> m_cmdModel;             /*命令模块数据保存*/

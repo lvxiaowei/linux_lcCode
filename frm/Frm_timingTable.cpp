@@ -41,14 +41,13 @@ void Frm_timingTable::keyPressEvent(int key)
 
     case Key_Up:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
         if((m_curentTable->currentRow()==3 && m_curentTable != ui->m_wgtAssist)) return;
         if(m_curentTable == ui->m_wgtAssist && ui->m_wgtAssist->currentRow()==1)
         {
             m_curentTable =  dynamic_cast<QTableWidget*>(ui->tabWidget->currentWidget());
             return;
         }
-        QCoreApplication::sendEvent(m_curentTable, &keyPress);
+        QCoreApplication::sendEvent(m_curentTable, key_up);
         break;
     }
     case Key_Down:
@@ -58,20 +57,17 @@ void Frm_timingTable::keyPressEvent(int key)
             m_curentTable = ui->m_wgtAssist;
             return;
         }
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(m_curentTable, &keyPress);
+        QCoreApplication::sendEvent(m_curentTable, key_down);
         break;
     }
     case Key_Left:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Left, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(m_curentTable, &keyPress);
+        QCoreApplication::sendEvent(m_curentTable, key_left);
         break;
     }
     case Key_Right:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(m_curentTable, &keyPress);
+        QCoreApplication::sendEvent(m_curentTable, key_right);
         break;
     }
 

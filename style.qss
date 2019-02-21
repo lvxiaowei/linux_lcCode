@@ -650,7 +650,7 @@ qproperty-pixmap: url(:/image/out_1.png);
 
 /*运行界面*/
 
-#m_wgtMacro QAbstractButton,#m_wgtRightBtn QAbstractButton{
+#m_wgtMacro QAbstractButton,#m_wgtRightBtn QAbstractButton,#stackedWidget QAbstractButton{
 border-style:none;
 border:1px solid #C0DCF2;
 color:#FFFFFF;
@@ -668,7 +668,7 @@ min-height:15px;
 border-image: url(:/image/btn_01.png);
 }
 
-#m_wgtMacro QAbstractButton:checked{
+#m_wgtMacro QAbstractButton:checked,#stackedWidget QAbstractButton:checked{
 color: rgb(255, 255, 255);
 border-image: url(:/image/btn_03.png);
 }

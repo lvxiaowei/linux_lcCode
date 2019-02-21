@@ -23,7 +23,7 @@ void ComConfigClass::parseCfgFile()
     QFile file(COMMCONFIG_FILE_PATH);
     if (!file.open(QIODevice::ReadOnly))
     {
-        QMessageBox::information(NULL, QString(QObject::tr("提示")), QString(QObject::tr("配置文件打开失败")));
+        QMessageBox::information(NULL, QString(QObject::tr("提示")), QString(QObject::tr("配置文件打开失败,影响当前功能使用，请联系工程师解决!")));
         return;
     }
 
@@ -217,7 +217,7 @@ void ComConfigClass::initMachineDataMapping()
     m_mapModuleNumberTOVal["patternUse"]          = OPER_PATTERN_USE;/*花型调用*/
     m_mapModuleNumberTOVal["patternContinue"]     = OPER_PATTERN_CONTINUE;/*花型继续*/
     m_mapModuleNumberTOVal["patternQuit"]         = OPER_PATTERN_QUIT;/*花型退出*/
-    m_mapModuleNumberTOVal["patternUse"]          = OPER_FOOTPATTERN_USE;/*脚底花型调用*/
+    //    m_mapModuleNumberTOVal["patternUse"]          = OPER_FOOTPATTERN_USE;/*脚底花型调用*/
     m_mapModuleNumberTOVal["footPatternQuit"]     = OPER_FOOTPATTERN_QUIT;/*脚底花型退出*/
     m_mapModuleNumberTOVal["stepCircle"]          = OPER_STEP_CIRCLE;/*步循环*/
     m_mapModuleNumberTOVal["circle"]              = OPER_CIRCLE;/*循环*/
@@ -233,6 +233,7 @@ void ComConfigClass::initMachineDataMapping()
     m_mapModuleNumberTOVal["downMoto"]            = OPER_DOWNMOTO;/*下针筒马达密度归零*/
     m_mapModuleNumberTOVal["elasticMoto"]         =  OPER_ELASTICMOTO;/*橡筋马达密度归零*/
     m_mapModuleNumberTOVal["zeroing"]             = OPER_ZEROING;/*归零程序调用*/
+    m_mapModuleNumberTOVal["stepStop"]            = OPER_STEPSTOP;/*步段停机*/
     m_mapModuleNumberTOVal["chainEnd"]            = OPER_CHAIN_END;/*链条结束*/
 
 }

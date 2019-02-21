@@ -94,6 +94,9 @@ public:
     static QMap<int, baseClassWgt*> g_mapIndexToWgt;
     static baseClassWgt* g_pCurentDealWgt;
 
+    QKeyEvent *key_0, *key_1, *key_2, *key_3 , *key_4, *key_5, *key_6, *key_7, *key_8, *key_9,
+    *key_plus, *key_minus, *key_up, *key_down, *key_left, *key_right;
+
     bool getXmlConfig(QDomDocument& document);
     void setObjProperty(QWidget* pwgt, const char *name, const QVariant &value);
 signals:

@@ -145,7 +145,7 @@ enum CMD_OPER_TYPE
     OPER_PATTERN_USE,            /*花型调用*/
     OPER_PATTERN_CONTINUE,       /*花型继续*/
     OPER_PATTERN_QUIT,           /*花型退出*/
-    OPER_FOOTPATTERN_USE,        /*脚底花型调用*/
+    OPER_FOOTPATTERN_USE,        /*脚底花型调用----------------弃用，所有花型调用都使用OPER_PATTERN_USE*/
     OPER_FOOTPATTERN_QUIT,       /*脚底花型退出*/
     OPER_STEP_CIRCLE,            /*步循环*/
     OPER_CIRCLE,                 /*循环*/
@@ -161,6 +161,7 @@ enum CMD_OPER_TYPE
     OPER_DOWNMOTO,               /*下针筒马达密度归零*/
     OPER_ELASTICMOTO,            /*橡筋马达密度归零*/
     OPER_ZEROING,                /*归零程序调用*/
+    OPER_STEPSTOP,               /*步段停机*/
     OPER_CHAIN_END               /*链条结束*/
 };
 

@@ -75,6 +75,9 @@ void Frm_patternManage::dealPg1(int key)
     }
     case Key_F2:
     {
+        if(!ui->m_treeFile->currentIndex().isValid())
+            return;
+
         m_sourceFile = m_treeFileModel->filePath(ui->m_treeFile->currentIndex());
         m_destFile =  QString("%1/%2").arg(PATH_CHAIN_FILE_LOCAL).arg(m_treeFileModel->fileName(ui->m_treeFile->currentIndex()));
         /*判断本地是否有同名文件*/
@@ -113,6 +116,10 @@ void Frm_patternManage::dealPg1(int key)
             fileName = ui->m_tabPatManage->item(ui->m_tabPatManage->currentRow(),3)->text();
         }
         else {
+            if(!ui->m_treeFile->currentIndex().isValid())
+                return;
+
+
             m_delFile = m_treeFileModel->filePath(ui->m_treeFile->currentIndex());
             fileName = m_treeFileModel->fileName(ui->m_treeFile->currentIndex());
         }
@@ -127,14 +134,12 @@ void Frm_patternManage::dealPg1(int key)
 
     case Key_Up:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
-        ui->m_tabPatManage->hasFocus() ? QCoreApplication::sendEvent(ui->m_tabPatManage, &keyPress):QCoreApplication::sendEvent(ui->m_treeFile, &keyPress);
+        ui->m_tabPatManage->hasFocus() ? QCoreApplication::sendEvent(ui->m_tabPatManage, key_up):QCoreApplication::sendEvent(ui->m_treeFile, key_up);
         break;
     }
     case Key_Down:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier, QString());
-        ui->m_tabPatManage->hasFocus() ? QCoreApplication::sendEvent(ui->m_tabPatManage, &keyPress):QCoreApplication::sendEvent(ui->m_treeFile, &keyPress);
+        ui->m_tabPatManage->hasFocus() ? QCoreApplication::sendEvent(ui->m_tabPatManage, key_down):QCoreApplication::sendEvent(ui->m_treeFile, key_down);
         break;
     }
     case Key_Left:
@@ -336,26 +341,22 @@ void Frm_patternManage::dealPg2_loop(int key)
 
     case Key_Up:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui->m_tabLoop, &keyPress);
+        QCoreApplication::sendEvent(ui->m_tabLoop, key_up);
         break;
     }
     case Key_Down:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui->m_tabLoop, &keyPress);
+        QCoreApplication::sendEvent(ui->m_tabLoop, key_down);
         break;
     }
     case Key_Left:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Left, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui->m_tabLoop, &keyPress);
+        QCoreApplication::sendEvent(ui->m_tabLoop, key_left);
         break;
     }
     case Key_Right:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui->m_tabLoop, &keyPress);
+        QCoreApplication::sendEvent(ui->m_tabLoop, key_right);
         break;
     }
 
@@ -433,28 +434,25 @@ void Frm_patternManage::dealPg3(int key)
 
     case Key_Up:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
         if((wgtTable->currentRow()==1)) return;
-        QCoreApplication::sendEvent(wgtTable, &keyPress);
+        QCoreApplication::sendEvent(wgtTable, key_up);
         break;
     }
     case Key_Down:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(wgtTable, &keyPress);
+        QCoreApplication::sendEvent(wgtTable, key_down);
         break;
     }
     case Key_Left:
     {
         if((wgtTable->currentColumn()==1)) return;
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Left, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(wgtTable, &keyPress);
+
+        QCoreApplication::sendEvent(wgtTable, key_left);
         break;
     }
     case Key_Right:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(wgtTable, &keyPress);
+        QCoreApplication::sendEvent(wgtTable, key_right);
         break;
     }
 
@@ -521,9 +519,8 @@ void Frm_patternManage::initShowFrmConfig()
         ui->m_treeFile->setCurrentIndex(m_treeFileModel->index(0,0));
     }
 
-    QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
     myHelper::sleep(10);
-    QCoreApplication::sendEvent(ui->m_treeFile, &keyPress);
+    QCoreApplication::sendEvent(ui->m_treeFile, key_up);
 }
 
 bool Frm_patternManage::isFileExist(QString fileFullName)

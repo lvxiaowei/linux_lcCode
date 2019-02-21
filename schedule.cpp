@@ -65,7 +65,7 @@ void schedule::handleSerialData(QByteArray data)
 /*处理XDDP发过来的数据*/
 void schedule::handleXddpData(QByteArray data)
 {
-    //    qDebug()<<"处理XDDP发过来的数据:"<<data;
+    qDebug()<<"处理XDDP发过来的数据:"<<data;
 
     //处理测试界面相关的消息
     if(data.contains("working_state") || data.contains("func_key"))
@@ -83,6 +83,7 @@ void schedule::handleXddpData(QByteArray data)
     }
     Q_UNUSED(data);
 }
+
 
 /*向串口发送数据*/
 void schedule::writeToSerial(QByteArray data)

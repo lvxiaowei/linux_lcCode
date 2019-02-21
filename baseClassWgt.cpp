@@ -21,6 +21,21 @@ baseClassWgt::baseClassWgt(QWidget *parent) :
     m_mapNoKeyToValue[Key_7]=7;
     m_mapNoKeyToValue[Key_8]=8;
     m_mapNoKeyToValue[Key_9]=9;
+
+    key_0 = new QKeyEvent(QEvent::KeyPress, Qt::Key_0, Qt::NoModifier, QString());
+    key_1 = new QKeyEvent(QEvent::KeyPress, Qt::Key_1, Qt::NoModifier, QString());
+    key_2 = new QKeyEvent(QEvent::KeyPress, Qt::Key_2, Qt::NoModifier, QString());
+    key_3 = new QKeyEvent(QEvent::KeyPress, Qt::Key_3, Qt::NoModifier, QString());
+    key_4 = new QKeyEvent(QEvent::KeyPress, Qt::Key_4, Qt::NoModifier, QString());
+    key_5 = new QKeyEvent(QEvent::KeyPress, Qt::Key_5, Qt::NoModifier, QString());
+    key_6 = new QKeyEvent(QEvent::KeyPress, Qt::Key_6, Qt::NoModifier, QString());
+    key_7 = new QKeyEvent(QEvent::KeyPress, Qt::Key_7, Qt::NoModifier, QString());
+    key_8 = new QKeyEvent(QEvent::KeyPress, Qt::Key_8, Qt::NoModifier, QString());
+    key_9 = new QKeyEvent(QEvent::KeyPress, Qt::Key_9, Qt::NoModifier, QString());
+    key_up    = new QKeyEvent(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
+    key_down  = new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier, QString());
+    key_left  = new QKeyEvent(QEvent::KeyPress, Qt::Key_Left, Qt::NoModifier, QString());
+    key_right = new QKeyEvent(QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier, QString());
 }
 
 baseClassWgt::~baseClassWgt()

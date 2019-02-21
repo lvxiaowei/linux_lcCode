@@ -248,26 +248,22 @@ void Frm_parameterSettings::keyPressEventPopSet_systimeSet(int key)
     switch (key) {
     case Key_Up:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui_pop.dateTimeEdit, &keyPress);
+        QCoreApplication::sendEvent(ui_pop.dateTimeEdit, key_up);
         break;
     }
     case Key_Down:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui_pop.dateTimeEdit, &keyPress);
+        QCoreApplication::sendEvent(ui_pop.dateTimeEdit, key_down);
         break;
     }
     case Key_Left:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Left, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui_pop.dateTimeEdit, &keyPress);
+        QCoreApplication::sendEvent(ui_pop.dateTimeEdit, key_left);
         break;
     }
     case Key_Right:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui_pop.dateTimeEdit, &keyPress);
+        QCoreApplication::sendEvent(ui_pop.dateTimeEdit, key_right);
         break;
     }
 
@@ -419,7 +415,6 @@ void Frm_parameterSettings::writeToXddp(QString operMode)
         jsContent.insert("operMode", operMode);
 
     json.insert("mesg_type", "zeroing");
-
     json.insert("content", jsContent);
 
     // 构建 JSON 文档
@@ -448,11 +443,8 @@ void Frm_parameterSettings::handleXddpData(QByteArray data)
 
             if(object.value("mesg_type").toString() == "zeroing")
             {
-
                 ui_pop.m_labPulse->setText(QString("%1").arg(obj.value("needle_no").toInt()));
-
             }
-
         }
     }
 

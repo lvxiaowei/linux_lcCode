@@ -40,6 +40,7 @@ private:
     void keyPressEventPopSet(int key);
     void keyPressEventPopSet_cut(int key);
     void keyPressEventPopSet_airValve(int key);
+    void keyPressEventPopSet_airFeeder(int key);
     bool readAirValveConfig();
     void initCutterTable();
     void initManualTable();
@@ -68,6 +69,7 @@ private:
     QMovie *m_chain_01, *m_chain_02, *m_chain_03, *m_chain_04, *m_chain_05, *m_chain_06,*m_chain_07, *m_chain_08, *m_chain_09, *m_chain_10, *m_chain_11, *m_chain_12;
     QPixmap *m_ON_status,*m_OFF_status,*m_Forward,*m_Reversal;
     int m_iIndex;
+    int m_iAirFeederIndex;
     bool m_bKeyLock;
     bool m_isRunning;
     QStringList m_lstAirValve;              //配置文件的气阀名称；
@@ -75,7 +77,7 @@ private:
     QTimer *m_timer;
 
     QJsonArray m_arryYF, m_arryTake, m_arryAirFeefer, m_arryFan, m_arryOiler, m_arryCutter;
-    QBitArray m_bitValveStates, m_bitMacroState;
+    QBitArray m_bitValveStates, m_bitMacroState, m_bitAirFeederState;
 
     QStringList lst_segment;
     QList<QMovie*> lst_move;

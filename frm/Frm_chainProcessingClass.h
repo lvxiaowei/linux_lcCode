@@ -30,11 +30,13 @@ private:
     void initCmdEdit();
     void freshCmdFormData(int index);
     bool isFileExist(QString fileFullName);
+    int getItemType(QTreeWidgetItem *item);
     void dealPg1(int key);
     void dealPg2(int key);
     void dealPg2_1(int key);
     void dealPg2_2(int key);
     void dealPg3(int key);
+    void dealAddCmd(int key);
     QStringList m_lstFirstNodeName;
     int m_iCmdPagePos;    //用来记录新增命令窗口页左右键操作的时候当前处于那一列控件
     bool bIsUExit; //U盘是否插入

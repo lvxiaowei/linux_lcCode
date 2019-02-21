@@ -126,26 +126,22 @@ void Frm_testingMenu::dealPg2(int key)
 
     case Key_Up:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui->m_tabAirValve, &keyPress);
+        QCoreApplication::sendEvent(ui->m_tabAirValve, key_up);
         break;
     }
     case Key_Down:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui->m_tabAirValve, &keyPress);
+        QCoreApplication::sendEvent(ui->m_tabAirValve, key_down);
         break;
     }
     case Key_Left:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Left, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui->m_tabAirValve, &keyPress);
+        QCoreApplication::sendEvent(ui->m_tabAirValve, key_left);
         break;
     }
     case Key_Right:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui->m_tabAirValve, &keyPress);
+        QCoreApplication::sendEvent(ui->m_tabAirValve, key_right);
         break;
     }
     default:
@@ -322,15 +318,13 @@ void Frm_testingMenu::dealPg4(int key)
 
     case Key_Up:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui->m_tabActuator, &keyPress);
+        QCoreApplication::sendEvent(ui->m_tabActuator, key_up);
         ui->m_labKnifNO->setText(ui->m_tabActuator->currentItem()->text());
         break;
     }
     case Key_Down:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui->m_tabActuator, &keyPress);
+        QCoreApplication::sendEvent(ui->m_tabActuator, key_down);
         ui->m_labKnifNO->setText(ui->m_tabActuator->currentItem()->text());
         break;
     }
@@ -393,15 +387,13 @@ void Frm_testingMenu::dealPg5(int key)
 
     case Key_Up:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui->m_tabYF1, &keyPress);
+        QCoreApplication::sendEvent(ui->m_tabYF1, key_up);
         ui->m_labYFNO->setText(QString("%1").arg(ui->m_tabYF1->currentIndex().row()+1));
         break;
     }
     case Key_Down:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui->m_tabYF1, &keyPress);
+        QCoreApplication::sendEvent(ui->m_tabYF1, key_down);
         ui->m_labYFNO->setText(QString("%1").arg(ui->m_tabYF1->currentIndex().row()+1));
         break;
     }

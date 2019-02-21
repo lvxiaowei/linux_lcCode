@@ -76,6 +76,8 @@ void Frm_chainProcessingClass::dealPg1(int key)
         break;
     case Key_F1:
     {
+        if(!ui->m_treeFile->currentIndex().isValid())
+            return;
         m_sourceFile = m_treeFileModel->filePath(ui->m_treeFile->currentIndex());
         m_destFile =  QString("%1/%2").arg(PATH_CHAIN_FILE_LOCAL).arg(m_treeFileModel->fileName(ui->m_treeFile->currentIndex()));
         /*判断本地是否有同名文件*/
@@ -121,6 +123,8 @@ void Frm_chainProcessingClass::dealPg1(int key)
             }
         }
         else {
+            if(!ui->m_treeFile->currentIndex().isValid())
+                return;
             m_delFile = m_treeFileModel->filePath(ui->m_treeFile->currentIndex());
             fileName = m_treeFileModel->fileName(ui->m_treeFile->currentIndex());
         }
@@ -174,14 +178,12 @@ void Frm_chainProcessingClass::dealPg1(int key)
 
     case Key_Up:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
-        ui->m_tabChainManage->hasFocus() ? QCoreApplication::sendEvent(ui->m_tabChainManage, &keyPress):QCoreApplication::sendEvent(ui->m_treeFile, &keyPress);
+        ui->m_tabChainManage->hasFocus() ? QCoreApplication::sendEvent(ui->m_tabChainManage, key_up):QCoreApplication::sendEvent(ui->m_treeFile, key_up);
         break;
     }
     case Key_Down:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier, QString());
-        ui->m_tabChainManage->hasFocus() ? QCoreApplication::sendEvent(ui->m_tabChainManage, &keyPress):QCoreApplication::sendEvent(ui->m_treeFile, &keyPress);
+        ui->m_tabChainManage->hasFocus() ? QCoreApplication::sendEvent(ui->m_tabChainManage, key_down):QCoreApplication::sendEvent(ui->m_treeFile, key_down);
         break;
     }
     case Key_Left:
@@ -237,6 +239,12 @@ void Frm_chainProcessingClass::dealPg2(int key)
 /*处理串口数据-page2-1*/
 void Frm_chainProcessingClass::dealPg2_1(int key)
 {
+    if(ui->m_stackCmdEdit->isVisible())
+    {
+        dealAddCmd(key);
+        return;
+    }
+
     switch (key) {
     case Key_F0:
         ui->stackedWidget->setCurrentIndex(0);
@@ -249,10 +257,10 @@ void Frm_chainProcessingClass::dealPg2_1(int key)
             myHelper::showMessageBoxInfo(tr("请选择具体需要新增的步骤！"), 1);
             return;
         }
-        initCmdEdit();
-        ui->cmd_val1->setFocus();
-        ui->stackedWidget->setCurrentIndex(2);
-        freshRightButtonContent(QStringList()<<tr("返回")<<tr("确认添加")<<tr("")<<tr("")<<tr("")<<tr("[新增命令]"));
+
+        ui->m_stackCmdEdit->show();
+        ui->m_wgtCmdName->setFocus();
+
         break;
     }
     case Key_F2:
@@ -274,14 +282,12 @@ void Frm_chainProcessingClass::dealPg2_1(int key)
     }
     case Key_Up:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui->m_chainTree, &keyPress);
+        QCoreApplication::sendEvent(ui->m_chainTree, key_up);
         break;
     }
     case Key_Down:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui->m_chainTree, &keyPress);
+        QCoreApplication::sendEvent(ui->m_chainTree, key_down);
         break;
     }
     case Key_Set:
@@ -340,14 +346,12 @@ void Frm_chainProcessingClass::dealPg2_2(int key)
     }
     case Key_Up:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui->m_chainTree, &keyPress);
+        QCoreApplication::sendEvent(ui->m_chainTree, key_up);
         break;
     }
     case Key_Down:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui->m_chainTree, &keyPress);
+        QCoreApplication::sendEvent(ui->m_chainTree, key_down);
         break;
     }
     default:
@@ -398,7 +402,6 @@ void Frm_chainProcessingClass::dealPg3(int key)
                 return;
             key==Key_Up  ? focusPreviousChild():focusNextChild();
         }
-
         break;
     }
     case Key_Left:
@@ -424,15 +427,79 @@ void Frm_chainProcessingClass::dealPg3(int key)
     }
 }
 
+/*处理链条管理界面新增或者编辑单条命令*/
+void Frm_chainProcessingClass::dealAddCmd(int key)
+{
+    switch (key) {
+    case Key_Esc:
+    case Key_F1:
+        ui->m_stackCmdEdit->hide();
+        break;
+    case Key_Up:
+    case Key_Down:
+    {
+        QCoreApplication::sendEvent(ui->m_wgtCmdName->hasFocus()? ui->m_wgtCmdName:ui->m_wgtCmdContent, key==Key_Up ? key_up:key_down);
+        break;
+    }
+    case Key_Left:
+    {
+        ui->m_wgtCmdName->setFocus();
+        break;
+    }
+    case Key_Right:
+    {
+        ui->m_wgtCmdContent->setFocus();
+        break;
+    }
+    case Key_Set:
+    {
+        QTreeWidgetItem* parentItem = (getItemType(ui->m_chainTree->currentItem())==SECEND_LEVEL_NODE ?
+                                           ui->m_chainTree->currentItem(): ui->m_chainTree->currentItem()->parent());
+
+        QTableWidgetItem* itemTable = ui->m_wgtCmdContent->selectedItems().at(0);
+        ui->m_title->setText(itemTable->text());
+        int iType = ComConfigClass::GetInstance()->getCmdTypeByIndex(itemTable->type());
+        switch (iType) {
+        case OPER_VALVE:
+        {
+            QString strContex =QString(tr("%1 [状态：%2---针位：%3---模式：%4]")).arg(itemTable->text())
+                    .arg(ui->m_state->currentText()).arg(ui->m_needle->text()).arg(ui->m_model->currentText());
+
+            QTreeWidgetItem* itemNew = new QTreeWidgetItem(parentItem,QStringList()<<strContex,THIRD_LEVEL_NODE);
+            itemNew->setIcon(0, itemTable->icon());
+
+
+            ui->m_stackCmdEdit->setCurrentIndex(1);
+            ui->m_stackCmdParaSet->setCurrentIndex(0);
+            break;
+        }
+        default:
+            break;
+        }
+        qDebug()<<"---------------------------"<<iType;
+        break;
+    }
+    default:
+        break;
+    }
+
+}
+
 /*数据初始化*/
 void Frm_chainProcessingClass::initShowFrmConfig()
 {
     m_cpItem =NULL;
     ui->m_labCurentOperForder->setText(tr("本地"));
+    ui->stackedWidget->setCurrentIndex(0);
+    ui->m_stackCmdEdit->hide();
+
     freshRightButtonContent(QStringList()<<tr("返回")<<tr("从U盘\n输入")<<tr("输出到\nU盘")<<tr("删除")<<tr("编辑\n工作链条")<<tr("工作链条\n设定"));
 
     /*初始化链条管理窗口*/
     initChainManageTable();
+
+    /*初始化命令选择模块*/
+    initCmdEdit();
 
     /*获取当前正在运行的链条名字*/
     QDomDocument document;
@@ -466,9 +533,8 @@ void Frm_chainProcessingClass::initShowFrmConfig()
         ui->m_treeFile->setCurrentIndex(m_treeFileModel->index(0,0));
     }
 
-    QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
     myHelper::sleep(10);
-    QCoreApplication::sendEvent(ui->m_treeFile, &keyPress);
+    QCoreApplication::sendEvent(ui->m_treeFile, key_up);
 }
 
 //初始化链条命令树
@@ -642,6 +708,10 @@ void Frm_chainProcessingClass::initCmdEdit()
 
     connect(ui->m_wgtCmdName,SIGNAL(itemSelectionChanged()), this, SLOT(freshCmdContent()));
 
+    ui->m_tableCycle->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->splitter->setStretchFactor(0,5);
+    ui->splitter->setStretchFactor(1,2);
+
     setTabOrder(ui->cmd_val1, ui->cmd_val2);
     setTabOrder(ui->cmd_val2, ui->cmd_val3);
     setTabOrder(ui->cmd_val3, ui->cmd_val4);
@@ -671,10 +741,28 @@ void Frm_chainProcessingClass::freshCmdFormData(int index)
     {
         cmdSettingPro cmdPro = lstSelectedModels.at(i);
 
-        ui->m_wgtCmdContent->setItem(i, 0, new QTableWidgetItem(QIcon(QString(":/image/%1").arg(cmdPro.ico)), QString("   %1").arg(cmdPro.name.at(ComConfigClass::m_iLanguage))));
+        ui->m_wgtCmdContent->setItem(i, 0, new QTableWidgetItem(QIcon(QString(":/image/%1").arg(cmdPro.ico)), QString("%1").arg(cmdPro.name.at(ComConfigClass::m_iLanguage)),cmdPro.index));
     }
     ui->m_wgtCmdContent->setCurrentCell(0,0);
     ui->m_wgtCmdContent->setIconSize(QSize(30,30));
+}
+
+/*获取节点的类型*/
+int Frm_chainProcessingClass::getItemType(QTreeWidgetItem *item)
+{
+    if(!item->parent())
+    {
+        return FIRST_LEVEL_NODE;
+    }
+    else if(!item->parent()->parent())
+    {
+        return SECEND_LEVEL_NODE;
+    }
+    else if(!item->parent()->parent()->parent())
+    {
+        return THIRD_LEVEL_NODE;
+    }
+    return DEFALUT_LEVE_NODE;
 }
 
 void Frm_chainProcessingClass::freshCmdContent()

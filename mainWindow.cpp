@@ -38,6 +38,9 @@ void mainWindow::initData()
 
     m_bitMacroState.resize(20);
     m_bitMacroState.fill(true);
+
+    m_bitAirFeederState.resize(4);
+    m_bitAirFeederState.fill(false);
     /*---------------------------------------------获取配置文件中各类气阀的阀号和名称等--------------------------------------------*/
     QDomDocument document;
     if(!getXmlConfig(document))
@@ -80,8 +83,11 @@ void mainWindow::initData()
     {
         lstItem = node.at(0).childNodes();
     }
-    val = lstItem.at(0).toElement().attribute("airVaveNo").toInt();
-    m_arryAirFeefer.append(val);
+    for(int i=0; i<lstItem.count(); ++i)
+    {
+        val = lstItem.at(i).toElement().attribute("airVaveNo").toInt();
+        m_arryAirFeefer.append(val);
+    }
     /********************************************Fan******************************************/
     node = document.elementsByTagName("Fan");
     if(node.count()!=0)
@@ -243,7 +249,7 @@ void mainWindow::keyPressEvent(int key)
     case Key_F5:
     {
         m_bKeyLock = !m_bKeyLock;
-        m_bKeyLock ? ui->m_btnKeyLock->show():ui->m_btnKeyLock->hide();
+//        m_bKeyLock ? ui->m_btnKeyLock->show():ui->m_btnKeyLock->hide();
         g_lstRightButton.at(5)->setText(m_bKeyLock ? tr(""):tr("键盘锁定"));
         setObjProperty(g_lstRightButton.at(5), STATUS, m_bKeyLock ? "lock":"unlock");
         break;
@@ -291,7 +297,7 @@ void mainWindow::initShowFrmConfig()
     connect(m_timer,SIGNAL(timeout()),this,SLOT(timerUpDate()));
     connect(m_timer,SIGNAL(timeout()),this,SLOT(writeToXddp()));
     m_bKeyLock = false;
-    ui->m_btnKeyLock->hide();
+//    ui->m_btnKeyLock->hide();
     m_isRunning = false;
 }
 
@@ -367,7 +373,13 @@ void mainWindow::writeToXddp(const int operType, QString operMode)
         json.insert("mesg_type", "func_key");
         jsContent.insert("key", operType);
 
-        jsContent.insert("valve_set", m_arryAirFeefer);
+        if(operMode.isEmpty())
+        {
+            jsContent.insert("valve_set", m_arryAirFeefer.at(m_iAirFeederIndex));
+        }
+        else {
+            jsContent.insert("valve_set", m_arryAirFeefer);
+        }
         break;
     }
     case macroFu_Oiler:
@@ -578,7 +590,6 @@ void mainWindow::keyPressEventInputBox(int key)
         QString strInputValue = QString("%1").arg(m_mapNoKeyToValue[key]);
         QString strCurentValue = p->text() + strInputValue;
         p->setText(strCurentValue);
-
     }
         break;
     case Key_minus:
@@ -648,10 +659,16 @@ void mainWindow::keyPressEventPopSet(int key)
 
     switch (ui_pop.stackedWidget->currentIndex()) {
     case 0:
+        /*剪刀弹出框操作*/
         keyPressEventPopSet_cut(key);
         break;
     case 1:
+        /*气阀弹出框操作*/
         keyPressEventPopSet_airValve(key);
+        break;
+    case 2:
+        /*吹气弹出框设置*/
+        keyPressEventPopSet_airFeeder(key);
         break;
     default:
         break;
@@ -664,14 +681,12 @@ void mainWindow::keyPressEventPopSet_cut(int key)
     switch (key) {
     case Key_Up:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui_pop.m_tabCut, &keyPress);
+        QCoreApplication::sendEvent(ui_pop.m_tabCut, key_up);
         break;
     }
     case Key_Down:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui_pop.m_tabCut, &keyPress);
+        QCoreApplication::sendEvent(ui_pop.m_tabCut, key_down);
         break;
     }
     case Key_Set:
@@ -701,26 +716,22 @@ void mainWindow::keyPressEventPopSet_airValve(int key)
     switch (key) {
     case Key_Up:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui_pop.m_tabAirValve, &keyPress);
+        QCoreApplication::sendEvent(ui_pop.m_tabAirValve, key_up);
         break;
     }
     case Key_Down:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui_pop.m_tabAirValve, &keyPress);
+        QCoreApplication::sendEvent(ui_pop.m_tabAirValve, key_down);
         break;
     }
     case Key_Left:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Left, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui_pop.m_tabAirValve, &keyPress);
+        QCoreApplication::sendEvent(ui_pop.m_tabAirValve, key_left);
         break;
     }
     case Key_Right:
     {
-        QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier, QString());
-        QCoreApplication::sendEvent(ui_pop.m_tabAirValve, &keyPress);
+        QCoreApplication::sendEvent(ui_pop.m_tabAirValve, key_right);
         break;
     }
     case Key_Set:
@@ -728,12 +739,57 @@ void mainWindow::keyPressEventPopSet_airValve(int key)
         writeToXddp(macroFu_ManualCmd);
         break;
     }
+    case Key_F0:
     case Key_Fun6:
     case Key_Esc:
     {
         m_bitMacroState.setBit(macroFu_ManualCmd, !m_bitMacroState.at(macroFu_ManualCmd));
         ui->btnMacro_7->setChecked(!m_bitMacroState.at(macroFu_ManualCmd));
         w->hide();
+    }
+
+    default:
+        break;
+    }
+}
+
+/*吹气设置*/
+void mainWindow::keyPressEventPopSet_airFeeder(int key)
+{
+    switch (key) {
+    case Key_1:
+    case Key_2:
+    case Key_3:
+    {
+        m_iAirFeederIndex = key-Key_1;
+        goto skip;
+    }
+    case Key_4:
+    {
+        m_iAirFeederIndex = 3;
+skip:
+        m_bitAirFeederState.setBit(m_iAirFeederIndex, !m_bitAirFeederState.at(m_iAirFeederIndex));
+
+        QString name = QString("pushButton_%1").arg(m_iAirFeederIndex+1);
+        QPushButton* btn = w->findChild<QPushButton*>(name);
+        if(btn != NULL)
+        {
+            btn->setFocus();
+            btn->setChecked(m_bitAirFeederState.at(m_iAirFeederIndex));
+
+            writeToXddp(macroFu_AirFeeder);
+        }
+        break;
+    }
+    case Key_F0:
+    case Key_Fun5:
+    case Key_Esc:
+    {
+        m_bitMacroState.setBit(macroFu_AirFeeder, !m_bitMacroState.at(macroFu_AirFeeder));
+        ui->btnMacro_6->setChecked(!m_bitMacroState.at(macroFu_AirFeeder));
+        w->setFixedSize(800,480);
+        w->hide();
+        writeToXddp(macroFu_AirFeeder, "out");
     }
 
     default:
@@ -804,7 +860,13 @@ void mainWindow::macroFun_AirFeeder()
 
     ui->btnMacro_6->setChecked(!m_bitMacroState.at(macroFu_AirFeeder));
 
-    writeToXddp(macroFu_AirFeeder);
+    writeToXddp(macroFu_AirFeeder, "in");
+
+    ui_pop.stackedWidget->setCurrentIndex(2);
+    w->setFixedSize(200,120);
+    w->show();
+
+    //    writeToXddp(macroFu_AirFeeder);
     qDebug()<<"-------------------------"<<"进线吹气";
 }
 
