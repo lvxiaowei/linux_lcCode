@@ -5,7 +5,6 @@ Frm_testingMenu::Frm_testingMenu(QWidget *parent) :
     baseClassWgt(parent),
     ui(new Ui::Frm_testingMenu)
 {
-    g_mapIndexToWgt[PAGE_TESTINGMENU]= this;
     ui->setupUi(this);
 
     dataInit();
@@ -33,19 +32,32 @@ void Frm_testingMenu::keyPressEvent(int key)
 
     switch (ui->m_stackWgt->currentIndex()) {
     case 0:
-        dealPg1(key);
+    {
+        if(g_lstRightButton.at(5)->text() == tr("下一菜单\n[1/2]"))
+        {
+            dealPg_menu_1(key);
+        }
+        else if(g_lstRightButton.at(5)->text() == tr("上一菜单\n[2/2]"))
+        {
+            dealPg_menu_2(key);
+        }
+
         break;
+    }
     case 1:
-        dealPg2(key);
+        dealPg_manualCmd(key);
         break;
     case 2:
-        dealPg3(key);
+        dealPg_moto(key);
         break;
     case 3:
-        dealPg4(key);
+        dealPg_selected(key);
         break;
     case 4:
-        dealPg5(key);
+        dealPg_YF(key);
+        break;
+    case 5:
+        dealPg_InSignal(key);
         break;
     default:
         break;
@@ -55,12 +67,12 @@ void Frm_testingMenu::keyPressEvent(int key)
 /*数据初始化*/
 void Frm_testingMenu::initShowFrmConfig()
 {
-    freshRightButtonContent(QStringList()<<tr("返回")<<tr("气阀测试")<<tr("选针器\n测试")<<tr("马达")<<tr("梭子测试")<<tr("闸刀测试"));
+    freshRightButtonContent(QStringList()<<tr("返回")<<tr("气阀测试")<<tr("选针器\n测试")<<tr("马达")<<tr("梭子测试")<<tr("下一菜单\n[1/2]"));
     ui->m_stackWgt->setCurrentIndex(0);
 }
 
-/*处理串口数据-菜单界面*/
-void Frm_testingMenu::dealPg1(int key)
+/*处理串口数据-菜单界面-1*/
+void Frm_testingMenu::dealPg_menu_1(int key)
 {
     switch (key) {
     case Key_F0:
@@ -87,6 +99,30 @@ void Frm_testingMenu::dealPg1(int key)
         break;
     }
     case Key_F5:
+        freshRightButtonContent(QStringList()<<tr("信号测试")<<tr("闸刀测试")<<tr("键盘测试")<<tr("")<<tr("")<<tr("上一菜单\n[2/2]"));
+        break;
+    default:
+        break;
+    }
+}
+
+/*处理串口数据-菜单界面-2*/
+void Frm_testingMenu::dealPg_menu_2(int key)
+{
+    switch (key) {
+    case Key_F0:
+        initSignalPage();
+        break;
+    case Key_F1:
+        break;
+    case Key_F2:
+        break;
+    case Key_F3:
+        break;
+    case Key_F4:
+        break;
+    case Key_F5:
+        freshRightButtonContent(QStringList()<<tr("返回")<<tr("气阀测试")<<tr("选针器\n测试")<<tr("马达")<<tr("梭子测试")<<tr("下一菜单\n[1/2]"));
         break;
     default:
         break;
@@ -94,7 +130,7 @@ void Frm_testingMenu::dealPg1(int key)
 }
 
 /*处理串口数据-page2--气阀测试*/
-void Frm_testingMenu::dealPg2(int key)
+void Frm_testingMenu::dealPg_manualCmd(int key)
 {
     switch (key) {
     case Key_F0:
@@ -118,11 +154,6 @@ void Frm_testingMenu::dealPg2(int key)
         ui->m_labFre->setText(QString("%1(秒)").arg(curtFrq%5==0 ? 5:curtFrq%5));
         break;
     }
-
-
-
-
-
 
     case Key_Up:
     {
@@ -150,7 +181,7 @@ void Frm_testingMenu::dealPg2(int key)
 }
 
 /*处理串口数据-page2--马达测试*/
-void Frm_testingMenu::dealPg3(int key)
+void Frm_testingMenu::dealPg_moto(int key)
 {
     switch (key) {
     case Key_F0:
@@ -230,7 +261,7 @@ void Frm_testingMenu::dealPg3(int key)
 }
 
 /*处理串口数据-page2--选针器测试*/
-void Frm_testingMenu::dealPg4(int key)
+void Frm_testingMenu::dealPg_selected(int key)
 {
     switch (key) {
     case Key_F0:
@@ -335,7 +366,7 @@ void Frm_testingMenu::dealPg4(int key)
 }
 
 /*处理串口数据-page2--梭子测试*/
-void Frm_testingMenu::dealPg5(int key)
+void Frm_testingMenu::dealPg_YF(int key)
 {
     switch (key) {
     case Key_F0:
@@ -398,6 +429,18 @@ void Frm_testingMenu::dealPg5(int key)
         break;
     }
 
+    default:
+        break;
+    }
+}
+
+/*处理串口数据-page2--输入信号测试*/
+void Frm_testingMenu::dealPg_InSignal(int key)
+{
+    switch (key) {
+    case Key_F0:
+        initShowFrmConfig();
+        break;
     default:
         break;
     }
@@ -499,6 +542,44 @@ void Frm_testingMenu::initYFPage()
     freshRightButtonContent(QStringList()<<tr("返回")<<tr("自动")<<tr("手动")<<tr("")<<tr("")<<tr("频率"));
 
     emit writeToXddp(YFTEST, "in");
+}
+
+/*初始化输入信号测试界面*/
+void Frm_testingMenu::initSignalPage()
+{
+    ui->m_stackWgt->setCurrentIndex(5);
+    /*初始化表格数据*/
+    ui->m_tabInSIgnal->clearContents();
+    ui->m_tabInSIgnal->setColumnCount(4); //设置总列数；
+    ui->m_tabInSIgnal->setRowCount(8);   //初始化总行数；
+    ui->m_tabInSIgnal->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);//均分列
+    ui->m_tabInSIgnal->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);//均分行
+    ui->m_tabInSIgnal->setIconSize(QSize(32,32));
+
+    QDomDocument document;
+    if(!getXmlConfig(document))
+        return;
+    QDomNodeList nodeAlarm = document.elementsByTagName("signal");
+    if(nodeAlarm.count()<0 ||nodeAlarm.at(0).childNodes().count()!=32)
+    {
+        myHelper::showMessageBoxInfo(tr("配置文件中输入信号相关内容有误，请联系开发人员修改！"), 1);
+        return;
+    }
+    QBitArray m_bitSignal;
+    m_bitSignal.resize(32);
+    m_bitSignal.fill(false);
+
+    QDomNodeList lstSignal = nodeAlarm.at(0).toElement().elementsByTagName("item");\
+    for(int i=0; i<8; ++i)
+        for(int j=0; j<4; ++j)
+        {
+            ui->m_tabInSIgnal->setItem(i,j, new QTableWidgetItem(lstSignal.at(i*4+j).toElement().attribute("CN")));
+            ui->m_tabInSIgnal->item(i,j)->setCheckState(lstSignal.at(i*4+j).toElement().attribute("enable")=="true"
+                                                        ? Qt::Checked:Qt::Unchecked);
+            ui->m_tabInSIgnal->item(i,j)->setIcon(lstSignal.at(i*4+j).toElement().attribute("enable")=="true" ? QIcon(":/image/in.png"):QIcon(":/image/out.png"));
+        }
+
+     freshRightButtonContent(QStringList()<<tr("返回")<<tr("")<<tr("")<<tr("")<<tr("")<<tr(""));
 }
 
 /*当前需要测试的气阀变化的槽函数*/

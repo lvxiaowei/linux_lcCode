@@ -4,6 +4,7 @@
 #include <baseClassWgt.h>
 #include <QMovie>
 #include "ui_mainWindowPop.h"
+#include "api/AlarmBox.h"
 
 namespace Ui {
 class mainWindow;
@@ -31,6 +32,7 @@ private:
     Ui::mainWindowPop ui_pop;    /*运行界面的弹出界面对应的窗口*/
     QDialog *w;                  /*运行界面的弹出界面对应的窗口*/
 
+    AlarmBox *m_AlarmBox;
     void init();     //初始化
     void initIco();
     void initData();
@@ -42,6 +44,7 @@ private:
     void keyPressEventPopSet_airValve(int key);
     void keyPressEventPopSet_airFeeder(int key);
     bool readAirValveConfig();
+    void addAlarmRecord(QString str);
     void initCutterTable();
     void initManualTable();
 

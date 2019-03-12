@@ -31,17 +31,20 @@ public slots:
     void focusAirValveChanged();
 private:
     void dataInit();
-    void dealPg1(int key);
-    void dealPg2(int key);
-    void dealPg3(int key);
-    void dealPg4(int key);
-    void dealPg5(int key);
+    void dealPg_menu_1(int key);
+    void dealPg_menu_2(int key);
+    void dealPg_manualCmd(int key);
+    void dealPg_moto(int key);
+    void dealPg_selected(int key);
+    void dealPg_YF(int key);
+    void dealPg_InSignal(int key);
     bool readAirValveConfig();
     void initAirValve();
     void initAirValvePage();
     void initMotoPage();
     void initActuatorPage();
     void initYFPage();
+    void initSignalPage();
 
 
     void writeToXddp(const int testType, QString operMode="");  /*向XDDP发送数据*/

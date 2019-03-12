@@ -5,7 +5,6 @@ Frm_patternManage::Frm_patternManage(QWidget *parent) :
     baseClassWgt(parent),
     ui(new Ui::Frm_patternManage)
 {
-    g_mapIndexToWgt[PAGE_PATTERNMANAGE]= this;
     ui->setupUi(this);
 }
 

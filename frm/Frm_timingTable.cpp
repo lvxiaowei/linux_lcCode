@@ -5,7 +5,6 @@ Frm_timingTable::Frm_timingTable(QWidget *parent) :
     baseClassWgt(parent),
     ui(new Ui::Frm_timingTable)
 {
-    g_mapIndexToWgt[PAGE_TIMINGS]= this;
     ui->setupUi(this);
 }
 

@@ -23,6 +23,8 @@ void mainWindow::init()
     ui->m_wgtTitle->setProperty("form", "title");
     initIco();
     initData();
+
+    m_AlarmBox = new AlarmBox(this);
 }
 
 //数据初始化
@@ -36,8 +38,8 @@ void mainWindow::initData()
     m_bitValveStates.resize(96);
     m_bitValveStates.fill(false);
 
-    m_bitMacroState.resize(20);
-    m_bitMacroState.fill(true);
+    m_bitMacroState.resize(32);
+    m_bitMacroState.fill(false);
 
     m_bitAirFeederState.resize(4);
     m_bitAirFeederState.fill(false);
@@ -134,6 +136,10 @@ void mainWindow::initData()
 
     /*设置系统时间控件*/
     initSystemTime();
+
+    /*初始化事件记录表格*/
+    ui->m_tabEventRecord->setColumnWidth(0,250);
+    addAlarmRecord(QString("设备启动成功!"));
 
     /*初始化剪刀表格*/
     initCutterTable();
@@ -249,7 +255,6 @@ void mainWindow::keyPressEvent(int key)
     case Key_F5:
     {
         m_bKeyLock = !m_bKeyLock;
-//        m_bKeyLock ? ui->m_btnKeyLock->show():ui->m_btnKeyLock->hide();
         g_lstRightButton.at(5)->setText(m_bKeyLock ? tr(""):tr("键盘锁定"));
         setObjProperty(g_lstRightButton.at(5), STATUS, m_bKeyLock ? "lock":"unlock");
         break;
@@ -282,7 +287,6 @@ void mainWindow::keyPressEvent(int key)
             (this->*m_mapFun[key])();
         break;
     }
-
     default:
         break;
     }
@@ -297,7 +301,6 @@ void mainWindow::initShowFrmConfig()
     connect(m_timer,SIGNAL(timeout()),this,SLOT(timerUpDate()));
     connect(m_timer,SIGNAL(timeout()),this,SLOT(writeToXddp()));
     m_bKeyLock = false;
-//    ui->m_btnKeyLock->hide();
     m_isRunning = false;
 }
 
@@ -375,7 +378,9 @@ void mainWindow::writeToXddp(const int operType, QString operMode)
 
         if(operMode.isEmpty())
         {
-            jsContent.insert("valve_set", m_arryAirFeefer.at(m_iAirFeederIndex));
+            QJsonArray airVal;
+            airVal.append(m_arryAirFeefer.at(m_iAirFeederIndex));
+            jsContent.insert("valve_set", airVal);
         }
         else {
             jsContent.insert("valve_set", m_arryAirFeefer);
@@ -441,6 +446,28 @@ void mainWindow::handleXddpData(QByteArray data)
 
             if(object.value("mesg_type").toString() == "working_state")
             {
+                QBitArray bitarr(32);
+                for(int i=0;i<32; ++i)
+                {
+                    bitarr.setBit(i, (obj.value("key_stat").toInt()>>i)&1);
+                }
+                ui->btnMacro_1->setChecked(bitarr.at(0));   //强制初始状态
+                ui->btnMacro_2->setChecked(bitarr.at(1));   //梭子全部退出
+                ui->btnMacro_3->setChecked(bitarr.at(2));   //剪刀抬起
+                ui->btnMacro_4->setChecked(bitarr.at(3));   //选针器停止
+                ui->btnMacro_5->setChecked(bitarr.at(4));   //牵拉
+                ui->btnMacro_6->setChecked(bitarr.at(5));   //进线吹气
+                ui->btnMacro_7->setChecked(bitarr.at(6));   //气阀命令
+                //                ui->btnMacro_8->setChecked(bitarr.at(7));   //背光
+                ui->btnMacro_9->setChecked(bitarr.at(8));   //最小循环
+                ui->btnMacro_10->setChecked(bitarr.at(9)); //单只自停
+                ui->btnMacro_11->setChecked(bitarr.at(10)); //低速
+                ui->btnMacro_12->setChecked(bitarr.at(11)); //空转
+                ui->btnMacro_13->setChecked(bitarr.at(12)); //归零
+                ui->btnMacro_14->setChecked(bitarr.at(13)); //吸风马达
+                //                ui->btnMacro_15->setChecked(bitarr.at(14)); //密度速度圈数
+                ui->btnMacro_16->setChecked(bitarr.at(15)); //加油
+
                 ui->m_pngRunState->setText(QString("%1").arg(obj.value("state") == true ? "RUN":"STOP"));
                 setObjProperty(ui->m_pngRunState, "state", obj.value("state") == true ? "run":"stop");
                 ui->m_edtTitle->setText(QString("%1").arg(obj.value("chain_name").toString()));
@@ -464,6 +491,8 @@ void mainWindow::handleXddpData(QByteArray data)
                 }
 
                 m_isRunning = (obj.value("state")==true ? true:false);
+
+
             }
             else if(object.value("mesg_type").toString() == "func_key")
             {
@@ -476,6 +505,7 @@ void mainWindow::handleXddpData(QByteArray data)
                         m_bitValveStates.setBit(array.at(i).toInt(),true);
                     }
                 }
+
                 switch (obj.value("key").toInt())
                 {
                 case macroFu_Reset:   //01 强制初始状态
@@ -500,7 +530,20 @@ void mainWindow::handleXddpData(QByteArray data)
                 case macroFu_TakeDown:    //05 牵拉
                     break;
                 case macroFu_AirFeeder:   //06 进线吹气
+                {
+                    for(int i=0; i<m_arryAirFeefer.count(); ++i)
+                    {
+                        m_bitAirFeederState.setBit(i, m_bitValveStates.at(m_arryAirFeefer.at(i).toInt()) ? true: false);
+
+                        QString name = QString("pushButton_%1").arg(i+1);
+                        QPushButton* btn = w->findChild<QPushButton*>(name);
+                        if(btn != NULL)
+                        {
+                            btn->setChecked(m_bitAirFeederState.at(i));
+                        }
+                    }
                     break;
+                }
                 case macroFu_ManualCmd:   //07 气阀命令
                 case macroFu_0:
                 {
@@ -539,6 +582,22 @@ void mainWindow::handleXddpData(QByteArray data)
                     break;
                 }
             }
+            else if(object.value("mesg_type").toString() == "alarm")
+            {
+                QString strAlarm = obj.value("description").toString();
+                QString stat = obj.value("stat").toString();
+
+                if("trigger"==stat)
+                {
+                    qDebug()<<"------"<<strAlarm;
+                    m_AlarmBox->adAlarm(strAlarm);
+                    addAlarmRecord(strAlarm);
+                }
+                else if("cancel"==stat)
+                {
+                    m_AlarmBox->rmAlarm(strAlarm);
+                }
+            }
         }
     }
 }
@@ -554,6 +613,11 @@ void mainWindow::processingPopup(int key)
         case macroFu_Reset:
         {
             writeToXddp(macroFu_Reset);
+            break;
+        }
+        case macroFu_Zeroing:
+        {
+            writeToXddp(macroFu_Zeroing);
             break;
         }
         default:
@@ -742,9 +806,9 @@ void mainWindow::keyPressEventPopSet_airValve(int key)
     case Key_F0:
     case Key_Fun6:
     case Key_Esc:
-    {
+    {/*
         m_bitMacroState.setBit(macroFu_ManualCmd, !m_bitMacroState.at(macroFu_ManualCmd));
-        ui->btnMacro_7->setChecked(!m_bitMacroState.at(macroFu_ManualCmd));
+        ui->btnMacro_7->setChecked(!m_bitMacroState.at(macroFu_ManualCmd));*/
         w->hide();
     }
 
@@ -769,16 +833,7 @@ void mainWindow::keyPressEventPopSet_airFeeder(int key)
         m_iAirFeederIndex = 3;
 skip:
         m_bitAirFeederState.setBit(m_iAirFeederIndex, !m_bitAirFeederState.at(m_iAirFeederIndex));
-
-        QString name = QString("pushButton_%1").arg(m_iAirFeederIndex+1);
-        QPushButton* btn = w->findChild<QPushButton*>(name);
-        if(btn != NULL)
-        {
-            btn->setFocus();
-            btn->setChecked(m_bitAirFeederState.at(m_iAirFeederIndex));
-
-            writeToXddp(macroFu_AirFeeder);
-        }
+        writeToXddp(macroFu_AirFeeder);
         break;
     }
     case Key_F0:
@@ -808,12 +863,13 @@ void mainWindow::macroFun_Reset()
 //02 梭子全出
 void mainWindow::macroFun_YFALLOUT()
 {
-    m_bitMacroState.setBit(macroFu_YFALLOUT, !m_bitMacroState.at(macroFu_YFALLOUT));
+    //    m_bitMacroState.setBit(macroFu_YFALLOUT, !m_bitMacroState.at(macroFu_YFALLOUT));
 
 
-    writeToXddp(macroFu_YFALLOUT, m_bitMacroState.at(macroFu_YFALLOUT) ? "out":"in");
+    //    writeToXddp(macroFu_YFALLOUT, m_bitMacroState.at(macroFu_YFALLOUT) ? "out":"in");
+    writeToXddp(macroFu_YFALLOUT, ui->btnMacro_2->isChecked()  ? "out":"in");
 
-    ui->btnMacro_2->setChecked(!m_bitMacroState.at(macroFu_YFALLOUT));
+    //    ui->btnMacro_2->setChecked(!m_bitMacroState.at(macroFu_YFALLOUT));
 
     qDebug()<<"-------------------------"<<"梭子全出";
 }
@@ -821,8 +877,8 @@ void mainWindow::macroFun_YFALLOUT()
 //03 剪刀抬起
 void mainWindow::macroFun_CutterSet()
 {
-    m_bitMacroState.setBit(macroFu_CutterSet, !m_bitMacroState.at(macroFu_CutterSet));
-    ui->btnMacro_3->setChecked(!m_bitMacroState.at(macroFu_CutterSet));
+    //    m_bitMacroState.setBit(macroFu_CutterSet, !m_bitMacroState.at(macroFu_CutterSet));
+    //    ui->btnMacro_3->setChecked(!m_bitMacroState.at(macroFu_CutterSet));
 
     writeToXddp(macroFu_CutterSet, "in");
 
@@ -834,6 +890,7 @@ void mainWindow::macroFun_CutterSet()
 //04 选针器停止
 void mainWindow::macroFun_PatSetStop()
 {
+
     m_bitMacroState.setBit(macroFu_PatSetStop, !m_bitMacroState.at(macroFu_PatSetStop));
 
     writeToXddp(macroFu_PatSetStop, m_bitMacroState.at(macroFu_PatSetStop) ? "false":"true");
@@ -845,9 +902,9 @@ void mainWindow::macroFun_PatSetStop()
 //05 牵拉
 void mainWindow::macroFun_TakeDown()
 {
-    m_bitMacroState.setBit(macroFu_TakeDown, !m_bitMacroState.at(macroFu_TakeDown));
+    //    m_bitMacroState.setBit(macroFu_TakeDown, !m_bitMacroState.at(macroFu_TakeDown));
 
-    ui->btnMacro_5->setChecked(!m_bitMacroState.at(macroFu_TakeDown));
+    //    ui->btnMacro_5->setChecked(!m_bitMacroState.at(macroFu_TakeDown));
 
     writeToXddp(macroFu_TakeDown);
     qDebug()<<"-------------------------"<<"牵拉";
@@ -887,9 +944,9 @@ void mainWindow::macroFun_BackLight()
 //09 快编
 void mainWindow::macroFun_MiniCycle()
 {
-    m_bitMacroState.setBit(macroFu_MiniCycle, !m_bitMacroState.at(macroFu_MiniCycle));
+    //    m_bitMacroState.setBit(macroFu_MiniCycle, !m_bitMacroState.at(macroFu_MiniCycle));
 
-    ui->btnMacro_9->setChecked(!m_bitMacroState.at(macroFu_MiniCycle));
+    //    ui->btnMacro_9->setChecked(!m_bitMacroState.at(macroFu_MiniCycle));
 
     writeToXddp(macroFu_MiniCycle, m_bitMacroState.at(macroFu_MiniCycle)? "false":"true");
 
@@ -899,9 +956,9 @@ void mainWindow::macroFun_MiniCycle()
 //10 单只自停
 void mainWindow::macroFun_EndCycle()
 {
-    m_bitMacroState.setBit(macroFu_EndCycle, !m_bitMacroState.at(macroFu_EndCycle));
+    //    m_bitMacroState.setBit(macroFu_EndCycle, !m_bitMacroState.at(macroFu_EndCycle));
 
-    ui->btnMacro_10->setChecked(!m_bitMacroState.at(macroFu_EndCycle));
+    //    ui->btnMacro_10->setChecked(!m_bitMacroState.at(macroFu_EndCycle));
 
     writeToXddp(macroFu_EndCycle, m_bitMacroState.at(macroFu_EndCycle)? "false":"true");
 
@@ -911,9 +968,9 @@ void mainWindow::macroFun_EndCycle()
 //11 低速
 void mainWindow::macroFun_LowSpeed()
 {
-    m_bitMacroState.setBit(macroFu_LowSpeed, !m_bitMacroState.at(macroFu_LowSpeed));
+    //    m_bitMacroState.setBit(macroFu_LowSpeed, !m_bitMacroState.at(macroFu_LowSpeed));
 
-    ui->btnMacro_11->setChecked(!m_bitMacroState.at(macroFu_LowSpeed));
+    //    ui->btnMacro_11->setChecked(!m_bitMacroState.at(macroFu_LowSpeed));
 
     writeToXddp(macroFu_LowSpeed, m_bitMacroState.at(macroFu_LowSpeed)? "false":"true");
 
@@ -923,9 +980,9 @@ void mainWindow::macroFun_LowSpeed()
 //12 空转
 void mainWindow::macroFun_ChainBlock()
 {
-    m_bitMacroState.setBit(macroFu_ChainBlock, !m_bitMacroState.at(macroFu_ChainBlock));
+    //    m_bitMacroState.setBit(macroFu_ChainBlock, !m_bitMacroState.at(macroFu_ChainBlock));
 
-    ui->btnMacro_12->setChecked(!m_bitMacroState.at(macroFu_ChainBlock));
+    //    ui->btnMacro_12->setChecked(!m_bitMacroState.at(macroFu_ChainBlock));
 
     writeToXddp(macroFu_ChainBlock, m_bitMacroState.at(macroFu_ChainBlock)? "false":"true");
 
@@ -935,9 +992,8 @@ void mainWindow::macroFun_ChainBlock()
 //13 归零
 void mainWindow::macroFun_Zeroing()
 {
-    m_bitMacroState.setBit(macroFu_Zeroing, !m_bitMacroState.at(macroFu_Zeroing));
-
-    writeToXddp(macroFu_Zeroing, m_bitMacroState.at(macroFu_Zeroing)? "false":"true");
+    myHelper::showMessageBoxQuestion(tr("确定进行归零操作吗?"));
+    m_iIndex = macroFu_Zeroing;
 
     qDebug()<<"-------------------------"<<"归零";
 }
@@ -964,6 +1020,18 @@ void mainWindow::macroFun_Oiler()
     writeToXddp(macroFu_Oiler);
 
     qDebug()<<"-------------------------"<<"加油";
+}
+
+/*初始化事件记录表格*/
+void mainWindow::addAlarmRecord(QString str)
+{
+    ui->m_tabEventRecord->setRowCount(ui->m_tabEventRecord->rowCount()+1);
+    ui->m_tabEventRecord->setItem(ui->m_tabEventRecord->rowCount()-1,0,new QTableWidgetItem(QString("%1").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"))));
+    ui->m_tabEventRecord->setItem(ui->m_tabEventRecord->rowCount()-1,1,new QTableWidgetItem(str));
+    ui->m_tabEventRecord->item(ui->m_tabEventRecord->rowCount()-1,0)->setTextAlignment(Qt::AlignCenter);
+    ui->m_tabEventRecord->item(ui->m_tabEventRecord->rowCount()-1,1)->setTextAlignment(Qt::AlignCenter);
+
+    ui->m_tabEventRecord->scrollToBottom();
 }
 
 /*初始化剪刀表格*/

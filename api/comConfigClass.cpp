@@ -23,7 +23,7 @@ void ComConfigClass::parseCfgFile()
     QFile file(COMMCONFIG_FILE_PATH);
     if (!file.open(QIODevice::ReadOnly))
     {
-        QMessageBox::information(NULL, QString(QObject::tr("提示")), QString(QObject::tr("配置文件打开失败,影响当前功能使用，请联系工程师解决!")));
+        myHelper::showMessageBoxError(QObject::tr("配置文件打开失败,影响当前功能使用，请联系工程师解决!"), 2);
         return;
     }
 

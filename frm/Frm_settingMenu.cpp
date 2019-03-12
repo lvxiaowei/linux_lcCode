@@ -5,7 +5,6 @@ Frm_settingMenu::Frm_settingMenu(QWidget *parent) :
     baseClassWgt(parent),
     ui(new Ui::Frm_menu)
 {
-    g_mapIndexToWgt[PAGE_SETTING]= this;
     ui->setupUi(this);
 }
 

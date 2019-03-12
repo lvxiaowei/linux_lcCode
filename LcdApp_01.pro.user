@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.3.1, 2019-02-21T11:08:14. -->
+<!-- Written by QtCreator 4.3.1, 2019-03-12T09:24:14. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -537,8 +537,8 @@
        <value type="QString">/home/james/workspace/Qt project/lxw_test/build-LcdApp_01-SoloCPU-Debug/LcdApp_01</value>
       </valuelist>
       <valuelist type="QVariantList" key="ProjectExplorer.RunConfiguration.LastDeployedHosts">
-       <value type="QString">172.21.18.201</value>
        <value type="QString">172.21.18.202</value>
+       <value type="QString">172.21.18.201</value>
        <value type="QString">172.21.18.222</value>
       </valuelist>
       <valuelist type="QVariantList" key="ProjectExplorer.RunConfiguration.LastDeployedRemotePaths">
@@ -552,9 +552,9 @@
        <value type="QString">/opt/poky/1.7.3/sysroots/cortexa9hf-vfp-neon-poky-linux-gnueabi</value>
       </valuelist>
       <valuelist type="QVariantList" key="ProjectExplorer.RunConfiguration.LastDeployedTimes">
-       <value type="QDateTime">2019-02-18T15:20:19</value>
        <value type="QDateTime">2019-01-03T11:29:14</value>
-       <value type="QDateTime">2019-02-18T15:36:47</value>
+       <value type="QDateTime">2019-03-12T09:13:38</value>
+       <value type="QDateTime">2019-03-05T16:42:08</value>
       </valuelist>
       <value type="bool" key="RemoteLinux.GenericDirectUploadStep.IgnoreMissingFiles">false</value>
       <value type="bool" key="RemoteLinux.GenericDirectUploadStep.Incremental">true</value>

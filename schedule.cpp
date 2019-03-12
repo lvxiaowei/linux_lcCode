@@ -13,19 +13,25 @@ schedule::schedule(QWidget *parent)
     m_pMainWindow->addChildWgt(m_frmChain);
 
     m_frmSettingMenu = new Frm_settingMenu();
+    baseClassWgt::g_mapIndexToWgt[PAGE_SETTING]= m_frmSettingMenu;
     m_pMainWindow->addChildWgt(m_frmSettingMenu);
 
     m_frmTestMenu = new Frm_testingMenu();
+    baseClassWgt::g_mapIndexToWgt[PAGE_TESTINGMENU]= m_frmTestMenu;
     m_pMainWindow->addChildWgt(m_frmTestMenu);
 
     m_frmPatternManage = new Frm_patternManage();
+    baseClassWgt::g_mapIndexToWgt[PAGE_PATTERNMANAGE]= m_frmPatternManage;
     m_pMainWindow->addChildWgt(m_frmPatternManage);
 
     m_frmTimings = new Frm_timingTable();
+    baseClassWgt::g_mapIndexToWgt[PAGE_TIMINGS]= m_frmTimings;
     m_pMainWindow->addChildWgt(m_frmTimings);
 
     m_frmParaSetting = new Frm_parameterSettings();
+    baseClassWgt::g_mapIndexToWgt[PAGE_PARASETTING]= m_frmParaSetting;
     m_pMainWindow->addChildWgt(m_frmParaSetting);
+
     /*将几个窗口放在加入到 lst 中*/
     lstWgtFrm.clear();
     lstWgtFrm <<m_pMainWindow <<m_frmChain <<m_frmSettingMenu <<m_frmTestMenu <<m_frmPatternManage<<m_frmTimings<<m_frmParaSetting;
@@ -34,8 +40,6 @@ schedule::schedule(QWidget *parent)
         connect(pWgtFrm,SIGNAL(serialDataToScheduler(QByteArray)),this,SLOT(writeToSerial(QByteArray))); /*向串口发送数据*/
         connect(pWgtFrm,SIGNAL(xddpDataToScheduler(QByteArray)),this,SLOT(writeToXddp(QByteArray)));     /*向管理口发送数据*/
     }
-
-    //    baseClassWgt::g_pStackedWgt->setCurrentIndex(4);
 }
 
 schedule::~schedule()
@@ -56,7 +60,9 @@ void schedule::handleSerialData(QByteArray data)
     default:
     {
         if(!bIsLock)
+        {
             baseClassWgt::g_pCurentDealWgt->keyPressEvent(iValue);
+        }
         break;
     }
     }
@@ -68,7 +74,7 @@ void schedule::handleXddpData(QByteArray data)
     qDebug()<<"处理XDDP发过来的数据:"<<data;
 
     //处理测试界面相关的消息
-    if(data.contains("working_state") || data.contains("func_key"))
+    if(data.contains("working_state") || data.contains("func_key") || data.contains("alarm"))
     {
         m_pMainWindow->handleXddpData(data);
 

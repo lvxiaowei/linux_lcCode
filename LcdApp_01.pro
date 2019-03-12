@@ -44,7 +44,8 @@ SOURCES += \
     frm/Frm_timingTable.cpp \
     frm/Frm_parameterSettings.cpp \
     api/myhelper.cpp \
-    ttkmarqueewidget.cpp
+    ttkmarqueewidget.cpp \
+    api/AlarmBox.cpp
 
 HEADERS += \
     schedule.h \
@@ -63,7 +64,8 @@ HEADERS += \
     frm/Frm_patternManage.h \
     frm/Frm_timingTable.h \
     frm/Frm_parameterSettings.h \
-    ttkmarqueewidget.h
+    ttkmarqueewidget.h \
+    api/AlarmBox.h
 
 FORMS += \
     mainWindow.ui \
@@ -75,7 +77,8 @@ FORMS += \
     frm/Frm_timingTable.ui \
     mainWindowPop.ui \
     frm/Frm_parameterSettings.ui \
-    frm/Frm_parameterSettingsPop.ui
+    frm/Frm_parameterSettingsPop.ui \
+    api/AlarmBox.ui
 
 
 RESOURCES += \

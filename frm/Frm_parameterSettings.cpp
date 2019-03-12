@@ -5,7 +5,6 @@ Frm_parameterSettings::Frm_parameterSettings(QWidget *parent) :
     baseClassWgt(parent),
     ui(new Ui::Frm_parameterSettings)
 {
-    g_mapIndexToWgt[PAGE_PARASETTING]= this;
     ui->setupUi(this);
     w = new QDialog(this);
     ui_pop.setupUi(w);

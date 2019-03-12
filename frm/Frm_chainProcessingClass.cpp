@@ -32,15 +32,12 @@ void Frm_chainProcessingClass::keyPressEvent(int key)
     case 1:
         dealPg2(key);
         break;
-    case 2:
-        dealPg3(key);
-        break;
     default:
         break;
     }
 }
 
-/*处理串口数据-page1*/
+/*处理串口数据-page1-链条文件管理*/
 void Frm_chainProcessingClass::dealPg1(int key)
 {
     if(myHelper::isMessageBoxShow())
@@ -135,7 +132,7 @@ void Frm_chainProcessingClass::dealPg1(int key)
     {
         initChainTree();
         ui->stackedWidget->setCurrentIndex(1);
-        freshRightButtonContent(QStringList()<<tr("返回")<<tr("新增")<<tr("删除")<<tr("编辑")<<tr("")<<tr("下一菜单\n[1/2]"));
+        freshRightButtonContent(QStringList()<<tr("返回")<<tr("新增")<<tr("删除")<<tr("编辑")<<tr("保存")<<tr("下一菜单\n[1/2]"));
         break;
     }
     case Key_F5:
@@ -204,7 +201,7 @@ void Frm_chainProcessingClass::dealPg1(int key)
     }
 }
 
-/*处理串口数据-page2*/
+/*处理串口数据-page2-单个链条管理*/
 void Frm_chainProcessingClass::dealPg2(int key)
 {
     if(QUIMessageBox::Instance()->isVisible())
@@ -226,6 +223,13 @@ void Frm_chainProcessingClass::dealPg2(int key)
         }
     }
 
+    //命令编辑
+    if(ui->m_stackCmdEdit->isVisible())
+    {
+        dealAddCmd(key);
+        return;
+    }
+
     if(g_lstRightButton.at(5)->text() == tr("下一菜单\n[1/2]"))
     {
         dealPg2_1(key);
@@ -239,15 +243,10 @@ void Frm_chainProcessingClass::dealPg2(int key)
 /*处理串口数据-page2-1*/
 void Frm_chainProcessingClass::dealPg2_1(int key)
 {
-    if(ui->m_stackCmdEdit->isVisible())
-    {
-        dealAddCmd(key);
-        return;
-    }
-
     switch (key) {
     case Key_F0:
         ui->stackedWidget->setCurrentIndex(0);
+        ui->m_tabChainManage->setFocus();
         freshRightButtonContent(QStringList()<<tr("返回")<<tr("从U盘\n输入")<<tr("输出到\nU盘")<<tr("删除")<<tr("编辑\n工作链条")<<tr("工作链条\n设定"));
         break;
     case Key_F1:
@@ -257,8 +256,9 @@ void Frm_chainProcessingClass::dealPg2_1(int key)
             myHelper::showMessageBoxInfo(tr("请选择具体需要新增的步骤！"), 1);
             return;
         }
-
+        ui->m_stackCmdEdit->setCurrentIndex(0);
         ui->m_stackCmdEdit->show();
+        freshRightButtonContent(QStringList()<<tr("返回")<<tr("添加")<<tr("Tab")<<tr("确认\n参数值")<<tr("")<<tr(""));
         ui->m_wgtCmdName->setFocus();
 
         break;
@@ -270,10 +270,129 @@ void Frm_chainProcessingClass::dealPg2_1(int key)
     }
     case Key_F3:
     {
+        if(THIRD_LEVEL_NODE != getItemType(ui->m_chainTree->currentItem()))
+            return;
+
+        QTreeWidgetItem *item = ui->m_chainTree->currentItem();
+        ui->m_stackCmdEdit->setCurrentIndex(1);
+
+        //设置title的内容
+        ui->m_title->setText(ComConfigClass::GetInstance()->getCmdProByIndex(item->text(1).toInt()).name.at(ComConfigClass::m_iLanguage));
+        QString strCmdType = ComConfigClass::GetInstance()->getCmdProByIndex(item->text(1).toInt()).cmdType;
+
+        if(strCmdType == "valve")
+        {
+            ui->m_state->setCurrentIndex(item->text(2).toInt());
+            ui->m_needle->setText(item->text(3));
+            ui->m_model->setCurrentIndex(item->text(4).toInt());
+
+            ui->m_stackCmdParaSet->setCurrentIndex(0);
+            ui->m_state->setFocus();
+            m_lstTabWgt.clear();
+            m_lstTabWgt<<ui->m_state<<ui->m_needle<<ui->m_model;
+        }
+        else if(strCmdType == "speed"){
+            ui->m_speed->setText(item->text(2));
+            ui->m_circle->setText(item->text(3));
+
+            ui->m_stackCmdParaSet->setCurrentIndex(1);
+            ui->m_speed->setFocus();
+            m_lstTabWgt.clear();
+            m_lstTabWgt<<ui->m_speed<<ui->m_circle;
+        }
+        else if(strCmdType == "macro"){
+            ui->m_lstMarco->setCurrentText(item->text(2));
+            ui->m_needle_2->setText(item->text(3));
+            ui->m_speed_2->setCurrentIndex(item->text(4).toInt());
+
+            ui->m_stackCmdParaSet->setCurrentIndex(2);
+            ui->m_lstMarco->setFocus();
+            m_lstTabWgt.clear();
+            m_lstTabWgt<<ui->m_lstMarco<<ui->m_needle_2<<ui->m_speed_2;
+        }
+        else if(strCmdType == "turning")
+        {
+            ui->m_motoDirect->setCurrentIndex(item->text(2)=="0" ? 1:0);
+            ui->m_motoMode->setCurrentIndex(item->text(3).toInt());
+            ui->m_motoNeedlValve->setText(item->text(4));
+
+            ui->m_stackCmdParaSet->setCurrentIndex(3);
+            ui->m_motoDirect->setFocus();
+            m_lstTabWgt.clear();
+            m_lstTabWgt<<ui->m_motoDirect<<ui->m_motoMode<<ui->m_motoNeedlValve;
+        }
+        else if(strCmdType == "lowSpeed")
+        {
+            ui->m_state_3->setCurrentIndex(item->text(2).toInt());
+            ui->m_needle_3->setText(item->text(3));
+
+            ui->m_stackCmdParaSet->setCurrentIndex(4);
+            ui->m_state_3->setFocus();
+            m_lstTabWgt.clear();
+            m_lstTabWgt<<ui->m_state_3<<ui->m_needle_3;
+        }
+        else if(strCmdType == "selection")
+        {
+            ui->m_needleNum->setCurrentText(item->text(2));
+            ui->m_state_5->setCurrentIndex(item->text(3)=="1" ? 0:1);
+            ui->m_state_4->setCurrentIndex(item->text(4).toInt());
+
+            ui->m_stackCmdParaSet->setCurrentIndex(5);
+            ui->m_needleNum->setFocus();
+            m_lstTabWgt.clear();
+            m_lstTabWgt<<ui->m_needleNum<<ui->m_state_4<<ui->m_state_5;
+        }
+        else if(strCmdType == "footIncreaseEcrease")
+        {
+            ui->m_left->setText(item->text(2));
+            ui->m_right->setText(item->text(3));
+
+            ui->m_stackCmdParaSet->setCurrentIndex(6);
+            ui->m_left->setFocus();
+            m_lstTabWgt.clear();
+            m_lstTabWgt<<ui->m_left<<ui->m_right;
+        }
+        else if(strCmdType == "circle")
+        {
+            ui->m_edtCircle_1->setText(item->text(2));
+            ui->m_edtCircle_2->setText(item->text(3));
+            ui->m_edtCircle_3->setText(item->text(4));
+            ui->m_edtCircle_4->setText(item->text(5));
+            ui->m_edtCircle_5->setText(item->text(6));
+            ui->m_edtCircle_6->setText(item->text(7));
+            ui->m_edtCircle_7->setText(item->text(8));
+            ui->m_edtCircle_8->setText(item->text(9));
+
+            ui->m_stackCmdParaSet->setCurrentIndex(8);
+            ui->m_edtCircle_1->setFocus();
+            m_lstTabWgt.clear();
+            m_lstTabWgt<<ui->m_edtCircle_1<<ui->m_edtCircle_2<<ui->m_edtCircle_3<<ui->m_edtCircle_4<<ui->m_edtCircle_5
+                         <<ui->m_edtCircle_6<<ui->m_edtCircle_7<<ui->m_edtCircle_8;
+        }
+        else if(strCmdType == "patternUse")
+        {
+            QStringList lst=getPatternList();
+            ui->m_patternLink->clear();
+            for(int i=0; i<lst.count();++i)
+                ui->m_patternLink->addItem(lst.at(i));
+
+            ui->m_patternLink->setCurrentText(item->text(2));
+
+            ui->m_stackCmdParaSet->setCurrentIndex(7);
+            ui->m_patternLink->setFocus();
+            m_lstTabWgt.clear();
+            m_lstTabWgt<<ui->m_patternLink;
+        }
+        else {
+            return;
+        }
+        freshRightButtonContent(QStringList()<<tr("返回")<<tr("添加")<<tr("Tab")<<tr("确认\n参数值")<<tr("")<<tr(""));
+        ui->m_stackCmdEdit->show();
         break;
     }
     case Key_F4:
-
+        writeChainTree();
+        myHelper::showMessageBoxInfo(tr("文件保存成功!"), 1);
         break;
     case Key_F5:
     {
@@ -341,7 +460,7 @@ void Frm_chainProcessingClass::dealPg2_2(int key)
         break;
     case Key_F5:
     {
-        freshRightButtonContent(QStringList()<<tr("返回")<<tr("新增")<<tr("删除")<<tr("编辑")<<tr("")<<tr("下一菜单\n[1/2]"));
+        freshRightButtonContent(QStringList()<<tr("返回")<<tr("新增")<<tr("删除")<<tr("编辑")<<tr("保存")<<tr("下一菜单\n[1/2]"));
         break;
     }
     case Key_Up:
@@ -359,124 +478,446 @@ void Frm_chainProcessingClass::dealPg2_2(int key)
     }
 }
 
-/*处理串口数据-page3*/
-void Frm_chainProcessingClass::dealPg3(int key)
-{
-    switch (key) {
-    case Key_F0:
-    {
-        ui->stackedWidget->setCurrentIndex(1);
-        freshRightButtonContent(QStringList()<<tr("返回")<<tr("新增")<<tr("删除")<<tr("编辑")<<tr("")<<tr("下一菜单\n[1/2]"));
-        break;
-    }
-    case Key_F1:
-    {
-
-        break;
-    }
-    case Key_F2:
-        break;
-    case Key_F3:
-        break;
-    case Key_F4:
-        break;
-    case Key_F5:
-    {
-        break;
-    }
-    case Key_Up:
-    case Key_Down:
-    {
-        QKeyEvent key_up(QEvent::KeyPress, m_iCmdPagePos==2 ? Qt::Key_Back:Qt::Key_Up, Qt::NoModifier, QString());
-        QKeyEvent key_down(QEvent::KeyPress, m_iCmdPagePos==2 ? Qt::Key_Tab:Qt::Key_Down, Qt::NoModifier, QString());
-        if(m_iCmdPagePos==0)
-        {
-            QCoreApplication::sendEvent(ui->m_wgtCmdName, key==Key_Up ? &key_up:&key_down);
-        }
-        else if(m_iCmdPagePos==1)
-        {
-            QCoreApplication::sendEvent(ui->m_wgtCmdContent, key==Key_Up ? &key_up:&key_down);
-        }
-        else if(m_iCmdPagePos==2){
-            if((key == Key_Up && ui->cmd_val1->hasFocus())||(key == Key_Down && ui->cmd_val8->hasFocus()))
-                return;
-            key==Key_Up  ? focusPreviousChild():focusNextChild();
-        }
-        break;
-    }
-    case Key_Left:
-    {
-        if(m_iCmdPagePos>0)
-        {
-            m_iCmdPagePos--;
-
-        }
-        break;
-    }
-    case Key_Right:
-    {
-        if(m_iCmdPagePos<2)
-        {
-            m_iCmdPagePos++;
-
-        }
-        break;
-    }
-    default:
-        break;
-    }
-}
-
 /*处理链条管理界面新增或者编辑单条命令*/
 void Frm_chainProcessingClass::dealAddCmd(int key)
 {
     switch (key) {
     case Key_Esc:
-    case Key_F1:
+    case Key_F0:
         ui->m_stackCmdEdit->hide();
+        freshRightButtonContent(QStringList()<<tr("返回")<<tr("新增")<<tr("删除")<<tr("编辑")<<tr("保存")<<tr("下一菜单\n[1/2]"));
         break;
-    case Key_Up:
-    case Key_Down:
+    case Key_0:
+    case Key_1:
+    case Key_2:
+    case Key_3:
+    case Key_4:
+    case Key_5:
+    case Key_6:
+    case Key_7:
+    case Key_8:
+    case Key_9:
     {
-        QCoreApplication::sendEvent(ui->m_wgtCmdName->hasFocus()? ui->m_wgtCmdName:ui->m_wgtCmdContent, key==Key_Up ? key_up:key_down);
+        /*对有下拉框的QLineEdit控件做差异处理*/
+        QLineEdit *pCurrentFocusWgt =dynamic_cast<QLineEdit*>(focusWidget());
+        if(pCurrentFocusWgt!=NULL)
+        {
+            bool ok;
+            QString strInputValue = QString("%1").arg(m_mapNoKeyToValue[key]);
+            QString strCurentValue = pCurrentFocusWgt->text() + strInputValue;
+            pCurrentFocusWgt->setText(QString::number((strCurentValue.trimmed()).toInt(&ok,10)));
+        }
         break;
     }
-    case Key_Left:
+    case Key_minus:
     {
-        ui->m_wgtCmdName->setFocus();
-        break;
-    }
-    case Key_Right:
-    {
-        ui->m_wgtCmdContent->setFocus();
+        /*对有下拉框的QComboBox控件做差异处理*/
+        QLineEdit *pCurrentFocusWgt =dynamic_cast<QLineEdit*>(focusWidget());
+        if(pCurrentFocusWgt!=NULL)
+        {
+            bool ok;
+            QString strCurentValue = pCurrentFocusWgt->text();
+            strCurentValue = strCurentValue.left(strCurentValue.length() - 1);
+            pCurrentFocusWgt->setText(QString::number((strCurentValue.trimmed()).toInt(&ok,10)));
+        }
         break;
     }
     case Key_Set:
     {
+        /*针对不同的控件，做不同的处理*/
+        if(focusWidget()->inherits("QComboBox") )
+        {
+            QComboBox *pComboxWgt =dynamic_cast<QComboBox*>(focusWidget());
+            if(pComboxWgt == NULL)
+                return;
+            pComboxWgt->view()->isActiveWindow() ? pComboxWgt->hidePopup():pComboxWgt->showPopup();
+        }
+        break;
+    }
+    case Key_Up:
+    case Key_Down:
+    {
+        /*对有下拉框的QComboBox控件做差异处理*/
+        QComboBox *pCurrentFocusWgt =dynamic_cast<QComboBox*>(focusWidget());
+        if(pCurrentFocusWgt!=NULL && pCurrentFocusWgt->view()->isActiveWindow())
+        {
+            int current_index=pCurrentFocusWgt->currentIndex();
+            if((current_index<pCurrentFocusWgt->count()-1) && key == Key_Down)
+            {
+                ++current_index;
+            }
+            else if ((current_index >0) && key == Key_Up)
+            {
+                --current_index;
+            }
+            pCurrentFocusWgt->setCurrentIndex(current_index);
+            QModelIndex itemIndex = pCurrentFocusWgt->view()->model()->index(current_index,0);
+            pCurrentFocusWgt->view()->selectionModel()->setCurrentIndex(itemIndex,QItemSelectionModel::SelectCurrent);
+        }
+        else {
+            QCoreApplication::sendEvent(ui->m_wgtCmdName->hasFocus()? ui->m_wgtCmdName:ui->m_wgtCmdContent, key==Key_Up ? key_up:key_down);
+        }
+        break;
+    }
+    case Key_Left:
+    {
+        if(ui->m_stackCmdEdit->currentIndex()==0)
+            ui->m_wgtCmdName->setFocus();
+        break;
+    }
+    case Key_Right:
+    {
+        if(ui->m_stackCmdEdit->currentIndex()==0)
+            ui->m_wgtCmdContent->setFocus();
+        break;
+    }
+    case Key_F1:
+    {
+        if(ui->m_stackCmdEdit->currentIndex()!=0)
+            return;
+
         QTreeWidgetItem* parentItem = (getItemType(ui->m_chainTree->currentItem())==SECEND_LEVEL_NODE ?
                                            ui->m_chainTree->currentItem(): ui->m_chainTree->currentItem()->parent());
 
         QTableWidgetItem* itemTable = ui->m_wgtCmdContent->selectedItems().at(0);
         ui->m_title->setText(itemTable->text());
         int iType = ComConfigClass::GetInstance()->getCmdTypeByIndex(itemTable->type());
+        QStringList lstPara;
+        QString strContex;
         switch (iType) {
         case OPER_VALVE:
         {
-            QString strContex =QString(tr("%1 [状态：%2---针位：%3---模式：%4]")).arg(itemTable->text())
+            strContex =QString(tr("%1 [状态：%2---针位：%3---模式：%4]")).arg(ui->m_title->text().trimmed())
                     .arg(ui->m_state->currentText()).arg(ui->m_needle->text()).arg(ui->m_model->currentText());
 
-            QTreeWidgetItem* itemNew = new QTreeWidgetItem(parentItem,QStringList()<<strContex,THIRD_LEVEL_NODE);
-            itemNew->setIcon(0, itemTable->icon());
+            lstPara<<strContex<<QString("%1").arg(itemTable->type())<<QString("%1").arg(ui->m_state->currentIndex())<<ui->m_needle->text()<<QString("%1").arg(ui->m_model->currentIndex());
 
+            QTreeWidgetItem* itemNew = new QTreeWidgetItem(parentItem, lstPara, THIRD_LEVEL_NODE);
+            itemNew->setIcon(0, itemTable->icon());
+            ui->m_chainTree->setCurrentItem(itemNew);
 
             ui->m_stackCmdEdit->setCurrentIndex(1);
             ui->m_stackCmdParaSet->setCurrentIndex(0);
+            ui->m_state->setFocus();
+
+            m_lstTabWgt.clear();
+            m_lstTabWgt<<ui->m_state<<ui->m_needle<<ui->m_model;
+            break;
+        }
+        case OPER_SPEED:
+        {
+            strContex =QString(tr("%1 [转速：%2---加速圈数：%3]")).arg(ui->m_title->text().trimmed())
+                    .arg(ui->m_speed->text().toInt()).arg(ui->m_circle->text().toInt());
+
+            lstPara<<strContex<<ui->m_speed->text()<<ui->m_circle->text();
+
+            QTreeWidgetItem* itemNew = new QTreeWidgetItem(parentItem, lstPara, THIRD_LEVEL_NODE);
+            itemNew->setIcon(0, itemTable->icon());
+            ui->m_chainTree->setCurrentItem(itemNew);
+
+            ui->m_stackCmdEdit->setCurrentIndex(1);
+            ui->m_stackCmdParaSet->setCurrentIndex(1);
+            ui->m_speed->setFocus();
+
+            m_lstTabWgt.clear();
+            m_lstTabWgt<<ui->m_speed<<ui->m_circle;
+            break;
+        }
+        case OPER_MACRO:
+        {
+            strContex =QString(tr("%1 [宏：%2---动作针位：%3---模式：%4]")).arg(ui->m_title->text().trimmed())
+                    .arg(ui->m_lstMarco->currentText()).arg(ui->m_needle_2->text()).arg(ui->m_speed_2->currentText());
+
+            lstPara<<strContex<<QString("%1").arg(itemTable->type())<<ui->m_lstMarco->currentText()<<ui->m_needle_2->text()<<QString("%1").arg(ui->m_speed_2->currentIndex());
+
+            QTreeWidgetItem* itemNew = new QTreeWidgetItem(parentItem, lstPara, THIRD_LEVEL_NODE);
+            itemNew->setIcon(0, itemTable->icon());
+            ui->m_chainTree->setCurrentItem(itemNew);
+
+            ui->m_stackCmdEdit->setCurrentIndex(1);
+            ui->m_stackCmdParaSet->setCurrentIndex(2);
+            ui->m_lstMarco->setFocus();
+
+            m_lstTabWgt.clear();
+            m_lstTabWgt<<ui->m_lstMarco<<ui->m_needle_2<<ui->m_speed_2;
+            break;
+        }
+        case OPER_TURNING:
+        {
+            QString strContex1 =QString(tr("%1 [电机转向：%2---模式：%3---针位：%4]")).arg(ui->m_title->text().trimmed())
+                    .arg(ui->m_motoDirect->currentIndex()==0 ? tr("正转"):tr("反转")).arg(ui->m_motoMode->currentText()).arg(ui->m_motoNeedlValve->text());
+            QString strContex2 =QString(tr("%1 [电机转向：%2---模式：%3]")).arg(ui->m_title->text().trimmed())
+                    .arg(ui->m_motoDirect->currentIndex()==0 ? tr("正转"):tr("反转")).arg(ui->m_motoMode->currentText());
+            strContex = ui->m_motoMode->currentText() ==tr("无") || ui->m_motoMode->currentText() ==tr("到零") ? strContex2:strContex1;
+
+            lstPara<<strContex<<QString("%1").arg(itemTable->type())<<QString("%1").arg(ui->m_motoDirect->currentIndex()==1 ? 0:1)<<QString("%1").arg(ui->m_motoMode->currentIndex())<<ui->m_motoNeedlValve->text();
+
+            QTreeWidgetItem* itemNew = new QTreeWidgetItem(parentItem, lstPara, THIRD_LEVEL_NODE);
+            itemNew->setIcon(0, itemTable->icon());
+            ui->m_chainTree->setCurrentItem(itemNew);
+
+            ui->m_stackCmdEdit->setCurrentIndex(1);
+            ui->m_stackCmdParaSet->setCurrentIndex(3);
+            ui->m_motoDirect->setFocus();
+
+            m_lstTabWgt.clear();
+            m_lstTabWgt<<ui->m_motoDirect<<ui->m_motoMode<<ui->m_motoNeedlValve;
+            break;
+        }
+        case OPER_LOWSPEED_CMD:
+        {
+            strContex =QString(tr("%1 [动作状态：%2---针位：%3]")).arg(ui->m_title->text().trimmed())
+                    .arg(ui->m_state_3->currentText()).arg(ui->m_needle_3->text());
+
+            lstPara<<strContex<<QString("%1").arg(itemTable->type())<<QString("%1").arg(ui->m_state_3->currentIndex())<<ui->m_needle_3->text();
+
+            QTreeWidgetItem* itemNew = new QTreeWidgetItem(parentItem, lstPara, THIRD_LEVEL_NODE);
+            itemNew->setIcon(0, itemTable->icon());
+            ui->m_chainTree->setCurrentItem(itemNew);
+
+            ui->m_stackCmdEdit->setCurrentIndex(1);
+            ui->m_stackCmdParaSet->setCurrentIndex(4);
+            ui->m_state_3->setFocus();
+
+            m_lstTabWgt.clear();
+            m_lstTabWgt<<ui->m_state_3<<ui->m_needle_3;
+            break;
+        }
+        case OPER_SELECTION:
+        {
+            strContex =QString(tr("%1 [选针编号：%2---动作方式：%3---选针模式：%4]")).arg(ui->m_title->text().trimmed()).
+                    arg(ui->m_needleNum->currentText()).arg(ui->m_state_5->currentIndex()==0 ? tr("正常"):tr("辅助")).arg(ui->m_state_4->currentText());
+
+            lstPara<<strContex<<QString("%1").arg(itemTable->type())<<ui->m_needleNum->currentText()<<QString("%1").arg(ui->m_state_5->currentIndex()==0 ? 1:0)
+                  <<QString("%1").arg(ui->m_state_4->currentIndex());
+
+            QTreeWidgetItem* itemNew = new QTreeWidgetItem(parentItem, lstPara, THIRD_LEVEL_NODE);
+            itemNew->setIcon(0, itemTable->icon());
+            ui->m_chainTree->setCurrentItem(itemNew);
+
+            ui->m_stackCmdEdit->setCurrentIndex(1);
+            ui->m_stackCmdParaSet->setCurrentIndex(5);
+            ui->m_needleNum->setFocus();
+
+            m_lstTabWgt.clear();
+            m_lstTabWgt<<ui->m_needleNum<<ui->m_state_4<<ui->m_state_5;
+            break;
+        }
+        case OPER_FOOT_INCREASE_DCREASE:
+        {
+            strContex =QString(tr("%1 [向左移：%2---向右移：%3]")).arg(ui->m_title->text().trimmed())
+                    .arg(ui->m_left->text()).arg(ui->m_right->text());
+            lstPara<<strContex<<QString("%1").arg(itemTable->type())<<ui->m_left->text()<<ui->m_right->text();
+
+            QTreeWidgetItem* itemNew = new QTreeWidgetItem(parentItem, lstPara, THIRD_LEVEL_NODE);
+            itemNew->setIcon(0, itemTable->icon());
+            ui->m_chainTree->setCurrentItem(itemNew);
+
+            ui->m_stackCmdEdit->setCurrentIndex(1);
+            ui->m_stackCmdParaSet->setCurrentIndex(6);
+            ui->m_left->setFocus();
+
+            m_lstTabWgt.clear();
+            m_lstTabWgt<<ui->m_left<<ui->m_right;
+            break;
+        }
+        case OPER_PATTERN_USE:
+        {
+            QStringList lst=getPatternList();
+            qDebug()<<lst;
+            ui->m_patternLink->clear();
+            for(int i=0; i<lst.count();++i)
+                ui->m_patternLink->addItem(lst.at(i));
+
+            strContex =QString(tr("%1 [花纹名称：%2]")).arg(ui->m_title->text().trimmed())
+                    .arg(ui->m_patternLink->currentText());
+
+            lstPara<<strContex<<QString("%1").arg(itemTable->type())<<ui->m_patternLink->currentText();
+
+            QTreeWidgetItem* itemNew = new QTreeWidgetItem(parentItem, lstPara, THIRD_LEVEL_NODE);
+            itemNew->setIcon(0, itemTable->icon());
+            ui->m_chainTree->setCurrentItem(itemNew);
+
+            ui->m_stackCmdEdit->setCurrentIndex(1);
+            ui->m_stackCmdParaSet->setCurrentIndex(7);
+            ui->m_patternLink->setFocus();
+
+            m_lstTabWgt.clear();
+            m_lstTabWgt<<ui->m_patternLink;
+            break;
+        }
+        case OPER_CIRCLE:
+        {
+            strContex =QString(tr("%1 [%2,%3,%4,%5,%6,%7,%8,%9]")).arg(ui->m_title->text().trimmed())
+                    .arg(ui->m_edtCircle_1->text())
+                    .arg(ui->m_edtCircle_2->text())
+                    .arg(ui->m_edtCircle_3->text())
+                    .arg(ui->m_edtCircle_4->text())
+                    .arg(ui->m_edtCircle_5->text())
+                    .arg(ui->m_edtCircle_6->text())
+                    .arg(ui->m_edtCircle_7->text())
+                    .arg(ui->m_edtCircle_8->text());
+
+            lstPara<<strContex<<QString("%1").arg(itemTable->type())<<ui->m_edtCircle_1->text()<<ui->m_edtCircle_2->text()<<ui->m_edtCircle_3->text()
+                     <<ui->m_edtCircle_4->text()<<ui->m_edtCircle_5->text()<<ui->m_edtCircle_6->text()<<ui->m_edtCircle_7->text()<<ui->m_edtCircle_8->text();
+
+            QTreeWidgetItem* itemNew = new QTreeWidgetItem(parentItem, lstPara, THIRD_LEVEL_NODE);
+            itemNew->setIcon(0, itemTable->icon());
+            ui->m_chainTree->setCurrentItem(itemNew);
+
+            ui->m_stackCmdEdit->setCurrentIndex(1);
+            ui->m_stackCmdParaSet->setCurrentIndex(8);
+            ui->m_edtCircle_1->setFocus();
+            m_lstTabWgt.clear();
+            m_lstTabWgt<<ui->m_edtCircle_1<<ui->m_edtCircle_2<<ui->m_edtCircle_3<<ui->m_edtCircle_4<<ui->m_edtCircle_5
+                         <<ui->m_edtCircle_6<<ui->m_edtCircle_7<<ui->m_edtCircle_8;
+            break;
+        }
+        case OPER_ZEROING:
+        {
+            strContex =QString(tr("%1 [动作状态：%2]")).arg(ui->m_title->text().trimmed())
+                    .arg(ui->m_state_6->currentText());
+
+            lstPara<<strContex<<QString("%1").arg(itemTable->type())<<QString("%1").arg(ui->m_state_6->currentIndex());
+
+            QTreeWidgetItem* itemNew = new QTreeWidgetItem(parentItem, lstPara, THIRD_LEVEL_NODE);
+            itemNew->setIcon(0, itemTable->icon());
+            ui->m_chainTree->setCurrentItem(itemNew);
+
+            ui->m_stackCmdEdit->setCurrentIndex(1);
+            ui->m_stackCmdParaSet->setCurrentIndex(9);
+            ui->m_state_6->setFocus();
+
+            m_lstTabWgt.clear();
+            m_lstTabWgt<<ui->m_state_6;
+            break;
+        }
+        default:
+        {
+            QTreeWidgetItem* itemNew = new QTreeWidgetItem(parentItem, QStringList()<<itemTable->text().trimmed()<<QString("%1").arg(itemTable->type()), THIRD_LEVEL_NODE);
+            itemNew->setIcon(0, itemTable->icon());
+            ui->m_chainTree->setCurrentItem(itemNew);
+            break;
+        }
+        }
+        break;
+    }
+    case Key_F2:
+    {
+        if(!m_lstTabWgt.contains(focusWidget()))
+            return;
+
+        int index = m_lstTabWgt.indexOf(focusWidget());
+        m_lstTabWgt.at(index==(m_lstTabWgt.count()-1) ? 0: index+1)->setFocus();
+        break;
+    }
+    case Key_F3:
+    {
+        if(ui->m_stackCmdEdit->currentIndex()==0)
+            return;
+
+        int index = ui->m_stackCmdParaSet->currentIndex();
+        qDebug()<<"========================index="<<index;
+        QStringList lstPara;
+        QString strContex;
+        switch (index) {
+        case 0:
+        {
+            strContex =QString(tr("%1 [状态：%2---针位：%3---模式：%4]")).arg(ui->m_title->text().trimmed())
+                    .arg(ui->m_state->currentText()).arg(ui->m_needle->text()).arg(ui->m_model->currentText());
+
+            lstPara<<strContex<<ui->m_chainTree->currentItem()->text(1)<<QString("%1").arg(ui->m_state->currentIndex())<<ui->m_needle->text()<<QString("%1").arg(ui->m_model->currentIndex());
+            break;
+        }
+        case 1:
+        {
+            strContex =QString(tr("%1 [转速：%2---加速圈数：%3]")).arg(ui->m_title->text().trimmed())
+                    .arg(ui->m_speed->text().toInt()).arg(ui->m_circle->text().toInt());
+
+            lstPara<<strContex<<ui->m_chainTree->currentItem()->text(1)<<ui->m_speed->text()<<ui->m_circle->text();
+            break;
+        }
+        case 2:
+        {
+            strContex =QString(tr("%1 [宏：%2---动作针位：%3---模式：%4]")).arg(ui->m_title->text().trimmed())
+                    .arg(ui->m_lstMarco->currentText()).arg(ui->m_needle_2->text()).arg(ui->m_speed_2->currentText());
+
+            lstPara<<strContex<<ui->m_chainTree->currentItem()->text(1)<<ui->m_lstMarco->currentText()<<ui->m_needle_2->text()<<QString("%1").arg(ui->m_speed_2->currentIndex());
+            break;
+        }
+        case 3:
+        {
+            QString strContex1 =QString(tr("%1 [电机转向：%2---模式：%3---针位：%4]")).arg(ui->m_title->text().trimmed())
+                    .arg(ui->m_motoDirect->currentIndex()==0 ? tr("正转"):tr("反转")).arg(ui->m_motoMode->currentText()).arg(ui->m_motoNeedlValve->text());
+            QString strContex2 =QString(tr("%1 [电机转向：%2---模式：%3]")).arg(ui->m_title->text().trimmed())
+                    .arg(ui->m_motoDirect->currentIndex()==0 ? tr("正转"):tr("反转")).arg(ui->m_motoMode->currentText());
+            strContex = ui->m_motoMode->currentText() ==tr("无") || ui->m_motoMode->currentText() ==tr("到零") ? strContex2:strContex1;
+
+            lstPara<<strContex<<ui->m_chainTree->currentItem()->text(1)<<QString("%1").arg(ui->m_motoDirect->currentIndex()==1 ? 0:1)<<QString("%1").arg(ui->m_motoMode->currentIndex())<<ui->m_motoNeedlValve->text();
+        }
+        case 4:
+        {
+            strContex =QString(tr("%1 [动作状态：%2---针位：%3]")).arg(ui->m_title->text().trimmed())
+                    .arg(ui->m_state_3->currentText()).arg(ui->m_needle_3->text());
+
+            lstPara<<strContex<<ui->m_chainTree->currentItem()->text(1)<<QString("%1").arg(ui->m_state_3->currentIndex())<<ui->m_needle_3->text();
+            break;
+        }
+        case 5:
+        {
+            strContex =QString(tr("%1 [选针编号：%2---动作方式：%3---选针模式：%4]")).arg(ui->m_title->text().trimmed()).
+                    arg(ui->m_needleNum->currentText()).arg(ui->m_state_5->currentIndex()==0 ? tr("正常"):tr("辅助")).arg(ui->m_state_4->currentText());
+
+            lstPara<<strContex<<ui->m_chainTree->currentItem()->text(1)<<ui->m_needleNum->currentText()<<QString("%1").arg(ui->m_state_5->currentIndex()==0 ? 1:0)
+                  <<QString("%1").arg(ui->m_state_4->currentIndex());
+            break;
+        }
+        case 6:
+        {
+            strContex =QString(tr("%1 [向左移：%2---向右移：%3]")).arg(ui->m_title->text().trimmed())
+                    .arg(ui->m_left->text()).arg(ui->m_right->text());
+            lstPara<<strContex<<ui->m_chainTree->currentItem()->text(1)<<ui->m_left->text()<<ui->m_right->text();
+            break;
+        }
+        case 7:
+        {
+            strContex =QString(tr("%1 [花纹名称：%2]")).arg(ui->m_title->text().trimmed())
+                    .arg(ui->m_patternLink->currentText());
+
+            lstPara<<strContex<<ui->m_chainTree->currentItem()->text(1)<<ui->m_patternLink->currentText();
+            break;
+        }
+        case 8:
+        {
+            strContex =QString(tr("%1 [%2,%3,%4,%5,%6,%7,%8,%9]")).arg(ui->m_title->text().trimmed())
+                    .arg(ui->m_edtCircle_1->text())
+                    .arg(ui->m_edtCircle_2->text())
+                    .arg(ui->m_edtCircle_3->text())
+                    .arg(ui->m_edtCircle_4->text())
+                    .arg(ui->m_edtCircle_5->text())
+                    .arg(ui->m_edtCircle_6->text())
+                    .arg(ui->m_edtCircle_7->text())
+                    .arg(ui->m_edtCircle_8->text());
+
+            lstPara<<strContex<<ui->m_chainTree->currentItem()->text(1)<<ui->m_edtCircle_1->text()<<ui->m_edtCircle_2->text()<<ui->m_edtCircle_3->text()
+                     <<ui->m_edtCircle_4->text()<<ui->m_edtCircle_5->text()<<ui->m_edtCircle_6->text()<<ui->m_edtCircle_7->text()<<ui->m_edtCircle_8->text();
+            break;
+        }
+        case 9:
+        {
+            strContex =QString(tr("%1 [动作状态：%2]")).arg(ui->m_title->text().trimmed())
+                    .arg(ui->m_state_6->currentText());
+            lstPara<<strContex<<ui->m_chainTree->currentItem()->text(1)<<QString("%1").arg(ui->m_state_6->currentIndex());
             break;
         }
         default:
             break;
         }
-        qDebug()<<"---------------------------"<<iType;
+
+        for(int i=0; i<lstPara.count(); ++i)
+        {
+            ui->m_chainTree->currentItem()->setText(i,lstPara.at(i));
+        }
         break;
     }
     default:
@@ -584,6 +1025,85 @@ void Frm_chainProcessingClass::initChainTree()
 
 }
 
+/*写入主链条xml节点数据*/
+void Frm_chainProcessingClass::writeChainTree()
+{
+    /*读取文件内容*/
+    QString filePath = QString("%1/%2").arg(PATH_CHAIN_FILE_LOCAL).arg(ui->m_labWorkChain->text());
+    QFile fileRed(filePath);
+    fileRed.open(QIODevice::ReadOnly);
+    QDomDocument doc;
+    doc.setContent(&fileRed);
+    fileRed.close();
+
+    QDomNodeList lstCmdModel = doc.elementsByTagName("mainChain");
+    if(lstCmdModel.count()==0) return;
+    QDomElement mainChainBefor = lstCmdModel.at(0).toElement();
+
+    QDomElement mainChainAfter = doc.createElement("mainChain");;
+
+    QTreeWidgetItem *itemLv1, *itemL2, *itemL3;
+    QDomElement domLv1,domLv2,domLv3;
+    for(int i=0; i<ui->m_chainTree->topLevelItemCount(); ++i)
+    {
+        itemLv1 = ui->m_chainTree->topLevelItem(i);
+        //写入一级节点
+        domLv1 = doc.createElement("phase");
+        domLv1.setAttribute("val", m_lstFirstNodeName.indexOf(itemLv1->text(0)));
+
+        mainChainAfter.appendChild(domLv1);
+        qDebug()<<"3";
+        for(int j=0; j<itemLv1->childCount(); ++j)
+        {
+            itemL2 = itemLv1->child(j);
+            //写入二级节点
+            domLv2 = doc.createElement("step");
+            domLv2.setAttribute("number", itemL2->text(0).split(" ").last());
+            domLv1.appendChild(domLv2);
+            for(int z=0; z<itemL2->childCount(); ++z)
+            {
+                itemL3 = itemL2->child(z);
+
+                //写入三级节点
+                domLv3 = doc.createElement("cmd");
+                domLv3.setAttribute("content", itemL3->text(0));
+                domLv2.appendChild(domLv3);
+                //写入命令类型
+                domLv3.setAttribute("type", QString("%1").arg(ComConfigClass::GetInstance()->getCmdTypeByIndex(itemL3->text(1).toInt())));
+                //写入阀号NO val0
+                domLv3.setAttribute("val0", QString("%1").arg(ComConfigClass::GetInstance()->getCmdProByIndex(itemL3->text(1).toInt()).NO));
+                //写入命令属性值val1往后,由于lstAtt前2个值分别是显示的内容和index,从低三个值开始才是对应的属性值，所以n从2开始
+                QStringList lstAtt=getCmdAtt(itemL3);
+                for(int n=2; n<lstAtt.count(); ++n)
+                {
+                    domLv3.setAttribute(QString("val%1").arg(n-1), lstAtt.at(n));
+                }
+                //写入content
+                domLv3.setAttribute("content", lstAtt.join(";"));
+            }
+        }
+    }
+    doc.elementsByTagName("body").at(0).replaceChild(mainChainAfter, mainChainBefor);
+
+    QFile file(filePath);
+    file.open(QIODevice::WriteOnly|QFile::Truncate);
+    QTextStream stream(&file);
+    doc.save(stream, 4);
+    file.close();
+}
+
+/*获取命令树三级节点的属性*/
+QStringList Frm_chainProcessingClass::getCmdAtt(QTreeWidgetItem *item)
+{
+    QStringList lst;
+    lst.clear();
+    for(int i=0;i<item->columnCount(); ++i)
+    {
+        lst<<item->text(i);
+    }
+    return lst;
+}
+
 /*向XDDP发送数据*/
 void Frm_chainProcessingClass::writeToXddp()
 {
@@ -666,6 +1186,25 @@ void Frm_chainProcessingClass::initChainManageTable()
     /*end*******************************************初始化链条管理窗口******************************************************/
 }
 
+/*获取设备中的花型列表*/
+QStringList Frm_chainProcessingClass::getPatternList()
+{
+    qDebug()<<"-------------------";
+    QStringList filters;     //定义过滤变量；
+    filters<< QString("*.dis");
+    QDirIterator dir_iterator(PATH_CHAIN_FILE_LOCAL,filters,QDir::Files | QDir::NoSymLinks,QDirIterator::Subdirectories);//定义迭代器并设置过滤器；
+    QStringList lstName;
+    while(dir_iterator.hasNext())
+    {
+        dir_iterator.next();
+        QFileInfo file_info=dir_iterator.fileInfo();
+
+        lstName<<file_info.baseName();
+    }
+    qDebug()<<lstName;
+    return lstName;
+}
+
 /*链条命令树二级节点排序*/
 void Frm_chainProcessingClass::secendLevelNodeSort()
 {
@@ -708,17 +1247,8 @@ void Frm_chainProcessingClass::initCmdEdit()
 
     connect(ui->m_wgtCmdName,SIGNAL(itemSelectionChanged()), this, SLOT(freshCmdContent()));
 
-    ui->m_tableCycle->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->splitter->setStretchFactor(0,5);
     ui->splitter->setStretchFactor(1,2);
-
-    setTabOrder(ui->cmd_val1, ui->cmd_val2);
-    setTabOrder(ui->cmd_val2, ui->cmd_val3);
-    setTabOrder(ui->cmd_val3, ui->cmd_val4);
-    setTabOrder(ui->cmd_val4, ui->cmd_val5);
-    setTabOrder(ui->cmd_val5, ui->cmd_val6);
-    setTabOrder(ui->cmd_val6, ui->cmd_val7);
-    setTabOrder(ui->cmd_val7, ui->cmd_val8);
 
     m_iCmdPagePos=0;
 }

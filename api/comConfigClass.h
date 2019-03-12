@@ -15,7 +15,7 @@
 #include <QStringList>
 #include "publicData.h"
 #include <QDebug>
-
+#include "api/myMessageBox.h"
 /*start*****************************************************************************公共配置解析类******************************************************************************/
 class ComConfigClass
 {
