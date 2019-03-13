@@ -551,7 +551,7 @@ void mainWindow::handleXddpData(QByteArray data)
                     {
                         for(int j=0; j<12; ++j)
                         {
-                            ui_pop.m_tabAirValve->setItem(j,i,new QTableWidgetItem(QIcon(":/image/out.png"),(QString::number(i+j*8))));
+//                            ui_pop.m_tabAirValve->setItem(j,i,new QTableWidgetItem(QIcon(":/image/out.png"),(QString::number(i+j*8))));
                             ui_pop.m_tabAirValve->item(j,i)->setIcon(m_bitValveStates.at(i+j*8) ? QIcon(":/image/in.png"):QIcon(":/image/out.png"));
                         }
                     }
@@ -913,9 +913,9 @@ void mainWindow::macroFun_TakeDown()
 //06 进线吹气
 void mainWindow::macroFun_AirFeeder()
 {
-    m_bitMacroState.setBit(macroFu_AirFeeder, !m_bitMacroState.at(macroFu_AirFeeder));
+    //    m_bitMacroState.setBit(macroFu_AirFeeder, !m_bitMacroState.at(macroFu_AirFeeder));
 
-    ui->btnMacro_6->setChecked(!m_bitMacroState.at(macroFu_AirFeeder));
+    //    ui->btnMacro_6->setChecked(!m_bitMacroState.at(macroFu_AirFeeder));
 
     writeToXddp(macroFu_AirFeeder, "in");
 

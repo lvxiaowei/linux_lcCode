@@ -41,6 +41,7 @@ public slots:
     void handleXddpData(QByteArray);
     void writeToSerial(QByteArray data);
     void writeToXddp(QByteArray data);
+    void initNewWgt(int index);
 };
 
 #endif // SCHEDULE_H

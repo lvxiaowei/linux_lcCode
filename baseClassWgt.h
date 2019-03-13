@@ -102,6 +102,7 @@ public:
 signals:
     void serialDataToScheduler(QByteArray data);
     void xddpDataToScheduler(QByteArray data);
+    void initNewWgt(int index);
 
 };
 

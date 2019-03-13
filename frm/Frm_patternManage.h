@@ -103,6 +103,8 @@ public:
 signals:
 
 private:
+    void writeToXddp();
+
     void dealPg1(int key);
     void dealPg2(int key);
     void dealPg2_menu(int key);

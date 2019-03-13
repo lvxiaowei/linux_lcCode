@@ -488,6 +488,24 @@ void Frm_patternManage::dealPg3(int key)
     }
 }
 
+/*向XDDP发送数据*/
+void Frm_patternManage::writeToXddp()
+{
+    QJsonObject json;
+    json.insert("mesg_type", "parameter_set");
+    json.insert("mesg_dir", "req");
+    QJsonObject jsContent;
+
+    jsContent.insert("index", oper_ChainChange);
+    json.insert("content", jsContent);
+
+    // 构建 JSON 文档
+    QJsonDocument document;
+    document.setObject(json);
+    QByteArray byteArray = document.toJson(QJsonDocument::Indented);
+    emit xddpDataToScheduler(byteArray);
+}
+
 /*数据初始化*/
 void Frm_patternManage::initShowFrmConfig()
 {
@@ -797,14 +815,15 @@ void Frm_patternManage::savePatternDataToFile()
         bt[fileHead->REP_InfoPos+i*6+4]=(ui->m_tabLoop->item(i,3)->text().toInt())%256;
         bt[fileHead->REP_InfoPos+i*6+5]=(ui->m_tabLoop->item(i,3)->text().toInt())/256;
     }
-    qDebug()<<bt.size()<<"before";
+
     m_YFTable->saveYFData(bt);
-    qDebug()<<bt.size()<<"after";
+
     QFile file_save(filePath);
     file_save.open(QIODevice::WriteOnly);
     file_save.write(bt);
     file_save.close();
 
+    writeToXddp();
     myHelper::showMessageBoxInfo(tr("文件保存成功!"), 1);
 }
 

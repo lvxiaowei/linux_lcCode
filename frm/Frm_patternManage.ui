@@ -36,7 +36,7 @@
     <widget class="QLabel" name="m_title">
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>15</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -76,8 +76,20 @@
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <layout class="QGridLayout" name="gridLayout_10" rowstretch="0,0">
-          <item row="0" column="0">
+         <layout class="QGridLayout" name="gridLayout_10" rowstretch="0,0,0">
+          <property name="leftMargin">
+           <number>5</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>5</number>
+          </property>
+          <property name="bottomMargin">
+           <number>4</number>
+          </property>
+          <item row="1" column="0">
            <widget class="QTableWidget" name="m_tabPatManage">
             <property name="styleSheet">
              <string notr="true">QTableWidget:focus     
@@ -93,7 +105,7 @@
             </attribute>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item row="2" column="0">
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <property name="spacing">
              <number>4</number>
@@ -116,6 +128,19 @@
              </widget>
             </item>
            </layout>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>本地：</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

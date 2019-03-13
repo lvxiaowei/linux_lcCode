@@ -60,6 +60,12 @@ void baseClassWgt::freshRightButtonContent(QStringList lstStr)
 //设置下一个处理的窗口
 void baseClassWgt::setNextDealWgt(int index)
 {
+    if(!g_mapIndexToWgt.keys().contains(index))
+    {
+        emit initNewWgt(index);
+        return;
+    }
+
     g_pCurentDealWgt = g_mapIndexToWgt[index];
 
     g_pCurentDealWgt->initShowFrmConfig();

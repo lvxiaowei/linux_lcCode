@@ -9,37 +9,10 @@ schedule::schedule(QWidget *parent)
     m_pMainWindow = new mainWindow();
     m_pMainWindow->show();
 
-    m_frmChain = new Frm_chainProcessingClass();
-    m_pMainWindow->addChildWgt(m_frmChain);
+    connect(m_pMainWindow, SIGNAL(initNewWgt(int)), this, SLOT(initNewWgt(int)));
+    connect(m_pMainWindow, SIGNAL(serialDataToScheduler(QByteArray)),this,SLOT(writeToSerial(QByteArray))); /*向串口发送数据*/
+    connect(m_pMainWindow, SIGNAL(xddpDataToScheduler(QByteArray)),this,SLOT(writeToXddp(QByteArray)));     /*向管理口发送数据*/
 
-    m_frmSettingMenu = new Frm_settingMenu();
-    baseClassWgt::g_mapIndexToWgt[PAGE_SETTING]= m_frmSettingMenu;
-    m_pMainWindow->addChildWgt(m_frmSettingMenu);
-
-    m_frmTestMenu = new Frm_testingMenu();
-    baseClassWgt::g_mapIndexToWgt[PAGE_TESTINGMENU]= m_frmTestMenu;
-    m_pMainWindow->addChildWgt(m_frmTestMenu);
-
-    m_frmPatternManage = new Frm_patternManage();
-    baseClassWgt::g_mapIndexToWgt[PAGE_PATTERNMANAGE]= m_frmPatternManage;
-    m_pMainWindow->addChildWgt(m_frmPatternManage);
-
-    m_frmTimings = new Frm_timingTable();
-    baseClassWgt::g_mapIndexToWgt[PAGE_TIMINGS]= m_frmTimings;
-    m_pMainWindow->addChildWgt(m_frmTimings);
-
-    m_frmParaSetting = new Frm_parameterSettings();
-    baseClassWgt::g_mapIndexToWgt[PAGE_PARASETTING]= m_frmParaSetting;
-    m_pMainWindow->addChildWgt(m_frmParaSetting);
-
-    /*将几个窗口放在加入到 lst 中*/
-    lstWgtFrm.clear();
-    lstWgtFrm <<m_pMainWindow <<m_frmChain <<m_frmSettingMenu <<m_frmTestMenu <<m_frmPatternManage<<m_frmTimings<<m_frmParaSetting;
-
-    foreach (QWidget* pWgtFrm, lstWgtFrm) {
-        connect(pWgtFrm,SIGNAL(serialDataToScheduler(QByteArray)),this,SLOT(writeToSerial(QByteArray))); /*向串口发送数据*/
-        connect(pWgtFrm,SIGNAL(xddpDataToScheduler(QByteArray)),this,SLOT(writeToXddp(QByteArray)));     /*向管理口发送数据*/
-    }
 }
 
 schedule::~schedule()
@@ -102,6 +75,70 @@ void schedule::writeToXddp(QByteArray data)
 {
     emit toXddpData(data);
     qDebug()<<"发送给XDDP的数据:"<<data;
+}
+
+/*新增界面*/
+void schedule::initNewWgt(int index)
+{
+    baseClassWgt* pWgtFrm=NULL;
+    qDebug()<<"initNewWgt";
+    switch (index) {
+    case PAGE_SETTING:
+    {
+        m_frmSettingMenu = new Frm_settingMenu();
+        m_pMainWindow->addChildWgt(m_frmSettingMenu);
+        pWgtFrm = m_frmSettingMenu;
+        break;
+    }
+    case PAGE_CHAINPROCESSING:
+    {
+        m_frmChain = new Frm_chainProcessingClass();
+        m_pMainWindow->addChildWgt(m_frmChain);
+        pWgtFrm = m_frmChain;
+        break;
+    }
+    case PAGE_TESTINGMENU:
+    {
+        m_frmTestMenu = new Frm_testingMenu();
+        m_pMainWindow->addChildWgt(m_frmTestMenu);
+        pWgtFrm = m_frmTestMenu;
+        break;
+    }
+    case PAGE_PATTERNMANAGE:
+    {
+        m_frmPatternManage = new Frm_patternManage();
+        m_pMainWindow->addChildWgt(m_frmPatternManage);
+        pWgtFrm = m_frmPatternManage;
+        break;
+    }
+    case PAGE_TIMINGS:
+    {
+        m_frmTimings = new Frm_timingTable();
+        m_pMainWindow->addChildWgt(m_frmTimings);
+        pWgtFrm = m_frmTimings;
+        break;
+    }
+    case PAGE_PARASETTING:
+    {
+        m_frmParaSetting = new Frm_parameterSettings();
+        m_pMainWindow->addChildWgt(m_frmParaSetting);
+        pWgtFrm = m_frmParaSetting;
+        break;
+    }
+    default:
+        break;
+    }
+
+    if(NULL != pWgtFrm)
+    {
+        baseClassWgt::g_mapIndexToWgt[index]= pWgtFrm;
+        baseClassWgt::g_pStackedWgt->setCurrentWidget(pWgtFrm);
+        baseClassWgt::g_pCurentDealWgt = (baseClassWgt*)pWgtFrm;
+        pWgtFrm->initShowFrmConfig();
+        connect(pWgtFrm,SIGNAL(serialDataToScheduler(QByteArray)),this,SLOT(writeToSerial(QByteArray))); /*向串口发送数据*/
+        connect(pWgtFrm,SIGNAL(xddpDataToScheduler(QByteArray)),this,SLOT(writeToXddp(QByteArray)));     /*向管理口发送数据*/
+        connect(pWgtFrm, SIGNAL(initNewWgt(int)), this, SLOT(initNewWgt(int)));
+    }
 }
 
 /*点亮或熄灭屏幕*/

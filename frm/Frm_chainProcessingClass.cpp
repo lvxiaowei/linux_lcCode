@@ -6,7 +6,6 @@ Frm_chainProcessingClass::Frm_chainProcessingClass(QWidget *parent) :
     baseClassWgt(parent),
     ui(new Ui::Frm_chainProcessingClass)
 {
-    g_mapIndexToWgt[PAGE_CHAINPROCESSING]= this;
     ui->setupUi(this);
 
     /*增加编辑位置的二级菜单*/
@@ -132,14 +131,13 @@ void Frm_chainProcessingClass::dealPg1(int key)
     {
         initChainTree();
         ui->stackedWidget->setCurrentIndex(1);
+        ui->m_chainTitle->setText(QString(tr("[链条编辑] %1")).arg(ui->m_labWorkChain->text()));
         freshRightButtonContent(QStringList()<<tr("返回")<<tr("新增")<<tr("删除")<<tr("编辑")<<tr("保存")<<tr("下一菜单\n[1/2]"));
         break;
     }
     case Key_F5:
     {
         QString fileName=ui->m_tabChainManage->item(ui->m_tabChainManage->currentRow(),3)->text();
-
-        if(fileName == ui->m_labWorkChain->text()) return;
 
         ui->m_labWorkChain->setText(fileName);
 
@@ -238,6 +236,30 @@ void Frm_chainProcessingClass::dealPg2(int key)
     {
         dealPg2_2(key);
     }
+
+    switch (key) {
+    case Key_Left:
+    case Key_Right:
+    {
+        int step=(key==Key_Left ? -1:1);
+
+        QTreeWidgetItem *current = ui->m_chainTree->currentItem();
+        QTreeWidgetItem *parent = current->parent();
+        QTreeWidgetItem *nextSibling;
+        if(parent)
+        {
+            nextSibling =parent->child(parent->indexOfChild(current)+step);
+        }
+        else {
+            nextSibling = ui->m_chainTree->topLevelItem(ui->m_chainTree->indexOfTopLevelItem(current)+step);
+        }
+        ui->m_chainTree->setCurrentItem(NULL==nextSibling ? current:nextSibling);
+        break;
+    }
+        break;
+    default:
+        break;
+    }
 }
 
 /*处理串口数据-page2-1*/
@@ -247,6 +269,7 @@ void Frm_chainProcessingClass::dealPg2_1(int key)
     case Key_F0:
         ui->stackedWidget->setCurrentIndex(0);
         ui->m_tabChainManage->setFocus();
+        ui->m_chainTitle->setText(tr("[链条管理]"));
         freshRightButtonContent(QStringList()<<tr("返回")<<tr("从U盘\n输入")<<tr("输出到\nU盘")<<tr("删除")<<tr("编辑\n工作链条")<<tr("工作链条\n设定"));
         break;
     case Key_F1:
@@ -367,7 +390,7 @@ void Frm_chainProcessingClass::dealPg2_1(int key)
             ui->m_edtCircle_1->setFocus();
             m_lstTabWgt.clear();
             m_lstTabWgt<<ui->m_edtCircle_1<<ui->m_edtCircle_2<<ui->m_edtCircle_3<<ui->m_edtCircle_4<<ui->m_edtCircle_5
-                         <<ui->m_edtCircle_6<<ui->m_edtCircle_7<<ui->m_edtCircle_8;
+                      <<ui->m_edtCircle_6<<ui->m_edtCircle_7<<ui->m_edtCircle_8;
         }
         else if(strCmdType == "patternUse")
         {
@@ -392,6 +415,7 @@ void Frm_chainProcessingClass::dealPg2_1(int key)
     }
     case Key_F4:
         writeChainTree();
+        writeToXddp();
         myHelper::showMessageBoxInfo(tr("文件保存成功!"), 1);
         break;
     case Key_F5:
@@ -759,7 +783,7 @@ void Frm_chainProcessingClass::dealAddCmd(int key)
                     .arg(ui->m_edtCircle_8->text());
 
             lstPara<<strContex<<QString("%1").arg(itemTable->type())<<ui->m_edtCircle_1->text()<<ui->m_edtCircle_2->text()<<ui->m_edtCircle_3->text()
-                     <<ui->m_edtCircle_4->text()<<ui->m_edtCircle_5->text()<<ui->m_edtCircle_6->text()<<ui->m_edtCircle_7->text()<<ui->m_edtCircle_8->text();
+                  <<ui->m_edtCircle_4->text()<<ui->m_edtCircle_5->text()<<ui->m_edtCircle_6->text()<<ui->m_edtCircle_7->text()<<ui->m_edtCircle_8->text();
 
             QTreeWidgetItem* itemNew = new QTreeWidgetItem(parentItem, lstPara, THIRD_LEVEL_NODE);
             itemNew->setIcon(0, itemTable->icon());
@@ -770,7 +794,7 @@ void Frm_chainProcessingClass::dealAddCmd(int key)
             ui->m_edtCircle_1->setFocus();
             m_lstTabWgt.clear();
             m_lstTabWgt<<ui->m_edtCircle_1<<ui->m_edtCircle_2<<ui->m_edtCircle_3<<ui->m_edtCircle_4<<ui->m_edtCircle_5
-                         <<ui->m_edtCircle_6<<ui->m_edtCircle_7<<ui->m_edtCircle_8;
+                      <<ui->m_edtCircle_6<<ui->m_edtCircle_7<<ui->m_edtCircle_8;
             break;
         }
         case OPER_ZEROING:
@@ -900,7 +924,7 @@ void Frm_chainProcessingClass::dealAddCmd(int key)
                     .arg(ui->m_edtCircle_8->text());
 
             lstPara<<strContex<<ui->m_chainTree->currentItem()->text(1)<<ui->m_edtCircle_1->text()<<ui->m_edtCircle_2->text()<<ui->m_edtCircle_3->text()
-                     <<ui->m_edtCircle_4->text()<<ui->m_edtCircle_5->text()<<ui->m_edtCircle_6->text()<<ui->m_edtCircle_7->text()<<ui->m_edtCircle_8->text();
+                  <<ui->m_edtCircle_4->text()<<ui->m_edtCircle_5->text()<<ui->m_edtCircle_6->text()<<ui->m_edtCircle_7->text()<<ui->m_edtCircle_8->text();
             break;
         }
         case 9:
@@ -933,6 +957,7 @@ void Frm_chainProcessingClass::initShowFrmConfig()
     ui->m_labCurentOperForder->setText(tr("本地"));
     ui->stackedWidget->setCurrentIndex(0);
     ui->m_stackCmdEdit->hide();
+    ui->m_chainTitle->setText(tr("[链条管理]"));
 
     freshRightButtonContent(QStringList()<<tr("返回")<<tr("从U盘\n输入")<<tr("输出到\nU盘")<<tr("删除")<<tr("编辑\n工作链条")<<tr("工作链条\n设定"));
 
