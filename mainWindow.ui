@@ -1066,7 +1066,7 @@ border-radius:40px;</string>
              </size>
             </property>
             <property name="styleSheet">
-             <string notr="true"/>
+             <string notr="true">background-color: rgb(104, 164, 239);</string>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,1">
              <property name="spacing">
@@ -1114,7 +1114,7 @@ border-radius:40px;</string>
                 </font>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(104, 164, 239);</string>
+                <string notr="true"/>
                </property>
                <property name="text">
                 <string/>

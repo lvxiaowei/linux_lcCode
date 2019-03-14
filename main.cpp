@@ -30,6 +30,8 @@ int main(int argc, char *argv[])
     myHelper::setTextCode("UTF-8");
     myHelper::setFont("WenQuanYi Micro Hei");
 
+    setQssContent();
+
     schedule w;
 
     SerialComm serial_comm;
@@ -47,6 +49,5 @@ int main(int argc, char *argv[])
     QObject::connect(&w,SIGNAL(toXddpData(QByteArray)),&xddp_comm,SLOT(writeToXddp(QByteArray)));
     QObject::connect(&xddp_comm,SIGNAL(sendXddpData(QByteArray)),&w,SLOT(handleXddpData(QByteArray)));
 
-    setQssContent();
     return a.exec();
 }

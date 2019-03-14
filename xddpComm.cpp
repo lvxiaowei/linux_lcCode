@@ -3,7 +3,7 @@
 #include <sys/un.h>
 #include<QFile>
 #include <unistd.h>
-
+#include "api/myhelper.h"
 xddpComm::xddpComm(QObject *parent) : QObject(parent)
 {
     dataInit();
@@ -21,6 +21,10 @@ void xddpComm::dataInit()
     if(fb<0)
     {
         sendErrFlg();
+
+        myHelper::sleep(1500);
+        dataInit();
+        return;
     }
 
     m_activeNotifier=new QSocketNotifier(fb,QSocketNotifier::Read,this);              //创建QSocketNotifier的对象；
@@ -53,7 +57,6 @@ void xddpComm::errorSocket(int)
 
 void xddpComm::writeToXddp(QByteArray data)
 {
-
     int size=data.size();
     char *write_buf=data.data();
 
