@@ -6,6 +6,8 @@ Frm_patternManage::Frm_patternManage(QWidget *parent) :
     ui(new Ui::Frm_patternManage)
 {
     ui->setupUi(this);
+
+    m_treeFileModel = new QFileSystemModel();
 }
 
 Frm_patternManage::~Frm_patternManage()
@@ -520,7 +522,6 @@ void Frm_patternManage::initShowFrmConfig()
     bIsUExit = dir.exists();
     if(bIsUExit)
     {
-        m_treeFileModel = new QFileSystemModel();
         m_treeFileModel->setRootPath(USB_PATH);
 
         QStringList nameFilter;
@@ -574,6 +575,7 @@ void Frm_patternManage::initPatternProcesPage()
 
     m_iScale = 10;
     /*******************************初始化图案表格**************************************/
+
     m_pattrenTable = new patternTableWgt(this, fileHead->needles, fileName.split(".").last(), m_iScale, bt);
     ui->m_grdPat->addWidget(m_pattrenTable);
     m_pattrenTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
