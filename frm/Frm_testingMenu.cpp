@@ -59,6 +59,9 @@ void Frm_testingMenu::keyPressEvent(int key)
     case 5:
         dealPg_InSignal(key);
         break;
+    case 6:
+        dealPg_KeyTest(key);
+        break;
     default:
         break;
     }
@@ -116,6 +119,7 @@ void Frm_testingMenu::dealPg_menu_2(int key)
     case Key_F1:
         break;
     case Key_F2:
+        initKeyTestPage();
         break;
     case Key_F3:
         break;
@@ -439,9 +443,28 @@ void Frm_testingMenu::dealPg_InSignal(int key)
 {
     switch (key) {
     case Key_F0:
-        initShowFrmConfig();
+    {
+        freshRightButtonContent(QStringList()<<tr("信号测试")<<tr("闸刀测试")<<tr("键盘测试")<<tr("")<<tr("")<<tr("上一菜单\n[2/2]"));
+        ui->m_stackWgt->setCurrentIndex(0);
+    }
         break;
     default:
+        break;
+    }
+}
+
+/*处理串口数据-page2--keyboard测试*/
+void Frm_testingMenu::dealPg_KeyTest(int key)
+{
+    switch (key) {
+    case Key_F0:
+    {
+        freshRightButtonContent(QStringList()<<tr("信号测试")<<tr("闸刀测试")<<tr("键盘测试")<<tr("")<<tr("")<<tr("上一菜单\n[2/2]"));
+        ui->m_stackWgt->setCurrentIndex(0);
+    }
+        break;
+    default:
+        setObjProperty(m_mapKeyIndex[key], "select",  m_mapKeyIndex[key]->property("select")=="true"? "false":"true");
         break;
     }
 }
@@ -579,7 +602,67 @@ void Frm_testingMenu::initSignalPage()
             ui->m_tabInSIgnal->item(i,j)->setIcon(lstSignal.at(i*4+j).toElement().attribute("enable")=="true" ? QIcon(":/image/in.png"):QIcon(":/image/out.png"));
         }
 
-     freshRightButtonContent(QStringList()<<tr("返回")<<tr("")<<tr("")<<tr("")<<tr("")<<tr(""));
+    freshRightButtonContent(QStringList()<<tr("返回")<<tr("")<<tr("")<<tr("")<<tr("")<<tr(""));
+}
+
+/*初始化键盘测试界面*/
+void Frm_testingMenu::initKeyTestPage()
+{
+    static bool init=false;
+    if(!init)
+    {
+        m_mapKeyIndex.clear();
+        m_mapKeyIndex[Key_0] = ui->m_key_0;
+        m_mapKeyIndex[Key_1] = ui->m_key_1;
+        m_mapKeyIndex[Key_2] = ui->m_key_2;
+        m_mapKeyIndex[Key_3] = ui->m_key_3;
+        m_mapKeyIndex[Key_4] = ui->m_key_4;
+        m_mapKeyIndex[Key_5] = ui->m_key_5;
+        m_mapKeyIndex[Key_6] = ui->m_key_6;
+        m_mapKeyIndex[Key_7] = ui->m_key_7;
+        m_mapKeyIndex[Key_8] = ui->m_key_8;
+        m_mapKeyIndex[Key_9] = ui->m_key_9;
+        m_mapKeyIndex[Key_plus]  = ui->m_key_plus;
+        m_mapKeyIndex[Key_minus] = ui->m_key_minus;
+
+        m_mapKeyIndex[Key_F0] = ui->m_key_F1;
+        m_mapKeyIndex[Key_F1] = ui->m_key_F2;
+        m_mapKeyIndex[Key_F2] = ui->m_key_F3;
+        m_mapKeyIndex[Key_F3] = ui->m_key_F4;
+        m_mapKeyIndex[Key_F4] = ui->m_key_F5;
+        m_mapKeyIndex[Key_F5] = ui->m_key_F6;
+
+        m_mapKeyIndex[Key_Up]    = ui->m_key_Up;
+        m_mapKeyIndex[Key_Down]  = ui->m_key_Down;
+        m_mapKeyIndex[Key_Left]  = ui->m_key_Left;
+        m_mapKeyIndex[Key_Right] = ui->m_key_Right;
+        m_mapKeyIndex[Key_Set]   = ui->m_key_SET;
+        m_mapKeyIndex[Key_Esc]   = ui->m_key_ESC;
+
+        m_mapKeyIndex[Key_Fun0]  = ui->m_key_fun1;
+        m_mapKeyIndex[Key_Fun1]  = ui->m_key_fun2;
+        m_mapKeyIndex[Key_Fun2]  = ui->m_key_fun3;
+        m_mapKeyIndex[Key_Fun3]  = ui->m_key_fun4;
+        m_mapKeyIndex[Key_Fun4]  = ui->m_key_fun5;
+        m_mapKeyIndex[Key_Fun5]  = ui->m_key_fun6;
+        m_mapKeyIndex[Key_Fun6]  = ui->m_key_fun7;
+        m_mapKeyIndex[Key_Fun7]  = ui->m_key_fun8;
+        m_mapKeyIndex[Key_Fun8]  = ui->m_key_fun9;
+        m_mapKeyIndex[Key_Fun9]  = ui->m_key_fun10;
+        m_mapKeyIndex[Key_Fun10] = ui->m_key_fun11;
+        m_mapKeyIndex[Key_Fun11] = ui->m_key_fun12;
+        m_mapKeyIndex[Key_Fun12] = ui->m_key_fun13;
+        m_mapKeyIndex[Key_Fun13] = ui->m_key_fun14;
+        m_mapKeyIndex[Key_Fun14] = ui->m_key_fun15;
+        m_mapKeyIndex[Key_Fun15] = ui->m_key_fun16;
+
+        init=true;
+    }
+    foreach (QWidget* wgt, m_mapKeyIndex.values()) {
+        setObjProperty(wgt, "select", "false");
+    }
+    ui->m_stackWgt->setCurrentIndex(6);
+    freshRightButtonContent(QStringList()<<tr("返回")<<tr("")<<tr("")<<tr("")<<tr("")<<tr(""));
 }
 
 /*当前需要测试的气阀变化的槽函数*/

@@ -4,7 +4,8 @@
 #include <QDirModel>
 Frm_chainProcessingClass::Frm_chainProcessingClass(QWidget *parent) :
     baseClassWgt(parent),
-    ui(new Ui::Frm_chainProcessingClass)
+    ui(new Ui::Frm_chainProcessingClass),
+    m_treeFileModel(NULL)
 {
     ui->setupUi(this);
 
@@ -983,6 +984,11 @@ void Frm_chainProcessingClass::initShowFrmConfig()
     bIsUExit = dir.exists();
     if(bIsUExit)
     {
+        if(m_treeFileModel!=NULL)
+        {
+            delete m_treeFileModel;
+        }
+
         m_treeFileModel = new QFileSystemModel();
         m_treeFileModel->setRootPath(USB_PATH);
 
@@ -1077,7 +1083,6 @@ void Frm_chainProcessingClass::writeChainTree()
         domLv1.setAttribute("val", m_lstFirstNodeName.indexOf(itemLv1->text(0)));
 
         mainChainAfter.appendChild(domLv1);
-        qDebug()<<"3";
         for(int j=0; j<itemLv1->childCount(); ++j)
         {
             itemL2 = itemLv1->child(j);

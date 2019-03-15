@@ -38,6 +38,7 @@ private:
     void dealPg_selected(int key);
     void dealPg_YF(int key);
     void dealPg_InSignal(int key);
+    void dealPg_KeyTest(int key);
     bool readAirValveConfig();
     void initAirValve();
     void initAirValvePage();
@@ -45,6 +46,7 @@ private:
     void initActuatorPage();
     void initYFPage();
     void initSignalPage();
+    void initKeyTestPage();
 
 
     void writeToXddp(const int testType, QString operMode="");  /*向XDDP发送数据*/
@@ -55,6 +57,8 @@ private:
     int m_iPos;     //当前处于哪个马达测试的标志位
     bool m_bIsTesting;
     QString m_strTestMode;
+    QMap<int, QLabel*> m_mapKeyIndex;
+
     Ui::Frm_testingMenu *ui;
 };
 

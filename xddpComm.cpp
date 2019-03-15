@@ -48,6 +48,8 @@ void xddpComm::readSocketData(int)
     qDebug()<<"get replay message!"<< read_buf;
 
     emit sendXddpData(read_buf);
+
+    delete[] read_buf;
 }
 
 void xddpComm::errorSocket(int)

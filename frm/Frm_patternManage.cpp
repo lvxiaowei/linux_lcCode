@@ -3,11 +3,10 @@
 
 Frm_patternManage::Frm_patternManage(QWidget *parent) :
     baseClassWgt(parent),
-    ui(new Ui::Frm_patternManage)
+    ui(new Ui::Frm_patternManage),
+    m_treeFileModel(NULL)
 {
     ui->setupUi(this);
-
-    m_treeFileModel = new QFileSystemModel();
 }
 
 Frm_patternManage::~Frm_patternManage()
@@ -522,6 +521,11 @@ void Frm_patternManage::initShowFrmConfig()
     bIsUExit = dir.exists();
     if(bIsUExit)
     {
+        if(m_treeFileModel!=NULL)
+        {
+            delete m_treeFileModel;
+        }
+        m_treeFileModel = new QFileSystemModel();
         m_treeFileModel->setRootPath(USB_PATH);
 
         QStringList nameFilter;
